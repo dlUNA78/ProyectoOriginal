@@ -136,28 +136,79 @@ const products = [
   },
 ];
 
-// Obtener el ID del producto desde la URL
+
+//////
+
+
+// Obtener referencias a los elementos del formulario
+const selectProducto = document.getElementById("selectProducto");
+const inputNombre = document.getElementById("nombre");
+const inputPrecio = document.getElementById("precio");
+const inputDescripcion = document.getElementById("descripcion");
+const selectCategoria = document.getElementById("categoria");
+
+// 🔹 Función para llenar el formulario con los datos de un producto
+function llenarFormulario(producto) {
+  inputNombre.value = producto.nombre;
+  inputPrecio.value = producto.precio;
+  inputDescripcion.value = producto.descripcion;
+  selectCategoria.value = producto.categoria;
+}
+
+// 🔹 Llenar el `<select>` con los productos disponibles
+products.forEach((producto) => {
+  const option = document.createElement("option");
+  option.value = producto.id;
+  option.textContent = producto.nombre;
+  selectProducto.appendChild(option);
+});
+
+// 🔹 Precargar el producto inicial desde la URL (si existe)
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
-
-// Buscar el producto en el array
 const product = products.find((p) => p.id == productId);
 
+// Si se encontró un producto, precargarlo
 if (product) {
+  llenarFormulario(product);
+  selectProducto.value = product.id;
+}
+
+// 🔹 Evento para cambiar de producto al seleccionar otro en el `<select>`
+selectProducto.addEventListener("change", function () {
+  const selectedId = parseInt(selectProducto.value);
+  const newProduct = products.find((p) => p.id === selectedId);
+  
+  if (newProduct) {
+    llenarFormulario(newProduct);
+  }
+});
+
+
+
+//este codigo es el que tenia ya 
+// Obtener el ID del producto desde la URL
+//const urlParams = new URLSearchParams(window.location.search);
+//const productId = urlParams.get("id");
+
+// Buscar el producto en el array
+//const product = products.find((p) => p.id == productId);
+
+//if (product) {
   // Precargar los datos en los inputs
-  document.getElementById("nombre").value = product.nombre;
-  document.getElementById("precio").value = product.precio;
-  document.getElementById("descripcion").value = product.descripcion;
+//  document.getElementById("nombre").value = product.nombre;
+//  document.getElementById("precio").value = product.precio;
+//  document.getElementById("descripcion").value = product.descripcion;
 
   // Precargar la categoría en el select
-  const categoriaSelect = document.getElementById("categoria");
-  const optionToSelect = [...categoriaSelect.options].find(
-    (option) => option.value === product.categoria
-  );
+//  const categoriaSelect = document.getElementById("categoria");
+//  const optionToSelect = [...categoriaSelect.options].find(
+//    (option) => option.value === product.categoria
+//  );
 
-  if (optionToSelect) {
-    optionToSelect.selected = true;
-  }
-} else {
-  console.error("Producto no encontrado");
-}
+//  if (optionToSelect) {
+//    optionToSelect.selected = true;
+//  }
+//} else {
+//  console.error("Producto no encontrado");
+//}
