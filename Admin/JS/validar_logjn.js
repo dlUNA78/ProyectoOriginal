@@ -1,4 +1,3 @@
-
 const contraseñasUsuarios = {
     "Yesid@gmail.com": "Yessid1!",
     "Efrain@gmail.com": "Efrain1!",
@@ -23,20 +22,34 @@ function validarUsuario() {
     }
 }
 
-// Función para validar la contraseña ingresada
+// Función para validar la contraseña en tiempo real
+function validarContraseñaEnTiempoReal() {
+    const contraseñaIngresada = document.getElementById("contraseña").value;
+
+    // Validar que la contraseña cumpla con los requisitos
+    if (contraseñaIngresada && !regexContraseña.test(contraseñaIngresada)) {
+        mostrarError("errorContraseña", "La contraseña no cumple con los requisitos");
+    } else {
+        ocultarError("errorContraseña");
+    }
+}
+
+// Función para validar la contraseña al enviar el formulario
 function validarContraseña() {
     const usuario = document.getElementById("usuario").value.trim();
     const contraseñaIngresada = document.getElementById("contraseña").value;
 
     // Verificar si el usuario existe en la lista
     if (!(usuario in contraseñasUsuarios)) {
-        mostrarError("errorUsuario", "El usuario no está registrado");
+        mostrarError("errorContraseña", "Ingrese una contraseña valida"); // Mensaje en el campo de la contraseña
+        limpiarCampos(); // Limpiar campos si el usuario no existe
         return false;
     }
 
-    // Validar la contraseña asociada al usuario
+    // Validar la contraseña asociada al usuario (sensible a mayúsculas y minúsculas)
     if (contraseñaIngresada !== contraseñasUsuarios[usuario]) {
         mostrarError("errorContraseña", "Usuario o contraseña incorrectos");
+        limpiarCampos(); // Limpiar campos si la contraseña es incorrecta
         return false;
     }
 
@@ -53,6 +66,12 @@ function ocultarError(idError) {
     document.getElementById(idError).textContent = "";
 }
 
+// Función para limpiar los campos
+function limpiarCampos() {
+    document.getElementById("usuario").value = "";
+    document.getElementById("contraseña").value = "";
+}
+
 // Función para validar el formulario y redirigir si es correcto
 function validarFormulario() {
     const usuarioValido = validarUsuario();
@@ -60,10 +79,7 @@ function validarFormulario() {
 
     if (usuarioValido && contraseñaValida) {
         window.location.href = "../../Admin/Menú/index.html";
-
-        // Limpiar los campos después de un login exitoso
-        document.getElementById("usuario").value = "";
-        document.getElementById("contraseña").value = "";
+        limpiarCampos(); // Limpiar campos después de un login exitoso
     }
 }
 
@@ -72,7 +88,6 @@ document.getElementById("FormularioLogin").addEventListener("submit", function (
     event.preventDefault();
     validarFormulario();
 });
-
 
 // Función para mostrar/ocultar contraseña
 function togglePasswords() {
