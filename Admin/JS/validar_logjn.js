@@ -27,9 +27,8 @@ function validarContraseñaEnTiempoReal() {
     const contraseñaIngresada = document.getElementById("contraseña").value;
 
     // Validar que la contraseña cumpla con los requisitos
-    
     if (contraseñaIngresada && !regexContraseña.test(contraseñaIngresada)) {
-        mostrarError("errorContraseña");
+        mostrarError("errorContraseña", "La contraseña no cumple con los requisitos");
     } else {
         ocultarError("errorContraseña");
     }
@@ -42,7 +41,7 @@ function validarContraseña() {
 
     // Verificar si el usuario existe en la lista
     if (!(usuario in contraseñasUsuarios)) {
-        mostrarError("errorUsuario", "El usuario no está registrado");
+        mostrarError("errorContraseña", "Ingrese una contraseña valida"); // Mensaje en el campo de la contraseña
         limpiarCampos(); // Limpiar campos si el usuario no existe
         return false;
     }
