@@ -27,9 +27,9 @@ function validarContraseñaEnTiempoReal() {
     const contraseñaIngresada = document.getElementById("contraseña").value;
 
     // Validar que la contraseña cumpla con los requisitos
-    const regexContraseña = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    
     if (contraseñaIngresada && !regexContraseña.test(contraseñaIngresada)) {
-        mostrarError("errorContraseña", "La contraseña debe tener al menos una mayúscula, una minúscula, un número y mínimo 8 caracteres");
+        mostrarError("errorContraseña");
     } else {
         ocultarError("errorContraseña");
     }
