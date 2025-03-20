@@ -59,7 +59,7 @@ document.getElementById('agregar').addEventListener('click', function (event) {
         isValid = false;
     }
     if (nombre === "") {
-        document.getElementById('errorNombre').innerText = "Por favor, completa este campo.";
+        document.getElementById('errorNombre').innerText = "Ingrese un nombre";
         isValid = false;
     }
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+(?:\.(?!com\.)[a-zA-Z]{2,}|\.com(?!.*\.com))$/;
