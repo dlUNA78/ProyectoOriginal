@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log("El DOM ha sido cargado correctamente.");
 
-    // Simulación de datos de categorías (esto debería ser reemplazado por una solicitud real al servidor)
+    // Simulación de datos de categorías
     const categorias = [
         { id: 1, nombre: 'Tv Satelital' },
         { id: 2, nombre: 'Radiocomunicación' },
@@ -16,17 +16,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const listaDesplegable = document.getElementById('lista-desplegable');
 
     if (listaDesplegable) {
-        // Limpiar el <select> antes de llenarlo (opcional)
         listaDesplegable.innerHTML = '<option value="">Selecciona una categoría</option>';
-
-        // Llenar el <select> con las categorías
+        
         categorias.forEach(categoria => {
             const option = document.createElement('option');
             option.value = categoria.id;
             option.textContent = categoria.nombre;
             listaDesplegable.appendChild(option);
         });
-
+        
         console.log("Categorías agregadas al <select>.");
     } else {
         console.error("No se encontró el elemento con ID 'lista-desplegable'.");
@@ -48,15 +46,31 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('btnAgregar').addEventListener('click', function (event) {
         event.preventDefault();
 
-        const nombre = document.getElementById('nombre').value;
+        const nombre = document.getElementById('nombre').value.trim();
         const categoriaSeleccionada = document.getElementById('lista-desplegable').value;
-
-        document.getElementById('errorCategoria').innerText = "";
-
+        const errorCategoria = document.getElementById('errorCategoria');
+        
+        errorCategoria.innerText = "";
         let isValid = true;
 
+        // Validación del nombre
         if (nombre === "") {
-            document.getElementById('errorCategoria').innerText = "Por favor, completa este campo.";
+            errorCategoria.innerText = "Ingrese un nombre";
+            isValid = false;
+        } else if (nombre.length < 3) {
+            errorCategoria.innerText = "El nombre debe tener al menos 3 caracteres.";
+            isValid = false;
+        } else if (nombre.length > 50) {
+            errorCategoria.innerText = "El nombre no debe superar los 50 caracteres.";
+            isValid = false;
+        } else if (!/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ]+$/.test(nombre)) {
+            errorCategoria.innerText = "El nombre solo puede contener letras y espacios.";
+            isValid = false;
+        }
+
+        // Validación de la categoría
+        if (!categoriaSeleccionada || categoriaSeleccionada.trim() === "") {
+            errorCategoria.innerText = "Por favor, selecciona una categoría.";
             isValid = false;
         }
 
@@ -64,10 +78,14 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Formulario válido. Categoría seleccionada:", categoriaSeleccionada);
             console.log("Nuevo nombre:", nombre);
 
-            // Mostrar el modal
-            const modal = new bootstrap.Modal(document.getElementById('modal-1'));
+            // Mostrar el modal de confirmación
+            const modal = new bootstrap.Modal(document.getElementById('Agregado'));
             modal.show();
         }
+         if (isValid) {
+        const modal = new bootstrap.Modal(document.getElementById('Agregado'));
+        modal.show();
+    }
+    
     });
 });
-
