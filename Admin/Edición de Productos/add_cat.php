@@ -216,7 +216,7 @@
               style="color: rgb(0, 0, 0); font-weight: bold">
               Agregar Categoría
             </h2>
-            <form method="POST" action="../Edición de Productos/php/add_cat.php">
+            <form method="POST" action="../Edición de Productos/php/add_cat_func.php">
               <div class="mb-3">
                 <label
                   class="form-label"
