@@ -3,7 +3,7 @@
 $nombre = $_POST['Nombre'];
 $apellidos = $_POST['Apellidos'];
 //Conexion a la base de datos
-include("conexion.php");
+include("./config/database.php");
 //Inserta los datos en la tabla
 //SE CAMBIARAN LOS DATOS TAL COMO SE ENCUENTREN EN LA BASE DE DATOS
 $sql = "INSERT INTO categorias (nombre, apellidos) VALUES ('$nombre', '$apellidos')";

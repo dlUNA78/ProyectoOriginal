@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
-  <!-- Incluir conexion PHP -->
-  <?php
-// conectamos a la base de datos
-include 'conexion.php';
-// realizamos la consulta
+<!-- Incluir conexion PHP -->
+<?php 
+include '../config/database.php';
+
+$database = new Database();
+$conn = $database->connect();
+
+if (!$conn) {
+    die("Error de conexión a la base de datos.");
+}
+
 $sql = "SELECT * FROM categorias";
-$result = $conn->query($sql); ?>
+$result = $conn->query($sql);
+
+if ($result) {
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        echo "Categoría: " . $row['nombre'] . "<br>";
+    }
+} else {
+    echo "Error en la consulta.";
+}
+?>
+
+
 
 <!-- Fin de la conexión -->
 
@@ -227,19 +244,19 @@ $result = $conn->query($sql); ?>
                       style="background: var(--bs-info); width: 150px">
                       Acciones
                     </th>
-                    
+
                   </tr>
                 </thead>
                 <tbody class="text-center">
-                    <!-- Verificar si hay registros -->
+                  <!-- Verificar si hay registros -->
 
-                    <?php
-            $sql = "SELECT * FROM categorias";
-            $result = $conn->query($sql);
+                  <?php
+                  $sql = "SELECT * FROM categorias";
+                  $result = $conn->query($sql);
 
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>
+                  if ($result->rowCount() > 0) {
+                    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                      echo "<tr>
                     <td>" . htmlspecialchars($row['nombre']) . "</td>  <!-- Mostrar nombre de la categoría QUEDA PENDIENTE PARA VER LA BASE DE DATOS -->
                     <td
                       class='text-center align-middle'
@@ -275,11 +292,11 @@ $result = $conn->query($sql); ?>
                           style='color: var(--bs-light)'></i></a>
                     </td>
                   </tr>";
-                      }
-            } else {
-                echo "<tr><td colspan='3' style='padding: 10px; border: 1px solid #ddd;'>0 resultados</td></tr>";
-            }
-            ?>
+                    }
+                  } else {
+                    echo "<tr><td colspan='3' style='padding: 10px; border: 1px solid #ddd;'>0 resultados</td></tr>";
+                  }
+                  ?>
 
 
 

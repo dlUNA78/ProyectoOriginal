@@ -1,14 +1,16 @@
 <?php
-class Database {
+class Database
+{
     // Configuración de la base de datos
     private $host = 'localhost';      // Servidor de la base de datos
-    private $db_name = 'proyecto_original';  // Nombre de tu base de datos
+    private $db_name = 'proyecto1';  // Nombre de tu base de datos
     private $username = 'root';       // Usuario de MySQL (ajusta según tu configuración)
-    private $password = 'guerito32';           // Contraseña de MySQL (ajusta según tu configuración)
+    private $password = '';           // INGRESE SU FAKIN CONTRASEÑA, PERO UNA VEZ HECHOS SUS CAMBIOS REGRENSELO A BLANCO
     public $conn;
 
     // Método para conectar a la base de datos
-    public function connect() {
+    public function connect()
+    {
         $this->conn = null;
 
         try {
@@ -21,7 +23,7 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             // Forzar codificación UTF-8
             $this->conn->exec('SET NAMES utf8');
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             // En producción, deberías registrar este error en un archivo de log
             die('Error de conexión: ' . $e->getMessage());
         }
@@ -29,4 +31,3 @@ class Database {
         return $this->conn;
     }
 }
-?>

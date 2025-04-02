@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Incluir el archivo de conexión a la base de datos
-require_once 'database.php';
+require_once './database.php';
 
 // Crear instancia de la base de datos
 $database = new Database();
