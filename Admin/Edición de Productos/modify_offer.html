@@ -271,6 +271,13 @@
                   required=""
                 />
               </div>
+
+
+
+
+
+
+
               <div class="mb-3">
                 <label
                   class="form-label"
@@ -290,7 +297,7 @@
                   class="form-label"
                   for="codigo-1"
                   style="color: rgb(0, 0, 0)"
-                  >Precio Anterior:</label
+                  >Precio:</label
                 >
                 <input id="precioBe" class="form-control" type="search" />
               </div>
@@ -299,7 +306,7 @@
                   class="form-label"
                   for="existencia"
                   style="color: rgb(0, 0, 0)"
-                  >Nuevo Precio:</label
+                  >Precio con descuento:</label
                 >
                 <input
                   id="precioNew"
@@ -308,6 +315,27 @@
                   required=""
                 />
                 <div id="errorPrecioNew" class="text-danger"></div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="categoria"
+                  style="color: rgb(0, 0, 0)"
+                  >Categoría:</label
+                ><select
+                  class="form-select form-select"
+                  id="categoria"
+                  name="categoria"
+                  required=""
+                >
+                  <option value="Automotriz">Automotriz</option>
+                  <option value="Energia Solar">Energia solar</option>
+                  <option value="Hogar">Hogar</option>
+                  <option value="Plaguicidas">Plagnicidas</option>
+                  <option value="Tv satelital">Tv satelital</option>
+                  <option value="Radiocomunicacion">Radiocomunicacion</option>
+                </select>
+                <div id="errorCategoria" class="text-danger"></div>
               </div>
               <div class="mb-3">
                 <label
@@ -333,8 +361,7 @@
                     font-weight: bold;
                     margin-top: 10px;
                   "
-                >
-                  Agregar</button
+                  >Agregar</button
                 ><a
                   class="btn btn-secondary"
                   role="button"
