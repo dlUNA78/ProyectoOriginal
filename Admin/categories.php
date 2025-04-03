@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 <!-- Incluir conexion PHP -->
-<?php 
-include '../config/database.php';
+<?php
 
-$database = new Database();
-$conn = $database->connect();
 
-if (!$conn) {
-    die("Error de conexión a la base de datos.");
+
+
+session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location../Admin/Menú/login.html");
+  die();
 }
 
-$sql = "SELECT * FROM categorias";
-$result = $conn->query($sql);
 
-if ($result) {
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        echo "Categoría: " . $row['nombre'] . "<br>";
-    }
-} else {
-    echo "Error en la consulta.";
-}
+
 ?>
 
 
@@ -310,7 +304,7 @@ if ($result) {
             class="btn btn-primary btn-icon-split"
             role="button"
             style="background: var(--bs-info); margin-left: 10px"
-            href="Edición%20de%20Productos/add_cat.html"><span class="text-white text">Agregar Nueva Categoría</span></a>
+            href="../Admin/Edición de Productos/add_cat.php"><span class="text-white text">Agregar Nueva Categoría</span></a>
         </div>
       </div>
       <footer class="bg-white sticky-footer">
