@@ -2,23 +2,25 @@
 <html data-bs-theme="light" lang="en">
 <!-- Inicia conexion para actulizar datos -->
 <?php
-if (!defined('MODIFY_CAT_INCLUDED')) {
-    define('MODIFY_CAT_INCLUDED', true);
-    
-    function modificarCategoria($id, $nuevosDatos) {
-        global $conn;
-        
-        try {
-            $stmt = $conn->prepare("UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?");
-            $stmt->bind_param("ssi", $nuevosDatos['nombre'], $nuevosDatos['descripcion'], $id);
-            return $stmt->execute();
-        } catch (Exception $e) {
-            error_log("Error al modificar categoría: " . $e->getMessage());
-            return false;
-        }
+include '../../config/database.php';
+
+// Obtener el ID del registro a editar
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    // Obtener los datos del registro
+    $sql = "SELECT * FROM categorias WHERE id = $id";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+    } else {
+        echo "Registro no encontrado.";
+        exit();
     }
-    
-    // Otras funciones relacionadas con categorías...
+} else {
+    echo "ID no proporcionado.";
+    exit();
 }
 ?>
 <!-- Termina conexion de base de datos -->
@@ -239,12 +241,13 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
               style="color: rgb(0, 0, 0); font-weight: bold">
               Nuevo Nombre:
             </h2>
-            <form>
+            <form method="POST" action="./php/update_cat.php">
               <div class="mb-3">
                 <label
                   class="form-label"
                   for="nombre"
                   style="color: rgb(0, 0, 0)">Nombre:</label>
+                  <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                 <input
                   class="form-control form-control"
                   type="text"
