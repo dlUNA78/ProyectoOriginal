@@ -338,7 +338,7 @@
                             </td>
                             <td>500</td>
                             <td>250</td>
-                            <td>categoria que no e agregado</td>
+                            <td>hogar</td>
                             <td>
                               <img
                                 src="../assets/img/molino.png"
@@ -401,7 +401,7 @@
                             </td>
                             <td>300</td>
                             <td>175</td>
-                            <td>categoria que no e agregado</td>
+                            <td>Hogar</td>
                             <td>
                               <img
                                 src="../assets/img/clipboard-image-2.png"

@@ -260,7 +260,7 @@
                   <div
                     class="dropdown-menu shadow dropdown-menu-end animated--grow-in"
                   >
-                  
+
                     <a class="dropdown-item" href="../Menú/login.html"
                       ><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"
@@ -313,20 +313,20 @@
                   <div id="errorNombre" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
-                  <label
-                    class="form-label"
-                    for="codigo"
-                    style="color: rgb(0, 0, 0)"
-                    >Descripción de la Oferta:</label
-                  >
-                  <input
-                    class="form-control form-control"
-                    type="text"
-                    id="descripcion"
-                    required=""
-                  />
-                  <div id="errorDescripcion" class="text-danger"></div>
-                </div>
+                <label
+                  class="form-label"
+                  for="descripcion"
+                  style="color: rgb(0, 0, 0)"
+                  >Descripción de la Oferta:</label
+                >
+                <div id="errorDescripcion" class="text-danger"></div>
+                <textarea
+                  class="form-control form-control"
+                  id="descripcion"
+                  rows="3"
+                  required=""
+                ></textarea>
+              </div>
                 <div class="mb-3">
                   <label
                     class="form-label"
@@ -353,6 +353,28 @@
                   />
                   <div id="errorDescuento" class="text-danger"></div>
                 </div>
+                <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="categoria"
+                  style="color: rgb(0, 0, 0)"
+                  >Categoría:</label
+                ><select
+                  class="form-select form-select"
+                  id="categoria"
+                  name="categoria"
+                  required=""
+                >
+                  <option value="" disabled selected>Seleccione una categoría</option>
+                  <option value="Automotriz">Automotriz</option>
+                  <option value="Energia Solar">Energia solar</option>
+                  <option value="Hogar">Hogar</option>
+                  <option value="Plaguicidas">Plagnicidas</option>
+                  <option value="Tv satelital">Tv satelital</option>
+                  <option value="Radiocomunicacion">Radiocomunicacion</option>
+                </select>
+                <div id="errorCategoria" class="text-danger"></div>
+              </div>
                 <div class="mb-3">
                   <label
                     class="form-label"

@@ -271,26 +271,20 @@
                   required=""
                 />
               </div>
-
-
-
-
-
-
-
               <div class="mb-3">
                 <label
                   class="form-label"
-                  for="codigo"
+                  for="descripcion"
                   style="color: rgb(0, 0, 0)"
                   >Descripción de la Oferta:</label
                 >
-                <input
+                <div id="errorDescripcion" class="text-danger"></div>
+                <textarea
                   class="form-control form-control"
-                  type="text"
                   id="descripcion"
+                  rows="3"
                   required=""
-                />
+                ></textarea>
               </div>
               <div class="mb-3">
                 <label
