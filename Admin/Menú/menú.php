@@ -1,3 +1,6 @@
+
+
+
 <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
     <div class="container-fluid">
         <button
@@ -12,13 +15,13 @@
                     <a
                         class="dropdown-toggle nav-link"
                         aria-expanded="false"
-                        data-bs-toggle="dropdown" 
-                        href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small"><?php   
-                                                                            echo $_SESSION['user']; ?></span><img  
+                        data-bs-toggle="dropdown"
+                        href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small"><?php
+                                                                                            echo $_SESSION['user']; ?></span><img
                             class="border rounded-circle img-profile"
                             src="../assets/img/avatars/avatar1.jpeg" /></a>
 
-                            <!-- esto se reeemplazara por los datos del login, queda pendiente -->
+                    <!-- esto se reeemplazara por los datos del login, queda pendiente -->
                     <div
                         class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
                         <a class="dropdown-item" href="../Menú/login.html"><i
