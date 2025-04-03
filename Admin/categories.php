@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 <!-- Incluir conexion PHP -->
-<?php
 
+<?php
+include("../config/database.php");
 
 
 
 session_start();
+
+
+
+$_SESSION['user'] = "Luna";
 
 if (!isset($_SESSION['user'])) {
   header("Location../Admin/Menú/login.html");
@@ -16,8 +21,6 @@ if (!isset($_SESSION['user'])) {
 
 
 ?>
-
-
 
 <!-- Fin de la conexión -->
 
@@ -167,34 +170,8 @@ if (!isset($_SESSION['user'])) {
       </div>
     </nav>
     <div class="d-flex flex-column" id="content-wrapper">
-      <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
-        <div class="container-fluid">
-          <button
-            class="btn btn-link d-md-none rounded-circle me-3"
-            id="sidebarToggleTop"
-            type="button">
-            <i class="fas fa-bars"></i>
-          </button>
-          <ul class="navbar-nav flex-nowrap ms-auto">
-            <li class="nav-item dropdown no-arrow">
-              <div class="nav-item dropdown no-arrow">
-                <a
-                  class="dropdown-toggle nav-link"
-                  aria-expanded="false"
-                  data-bs-toggle="dropdown"
-                  href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small">Yesid Amalec</span><img
-                    class="border rounded-circle img-profile"
-                    src="assets/img/avatars/avatar1.jpeg" /></a>
-                <div
-                  class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                  <a class="dropdown-item" href="../Admin/Menú/login.html"><i
-                      class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar Sesión</a>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <?php include '../Admin/Menú/menú.php';
+      ?>
       <h1 style="color: rgb(0, 0, 0); margin-left: 10px">Categorías</h1>
       <div id="content">
         <div class="d-flex justify-content-end">
@@ -238,61 +215,37 @@ if (!isset($_SESSION['user'])) {
                       style="background: var(--bs-info); width: 150px">
                       Acciones
                     </th>
-
                   </tr>
                 </thead>
                 <tbody class="text-center">
                   <!-- Verificar si hay registros -->
-
                   <?php
                   $sql = "SELECT * FROM categorias";
-                  $result = $conn->query($sql);
+                  $stmt = $conn->prepare($sql);
+                  $stmt->execute();
+                  $result = $stmt->get_result();  // Obtener el resultado
 
-                  if ($result->rowCount() > 0) {
-                    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                  if ($result->num_rows > 0) {  // Verificar si hay datos
+                    while ($row = $result->fetch_assoc()) {  // Obtener cada fila
                       echo "<tr>
-                    <td>" . htmlspecialchars($row['nombre']) . "</td>  <!-- Mostrar nombre de la categoría QUEDA PENDIENTE PARA VER LA BASE DE DATOS -->
-                    <td
-                      class='text-center align-middle'
-                      style='max-height: 60px; height: 60px'>
-                      <a
-                        class='btn'
-                        role='button'
-                        href='Edición%20de%20Productos/modify_cat.html'
-                        style='background: #f6c23e'><svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='1em'
-                          height='1em'
-                          fill='currentColor'
-                          viewBox='0 0 16 16'
-                          class='bi bi-pencil-square'
-                          style='color: rgb(0, 0, 0)'>
-                          <path
-                            d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z'></path>
-                          <path
-                            fill-rule='evenodd'
-                            d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z'></path>
-                        </svg></a><a
-                        class='btn'
-                        role='button'
-                        style='
-                            margin-left: 5px;
-                            background: var(--bs-form-invalid-color);
-                          '
-                        data-bs-toggle='modal'
-                        data-bs-target='#modal-1'
-                        href='#'><i
-                          class='fas fa-trash btnNoBorders'
-                          style='color: var(--bs-light)'></i></a>
-                    </td>
-                  </tr>";
+        <td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>  
+        <td class='text-center align-middle' style='max-height: 60px; height: 60px'>
+          <a class='btn' role='button' href='Edición%20de%20Productos/modify_cat.php' style='background: #f6c23e'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' fill='currentColor' viewBox='0 0 16 16' class='bi bi-pencil-square' style='color: rgb(0, 0, 0)'>
+              <path d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z'></path>
+              <path fill-rule='evenodd' d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z'></path>
+            </svg>
+          </a>
+          <a class='btn' role='button' style='margin-left: 5px; background: var(--bs-form-invalid-color);' data-bs-toggle='modal' data-bs-target='#modal-1' href='#'>
+            <i class='fas fa-trash btnNoBorders' style='color: var(--bs-light)'></i>
+          </a>
+        </td>
+        </tr>";
                     }
                   } else {
                     echo "<tr><td colspan='3' style='padding: 10px; border: 1px solid #ddd;'>0 resultados</td></tr>";
                   }
                   ?>
-
-
 
                 </tbody>
               </table>
