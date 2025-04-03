@@ -1,28 +1,5 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
-<!-- Inicia conexion para actulizar datos -->
-<?php
-if (!defined('MODIFY_CAT_INCLUDED')) {
-    define('MODIFY_CAT_INCLUDED', true);
-    
-    function modificarCategoria($id, $nuevosDatos) {
-        global $conn;
-        
-        try {
-            $stmt = $conn->prepare("UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?");
-            $stmt->bind_param("ssi", $nuevosDatos['nombre'], $nuevosDatos['descripcion'], $id);
-            return $stmt->execute();
-        } catch (Exception $e) {
-            error_log("Error al modificar categoría: " . $e->getMessage());
-            return false;
-        }
-    }
-    
-    // Otras funciones relacionadas con categorías...
-}
-?>
-<!-- Termina conexion de base de datos -->
-
 
 <head>
   <meta charset="utf-8" />
@@ -64,12 +41,13 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
 </head>
 
 <body>
-  <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+  <!-- Modal -->
+  <div class="modal fade" role="dialog" tabindex="-1" id="Agregado">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" style="color: rgb(0, 0, 0)">
-            ModificadoCorrectamente
+            Agregado Correctamente
           </h4>
           <button
             class="btn-close"
@@ -93,6 +71,7 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
       </div>
     </div>
   </div>
+  <!-- Terrmina el Modal -->
   <div id="wrapper">
     <nav
       class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
@@ -100,12 +79,10 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
       <div class="container-fluid d-flex flex-column p-0">
         <a
           class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0"
-          href="#">
-          <div class="sidebar-brand-icon rotate-n-15">
-            <i
-              class="fas fa-satellite-dish"
-              style="color: var(--bs-black)"></i>
-          </div>
+          href="#"><img
+            src="../assets/img/Logo%20Yesid.svg"
+            style="width: 50px; height: 50px; margin-right: -11px" />
+          <div class="sidebar-brand-icon rotate-n-15"></div>
           <div class="sidebar-brand-text mx-3">
             <span style="color: var(--bs-black)">Administrador</span>
           </div>
@@ -113,7 +90,7 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
         <hr class="sidebar-divider my-0" />
         <ul class="navbar-nav text-light" id="accordionSidebar">
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/index.html"><svg
+            <a class="nav-link" href="../Menú/index.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -137,7 +114,7 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
                 style="color: rgb(0, 0, 0); font-size: 22.6px"></i><span style="color: var(--bs-black)">Productos</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../categories.html"><svg
+            <a class="nav-link" href="../categories.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -158,7 +135,7 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
               </svg><span style="color: var(--bs-black)">Categorías</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Ofertas/view_produc.html"><svg
+            <a class="nav-link" href="../Ofertas/view_produc.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -171,7 +148,7 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
               </svg><span style="color: var(--bs-black)">Ofertas</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/user.html"><svg
+            <a class="nav-link" href="../Menú/user.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -229,49 +206,121 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
           </ul>
         </div>
       </nav>
-      <div id="content">
+      <div
+        class="d-flex justify-content-center align-items-center"
+        id="content">
         <div
-          class="container d-flex justify-content-center align-items-center"
-          style="width: 500px; height: auto; margin-bottom: 40px">
+          class="container d-flex flex-row justify-content-center"
+          style="
+              margin-left: 0px;
+              margin-right: 0px;
+              height: auto;
+              width: 500px;
+              margin-top: 0px;
+              margin-bottom: 40px;
+            ">
           <div class="card shadow-sm p-4">
             <h2
               class="text-center mb-4"
               style="color: rgb(0, 0, 0); font-weight: bold">
-              Nuevo Nombre:
+              Agregar productos
             </h2>
-            <form>
+            <form action="guardar_producto.php" method="POST" enctype="multipart/form-data">
               <div class="mb-3">
                 <label
+                  id="producto"
                   class="form-label"
                   for="nombre"
-                  style="color: rgb(0, 0, 0)">Nombre:</label>
+                  style="color: rgb(0, 0, 0)">Nombre del producto:</label>
+                <div id="errorNombre" class="text-danger"></div>
                 <input
                   class="form-control form-control"
                   type="text"
                   id="nombre"
-                  value="<?php echo $row['nombre']; ?>"
+                  name="nombre"
                   required="" />
+              </div>
+                <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="descripcion"
+                  style="color: rgb(0, 0, 0)">Descripción:</label>
+                <textarea
+                  class="form-control"
+                  id="descripcion"
+                  name="descripcion"
+                  rows="4"
+                  required=""></textarea>
+                </div>
+              <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="precio"
+                  style="color: rgb(0, 0, 0)">Precio:</label>
+                <div id="errorPrecio" class="text-danger"></div>
+                <input
+                  class="form-control form-control"
+                  type="text"
+                  id="precio"
+                  name="precio"
+                  required="" />
+              </div>
+              <div>
+                <div></div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="categoria"
+                  style="color: rgb(0, 0, 0)">Categoría:</label>
+                <select
+                  class="form-select form-select"
+                  id="categoria"
+                  name="categoria"
+                  required="">
+                  <option value="Automotriz">Automotriz</option>
+                  <option value="Energia solar">Energía solar</option>
+                  <option value="Hogar">Hogar</option>
+                  <option value="Plagnicidas">Plaguicidas</option>
+                  <option value="Tv satelital">TV satelital</option>
+                  <option value="Radiocomunicacion">Radiocomunicación</option>
+                </select>
                 <div id="errorCategoria" class="text-danger"></div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="imagenes"
+                  style="color: rgb(0, 0, 0)">Agregar Imágenes:</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="imagenes"
+                  name="imagenes[]"
+                  multiple=""
+                  accept="image/*" />
               </div>
               <div class="d-flex justify-content-end gap-2">
                 <button
                   class="btn btn-primary"
-                  id="btnAgregar"
                   type="submit"
+                  id="btnAgregar"
                   style="
-                      background: var(--bs-info);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    ">
-                  Agregar</button><a
+                    background: var(--bs-info);
+                    font-weight: bold;
+                    margin-top: 10px;
+                  ">
+                  Agregar
+                </button>
+                <a
                   class="btn btn-secondary"
                   role="button"
                   style="
-                      background: var(--bs-success);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    "
-                  href="../categories.html">Cancelar</a>
+                    background: var(--bs-success);
+                    font-weight: bold;
+                    margin-top: 10px;
+                  "
+                  href="../Menú/products.html">Cancelar</a>
               </div>
             </form>
           </div>
@@ -296,7 +345,7 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
   <script src="../assets/js/TableZoomSorter.js"></script>
   <script src="../assets/js/Tema_Admin.js"></script>
   <script src="../assets/js/WaveClickFX.js"></script>
-  <script src="../JS/valida_mod_cat.js"></script>
+  <script src="../JS/validar_add_prod.js"></script>
 </body>
 
 </html>
