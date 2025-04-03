@@ -1,7 +1,74 @@
+<?php
+require_once '../../config/database.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $database = new Database();
+  $conn = $database->connect();
+
+  // Validar y limpiar datos
+  $nombre = $_POST['nombre'] ?? '';
+  $usuario = strtolower($_POST['usuario']); // Convertir a minúsculas
+  $contraseña = $_POST['contraseña'] ?? '';
+  $confirmacion = $_POST['contraseñaConf'] ?? '';
+
+  // Validaciones
+  $errores = [];
+  if (empty($nombre))
+    $errores[] = "El nombre es obligatorio";
+  if (empty($usuario))
+    $errores[] = "El usuario es obligatorio";
+  if (empty($contraseña))
+    $errores[] = "La contraseña es obligatoria";
+  if ($contraseña !== $confirmacion)
+    $errores[] = "Las contraseñas no coinciden";
+
+  if (!empty($errores)) {
+    header("Location: ?error=" . urlencode(implode(", ", $errores)));
+    exit();
+  }
+
+  // Procesar imagen
+  $imagen_nombre = '';
+  if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+    $directorio = '../assets/img/avatars/';
+    if (!file_exists($directorio)) {
+      mkdir($directorio, 0777, true);
+    }
+    $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+    $imagen_nombre = uniqid() . '.' . $extension;
+
+    if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $directorio . $imagen_nombre)) {
+      header("Location: ?error=Error al subir la imagen");
+      exit();
+    }
+  }
+
+
+
+  // Insertar en BD
+  $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
+  $stmt->execute([$nombre, $usuario, $contraseña, $imagen_nombre]);
+
+  if ($stmt && $stmt->rowCount() > 0) {
+// Redirigir a la página de usuario después de la modificación
+header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
+    exit();
+  } else {
+    $error = $stmt ? $stmt->errorInfo()[2] : "Error al ejecutar la consulta";
+    header("Location: ?error=" . urlencode($error));
+    exit();
+  }
+}
+?>
+
+
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 
 <head>
+
+  <script src="..\JS\validar_user.js" defer></script>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
   <title>Administrador</title>
@@ -25,29 +92,6 @@
 </head>
 
 <body>
-  <!-- Inicia Modal -->
-  <div class="modal fade" role="dialog" tabindex="-1" id="Agregado">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" style="color: rgb(0, 0, 0)">
-            Agregado Correctamente
-          </h4>
-          <button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body"></div>
-        <div class="modal-footer">
-          <button class="btn btn-light" type="button" data-bs-dismiss="modal" style="
-                background: var(--bs-form-valid-border-color);
-                color: rgb(255, 255, 255);
-              ">
-            Ok
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Termina Modal -->
   <div id="wrapper">
     <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
       style="background: var(--bs-primary)">
@@ -63,7 +107,7 @@
         <hr class="sidebar-divider my-0" />
         <ul class="navbar-nav text-light" id="accordionSidebar">
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/index.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link" href="../Menú/index.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                 stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-dashboard"
                 style="color: rgb(0, 0, 0); font-size: 22.6px">
@@ -141,54 +185,76 @@
       </nav>
       <div id="content">
         <div class="container d-flex justify-content-center align-items-center"
-          style="width: 500px; height: auto; margin-bottom: 40px">
-          <div class="card shadow-sm p-4">
-            <h2 class="text-center mb-4" style="color: rgb(0, 0, 0); font-weight: bold">
+          style="max-width: 500px; margin: 40px auto">
+          <div class="card shadow-sm p-4 w-100">
+            <h2 class="text-center mb-4" style="color: #000; font-weight: bold">
               Agregar Nuevo Usuario
             </h2>
-            <form>
+
+            <form method="POST" action="add_user.php" enctype="multipart/form-data" id="formulario">
+              <!-- Campo Nombre -->
               <div class="mb-3">
-                <label class="form-label" for="nombre" style="color: rgb(0, 0, 0)">Nombre:</label><input
-                  class="form-control form-control" type="text" id="nombre" required="" />
-                <div id="errorNombre" class="text-danger"></div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="codigo" style="color: rgb(0, 0, 0)">Usuario:</label><input
-                  class="form-control" type="text" required="" id="usuario" />
-                <div id="errorUsuario" class="text-danger"></div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="contraseña" style="color: rgb(0, 0, 0)">Contraseña:</label><input
-                  class="form-control" type="password" required="" id="contraseña" />
-                <div id="errorContraseña" class="text-danger"></div>
+                <label class="form-label" for="nombre" style="color: #000">Nombre:</label>
+                <input class="form-control" type="text" id="nombre" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]/g, '')"
+                  placeholder="Ingrese el nombre completo">
+                <div id="errorNombre" class="text-danger small mt-1"></div>
               </div>
 
+              <!-- Campo Usuario/Email -->
               <div class="mb-3">
-                <label class="form-label" for="contraseñaConf" style="color: rgb(0, 0, 0)">Confirmar
-                  Contraseña:</label><input class="form-control" type="password" required="" id="contraseñaConf" />
-                <div id="errorContraseñaConf" class="text-danger"></div>
+                <label class="form-label" for="usuario" style="color: #000">Usuario (Email):</label>
+                <input class="form-control" type="email" required id="usuario" name="usuario"
+                  placeholder="ejemplo@dominio.com">
+                <div id="errorUsuario" class="text-danger small mt-1"></div>
               </div>
 
+              <!-- Campo Contraseña -->
+              <div class="mb-3 position-relative">
+                <label class="form-label" for="contraseña" style="color: #000">Contraseña:</label>
+                <input class="form-control" type="password" required id="contraseña" name="contraseña"
+                  placeholder="Mínimo 8 caracteres">
+                <div id="errorContraseña" class="text-danger small mt-1"></div>
+              </div>
+
+              <!-- Campo Confirmar Contraseña -->
+              <div class="mb-3 position-relative">
+                <label class="form-label" for="contraseñaConf" style="color: #000">Confirmar Contraseña:</label>
+                <input class="form-control" type="password" required id="contraseñaConf" name="contraseñaConf"
+                  placeholder="Repita la contraseña">
+                <div id="errorContraseñaConf" class="text-danger small mt-1"></div>
+              </div>
+
+              <!-- Campo Imagen -->
+              <div class="mb-3">
+                <label class="form-label" for="imagen" style="color: #000">Imagen de Perfil:</label>
+                <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*">
+                <div class="form-text">Formatos aceptados: JPG, PNG, WEBP (Max. 2MB)</div>
+                <div id="errorImagen" class="text-danger small mt-1"></div>
+              </div>
+
+              <!-- Checkbox Mostrar Contraseñas -->
               <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="showPasswords" onclick="togglePasswords()" />
-                <label class="form-check-label" for="showPasswords" style="color: rgb(0, 0, 0)">Mostrar
-                  Contraseñas</label>
+                <input type="checkbox" class="form-check-input" id="showPasswords">
+                <label class="form-check-label" for="showPasswords" style="color: #000">Mostrar Contraseñas</label>
               </div>
-              <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-primary" id="agregar" type="submit" style="
-                      background: var(--bs-info);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    ">
-                  Agregar</button><a class="btn btn-secondary" role="button" style="
-                      background: var(--bs-success);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    " href="../Menú/user.html">Cancelar</a>
+
+              <!-- Botones -->
+              <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn btn-primary" id="agregar" href="../Menú/user.php" style="
+              background: var(--bs-info);
+              font-weight: bold;
+              margin-top: 10px;">
+                  Agregar Usuario
+                </button>
+                <a class="btn btn-secondary" href="../Menú/user.php" style="
+              background: var(--bs-success);
+              font-weight: bold;
+              margin-top: 10px;">Cancelar</a>
               </div>
             </form>
           </div>
         </div>
+        <script src="..\JS\validar_user.js" defer></script>
       </div>
       <footer class="bg-white sticky-footer">
         <div class="container my-auto">
@@ -201,6 +267,7 @@
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
   </div>
+
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
   <script
@@ -211,7 +278,8 @@
   <script src="../assets/js/TableZoomSorter.js"></script>
   <script src="../assets/js/Tema_Admin.js"></script>
   <script src="../assets/js/WaveClickFX.js"></script>
-  <script src="../JS/validar_user.js"></script>
+
+
 </body>
 
 </html>

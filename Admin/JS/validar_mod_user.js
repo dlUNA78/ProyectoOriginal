@@ -1,130 +1,238 @@
-function togglePasswords() {
-    // Obtener los campos de contraseña
-    const currentpasswordField = document.getElementById('contraseñaAct');
-    const passwordField = document.getElementById('contraseña');
-    const confirmPasswordField = document.getElementById('contraseñaConf');
-
-    // Obtener el checkbox
-    const showPasswordsCheckbox = document.getElementById('showPasswords');
-
-    // Cambiar el tipo de input de los campos de contraseña
-    const type = showPasswordsCheckbox.checked ? 'text' : 'password';
-    currentpasswordField.type = type;
-    passwordField.type = type;
-    confirmPasswordField.type = type;
-}
-
-// Almacenar las contraseñas de los usuarios
-const contraseñasUsuarios = {
-    "Yesid@gmail.com": "Yessid1!",
-    "Efrain@gmail.com": "Efrain1!",
-    "Trino@gmail.com": "Trino12!",
-    "Guero@gmail.com": "Guero12!"
-};
-
-function ValidarContraseña(contraseña) {
-    let errorMensaje = "";
-
-    const tieneNumero = /\d/.test(contraseña);
-    const tieneMayuscula = /[A-Z]/.test(contraseña);
-    const tieneSimbolo = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(contraseña);
-
-    if (contraseña === "") {
-        errorMensaje += "Ingresa una contraseña.\n";
-    } else {
-        if (contraseña.length < 8)
-            errorMensaje += "Mínimo 8 caracteres.\n";
-        if (!tieneNumero) errorMensaje += "Debe contener al menos un número.\n";
-        if (!tieneMayuscula) errorMensaje += "Debe contener al menos una mayúscula.\n";
-        if (!tieneSimbolo) errorMensaje += "Debe contener al menos un símbolo.\n";
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle para mostrar contraseñas
+    const showPasswords = document.getElementById('showPasswords');
+    const currentPassInput = document.getElementById('contraseñaAct');
+    const newPassInput = document.getElementById('contraseña');
+    const confirmPassInput = document.getElementById('contraseñaConf');
+    
+    if (showPasswords) {
+        showPasswords.addEventListener('change', function() {
+            const type = this.checked ? 'text' : 'password';
+            if (currentPassInput) currentPassInput.type = type;
+            if (newPassInput) newPassInput.type = type;
+            if (confirmPassInput) confirmPassInput.type = type;
+        });
     }
 
-    document.getElementById('errorContraseña').innerText = errorMensaje;
-    return errorMensaje === ""; // Devuelve true si la contraseña es válida
-}
+    // Validación del formulario
+    const form = document.getElementById('formularioModificacion');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                this.submit();
+            }
+        });
+    }
 
-// Función para validar la contraseña anterior o actual
-function validarContraseñaAnterior() {
-    let usuario = document.getElementById('usuario').value; // Obtener el usuario seleccionado
-    let contraseñaAct = document.getElementById('contraseñaAct').value; // Obtener la contraseña ingresada
+    // Validación en tiempo real
+    document.getElementById('nombre')?.addEventListener('input', validateNombre);
+    document.getElementById('contraseñaAct')?.addEventListener('input', validateCurrentPassword);
+    document.getElementById('contraseña')?.addEventListener('input', validatePassword);
+    document.getElementById('contraseñaConf')?.addEventListener('input', validatePasswordMatch);
+    document.getElementById('imagen')?.addEventListener('change', validateImage);
 
-    // Obtener la contraseña real del usuario desde el objeto
-    let contraseñaReal = contraseñasUsuarios[usuario];
+    // Mostrar errores existentes al cargar
+    showExistingErrors();
 
-    if (contraseñaReal && contraseñaAct !== contraseñaReal) {
-        document.getElementById('errorContraseñaAct').innerText = "La contraseña actual es incorrecta";
-        return false;
-    } else {
-        document.getElementById('errorContraseñaAct').innerText = ""; // Limpiar mensaje de error si es correcta
+    // Funciones de validación
+    function validateForm() {
+        let isValid = true;
+        
+        if (!validateNombre()) isValid = false;
+        if (!validateCurrentPassword()) isValid = false;
+        
+        // Validar nueva contraseña solo si se proporciona
+        if (newPassInput?.value) {
+            if (!validatePassword()) isValid = false;
+            if (!validatePasswordMatch()) isValid = false;
+        }
+        
+        if (!validateImage()) isValid = false;
+        
+        if (!isValid) {
+            alert('Por favor corrija los errores en el formulario');
+        }
+        
+        return isValid;
+    }
+
+    function validateNombre() {
+        const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ]+( [A-Za-zÁÉÍÓÚáéíóúÜüÑñ]+)*$/;
+        const value = document.getElementById('nombre').value.trim();
+        const errorElement = document.getElementById('errorNombre');
+        
+        if (!value) {
+            showError(errorElement, 'El nombre es obligatorio');
+            return false;
+        }
+        
+        if (!nameRegex.test(value)) {
+            showError(errorElement, 'Solo letras y espacios');
+            return false;
+        }
+        
+        clearError(errorElement);
         return true;
     }
-}
 
-
-document.getElementById('agregar').addEventListener('click', function (event) {
-    event.preventDefault();
-
-    const nombre = document.getElementById('nombre').value.trim();
-    const usuario = document.getElementById('usuario').value.trim();
-    const contraseñaAct = document.getElementById('contraseñaAct').value;
-    const contraseña = document.getElementById('contraseña').value;
-    const contraseñaConf = document.getElementById('contraseñaConf').value;
-
-    document.getElementById('errorNombre').innerText = "";
-    document.getElementById('errorUsuario').innerText = "";
-    document.getElementById('errorContraseñaAct').innerText = "";
-    document.getElementById('errorContraseña').innerText = "";
-    document.getElementById('errorContraseñaConf').innerText = "";
-
-    document.getElementById('showPasswords').addEventListener('change', togglePasswords);
-
-    let isValid = true;
-
-    if (nombre === "") {
-        document.getElementById('errorNombre').innerText = "Por favor, completa este campo.";
-        isValid = false;
+    function validateCurrentPassword() {
+        const value = document.getElementById('contraseñaAct').value;
+        const errorElement = document.getElementById('errorContraseñaAct');
+        
+        if (!value) {
+            showError(errorElement, 'La contraseña actual es obligatoria');
+            return false;
+        }
+        
+        if (value.length < 8) {
+            showError(errorElement, 'Mínimo 8 caracteres');
+            return false;
+        }
+        
+        clearError(errorElement);
+        return true;
     }
 
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (usuario === "") {
-        document.getElementById('errorUsuario').innerText = "Ingrese un correo";
-        isValid = false;
-    } else if (!regex.test(usuario)) {
-        document.getElementById('errorUsuario').innerText = "Debe ingresar un correo electrónico válido";
-        isValid = false;
+    function validatePassword() {
+        const value = document.getElementById('contraseña').value;
+        const errorElement = document.getElementById('errorContraseña');
+        
+        // Si no hay valor, no es obligatorio
+        if (!value) {
+            clearError(errorElement);
+            return true;
+        }
+        
+        if (value.length < 8) {
+            showError(errorElement, 'Mínimo 8 caracteres');
+            return false;
+        }
+        
+        if (!/[A-Z]/.test(value)) {
+            showError(errorElement, 'Al menos una mayúscula');
+            return false;
+        }
+        
+        if (!/[0-9]/.test(value)) {
+            showError(errorElement, 'Al menos un número');
+            return false;
+        }
+        
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+            showError(errorElement, 'Al menos un símbolo');
+            return false;
+        }
+        
+        clearError(errorElement);
+        return true;
     }
 
-    if (!validarContraseñaAnterior(contraseñaAct)) {
-        isValid = false;
+    function validatePasswordMatch() {
+        const password = document.getElementById('contraseña').value;
+        const confirmPassword = document.getElementById('contraseñaConf').value;
+        const errorElement = document.getElementById('errorContraseñaConf');
+        
+        // Solo validar si hay contraseña nueva
+        if (!password) {
+            clearError(errorElement);
+            return true;
+        }
+        
+        if (!confirmPassword) {
+            showError(errorElement, 'Confirme su nueva contraseña');
+            return false;
+        }
+        
+        if (password !== confirmPassword) {
+            showError(errorElement, 'Las contraseñas no coinciden');
+            return false;
+        }
+        
+        clearError(errorElement);
+        return true;
     }
 
-    if (!ValidarContraseña(contraseña)) {
-        isValid = false;
+    function validateImage() {
+        const fileInput = document.getElementById('imagen');
+        const errorElement = document.getElementById('errorImagen');
+        
+        // La imagen es opcional en modificación
+        if (!fileInput.files || fileInput.files.length === 0) {
+            clearError(errorElement);
+            return true;
+        }
+        
+        const file = fileInput.files[0];
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        
+        if (!validTypes.includes(file.type)) {
+            showError(errorElement, 'Formato no válido (solo JPG, PNG, WEBP)');
+            return false;
+        }
+        
+        if (file.size > maxSize) {
+            showError(errorElement, 'La imagen no debe superar 2MB');
+            return false;
+        }
+        
+        clearError(errorElement);
+        return true;
     }
 
-    if (contraseña !== contraseñaConf) {
-        document.getElementById('errorContraseñaConf').innerText = "Las contraseñas no coinciden";
-        isValid = false;
-    } else if (contraseñaConf === "") {
-        document.getElementById('errorContraseñaConf').innerText = "Confirme la contraseña";
-        isValid = false;
+    function showError(element, message) {
+        if (element) {
+            element.textContent = message;
+            element.style.display = 'block';
+            // Añadir clase de error al input correspondiente
+            const input = element.previousElementSibling;
+            if (input && input.classList) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+            }
+        }
     }
 
-    if (isValid) {
-        const modal = new bootstrap.Modal(document.getElementById('modal-1'));
-        modal.show();
-
-        // Limpiar los campos del formulario
-        document.getElementById('nombre').value = "";
-        document.getElementById('usuario').value = "";
-        document.getElementById('contraseñaAct').value = "";
-        document.getElementById('contraseña').value = "";
-        document.getElementById('contraseñaConf').value = "";
+    function clearError(element) {
+        if (element) {
+            element.textContent = '';
+            element.style.display = 'none';
+            // Remover clase de error del input correspondiente
+            const input = element.previousElementSibling;
+            if (input && input.classList) {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+            }
+        }
     }
-});
 
-document.getElementById("nombre").addEventListener("keypress", function (event) {
-    if (!/[a-zA-Z]/.test(event.key)) {
-        event.preventDefault();
+    function showExistingErrors() {
+        // Mostrar errores que puedan venir del servidor
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorParam = urlParams.get('error');
+        
+        if (errorParam) {
+            const errors = errorParam.split(', ');
+            errors.forEach(error => {
+                if (error.includes('nombre')) {
+                    showError(document.getElementById('errorNombre'), error);
+                } else if (error.includes('contraseña actual')) {
+                    showError(document.getElementById('errorContraseñaAct'), error);
+                } else if (error.includes('contraseñas no coinciden')) {
+                    showError(document.getElementById('errorContraseñaConf'), error);
+                } else if (error.includes('imagen')) {
+                    showError(document.getElementById('errorImagen'), error);
+                }
+            });
+        }
+        
+        // Mostrar modal de éxito si existe
+        if (urlParams.get('success')) {
+            const modal = new bootstrap.Modal(document.getElementById('modal-1'));
+            modal.show();
+            
+        }
     }
 });

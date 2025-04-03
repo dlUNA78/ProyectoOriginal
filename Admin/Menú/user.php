@@ -42,7 +42,7 @@
         <hr class="sidebar-divider my-0" />
         <ul class="navbar-nav text-light" id="accordionSidebar">
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/index.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link" href="../Menú/index.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                 stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-dashboard"
                 style="color: rgb(0, 0, 0); font-size: 22.6px">
@@ -53,12 +53,12 @@
               </svg><span style="color: var(--bs-black)">Principal</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/products.html"><i class="typcn typcn-shopping-cart"
+            <a class="nav-link" href="../Menú/products.php"><i class="typcn typcn-shopping-cart"
                 style="color: rgb(0, 0, 0); font-size: 22.6px"></i><span
                 style="color: var(--bs-black)">Productos</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../categories.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link" href="../categories.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                 stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-category"
                 style="color: rgb(0, 0, 0); font-size: 22.6px">
@@ -70,7 +70,7 @@
               </svg><span style="color: var(--bs-black)">Categorías</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Ofertas/view_produc.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link" href="../Ofertas/view_produc.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-currency-dollar"
                 style="color: rgb(0, 0, 0); font-size: 22.6px">
                 <path
@@ -79,7 +79,7 @@
               </svg><span style="color: var(--bs-black)">Ofertas</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="../Menú/user.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link active" href="../Menú/user.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                 stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-users"
                 style="font-size: 22.6px; color: rgb(0, 0, 0)">
@@ -111,7 +111,7 @@
                       class="d-none d-lg-inline me-2 text-gray-600 small">Yesid Amalec</span><img
                       class="border rounded-circle img-profile" src="../assets/img/avatars/avatar1.jpeg" /></a>
                   <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                    <a class="dropdown-item" href="../Menú/login.html"><i
+                    <a class="dropdown-item" href="../Menú/login.php"><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar Sesión</a>
                   </div>
                 </div>
@@ -161,77 +161,65 @@
                     Nombre
                   </th>
                   <th style="background: var(--bs-table-accent-bg)">
-                    Contraseña
+                    Imagen
                   </th>
                   <th style="background: var(--bs-table-accent-bg)">
                     Acción
                   </th>
                 </tr>
               </thead>
+              <?php
+              $conexion = new mysqli("localhost:3308", "root", "1234", "proof");
+              if ($conexion->connect_error) {
+                die("Error de conexión: " . $conexion->connect_error);
+              }
+
+              $resultado = $conexion->query("SELECT * FROM Usuarios");
+              ?>
               <tbody>
-                <tr>
-                  <td>Yesid@gmail.com</td>
-                  <td>Yesid</td>
-                  <td>Yessid1!</td>
-                  <td style="text-align: center">
-                    <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                      onclick="cargarDatosModificacion('Yesid@gmail.com', 'Yesid', 'Yessid1!')"
-                      href="../Edición%20de%20Usuarios/modify_user.html">
-                      <i class="fa fa-edit" style="color: var(--bs-black)"></i></a><button class="btn btn-primary"
-                      type="button" style="
-                          background: var(--bs-form-invalid-color);
-                          color: var(--bs-light);
-                        " data-bs-target="#miModal" data-bs-toggle="modal">
-                      <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Efrain@gmail.com</td>
-                  <td>Efrain</td>
-                  <td>Efrain1!</td>
-                  <td style="text-align: center">
-                    <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                      onclick="cargarDatosModificacion('Efrain@gmail.com', 'Efrain', 'Efrain1!')"
-                      href="../Edición%20de%20Usuarios/modify_user.html">
-                      <i class="fa fa-edit" style="color: var(--bs-black)"></i></a><button class="btn btn-primary"
-                      type="button" style="background: var(--bs-form-invalid-color)" data-bs-target="#miModal"
-                      data-bs-toggle="modal">
-                      <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Trino@gmail.com</td>
-                  <td>Trino</td>
-                  <td>Trino12!</td>
-                  <td style="text-align: center">
-                    <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                      onclick="cargarDatosModificacion('Trino@gmail.com', 'Trino', 'Trino12!')"
-                      href="../Edición%20de%20Usuarios/modify_user.html">
-                      <i class="fa fa-edit" style="color: var(--bs-black)"></i></a><button class="btn btn-primary"
-                      type="button" style="background: var(--bs-form-invalid-color)" data-bs-target="#miModal"
-                      data-bs-toggle="modal">
-                      <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Guero@gmail.com</td>
-                  <td>Guero</td>
-                  <td>Guero12!</td>
-                  <td style="text-align: center">
-                    <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                      onclick="cargarDatosModificacion('Guero@gmail.com', 'Guero', 'Guero12!')"
-                      href="../Edición%20de%20Usuarios/modify_user.html">
-                      <i class="fa fa-edit" style="color: var(--bs-black)"></i></a><button class="btn btn-primary"
-                      type="button" style="background: var(--bs-form-invalid-color)" data-bs-target="#miModal"
-                      data-bs-toggle="modal">
-                      <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
-                    </button>
-                  </td>
-                </tr>
+                <!-- Inicia datos ingresados a la tabla de usuarios -->
+                <?php if ($resultado->num_rows > 0): ?>
+                  <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <tr>
+                      <td><?php echo htmlspecialchars($fila['usuario']); ?></td>
+                      <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
+                      <td style="text-align: center">
+                        <?php
+                        $imagenArchivo = !empty($fila['imagen']) ? $fila['imagen'] : 'default.jpg';
+                        $imagenPath = "/Admin/assets/img/avatars/" . htmlspecialchars($imagenArchivo);
+                        ?>
+                        <img src="<?php echo $imagenPath; ?>"
+                          alt="Imagen de <?php echo htmlspecialchars($fila['usuario']); ?>"
+                          style="width: 50px; height: 50px;"
+                          onerror="this.onerror=null; this.src='/Admin/assets/img/avatars/default.jpg';">
+                      </td>
+                      <td style="text-align: center">
+                        <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
+                          href="../Edición%20de%20Usuarios/modify_user.php?usuario=<?php echo urlencode($fila['usuario']); ?>">
+                          <i class="fa fa-edit" style="color: var(--bs-black)"></i>
+                        </a>
+                        <form method="POST" action="../Edición%20de%20Usuarios/delete_user.php" style="display:inline;">
+                          <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($fila['usuario']); ?>">
+                          <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
+                            <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  <?php endwhile; ?>
+                <?php else: ?>
+                  <tr>
+                    <td colspan="4" style="text-align: center; font-weight: bold;">
+                      <p>No hay usuarios registrados actualmente</p>
+
+                    </td>
+                  </tr>
+                <?php endif; ?>
+                <!-- Termina los datos ingresados a la tabla de usuarios -->
+
+
               </tbody>
+              <?php $conexion->close(); ?>
             </table>
           </div>
           <div class="d-grid float-end">
@@ -239,7 +227,7 @@
                   background: var(--bs-info);
                   font-weight: bold;
                   margin-right: 50px;
-                " href="../Edición%20de%20Usuarios/add_user.html">Agregar un Nuevo Usuario</a>
+                " href="../Edición%20de%20Usuarios/add_user.php">Agregar un Nuevo Usuario</a>
           </div>
         </div>
       </div>
@@ -276,10 +264,11 @@
     </div>
   </div>
   <script>
-    function cargarDatosModificacion(id, nombre) {
+    function cargarDatosModificacion(id, nombre, contraseña) {
       localStorage.setItem('usuarioEditar', JSON.stringify({
         id: id,
         nombre: nombre,
+        contraseña: contraseña,
       }));
     }
   </script>
