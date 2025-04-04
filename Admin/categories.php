@@ -236,7 +236,7 @@ if (!isset($_SESSION['user'])) {
                    href='\Admin\Edición de Productos\modify_cat.php?id=" . $row['id'] . "'>
                     <i class='far fa-edit' style='font-size: 15px; color: rgb(7, 7, 7)'></i>
                 </a>
-                <form action='eliminar.php' method='post' style='display:inline;' 
+                <form action='./Edición de Productos/php/eliminar_cat.php' method='post' style='display:inline;' 
                       onsubmit='return confirm(\"¿Estás seguro de que deseas eliminar este registro?\");'>
                     <input type='hidden' name='id' value='" . $row['id'] . "'>
                     <button class='btn btn-danger' style='margin-left: 5px' type='submit'>

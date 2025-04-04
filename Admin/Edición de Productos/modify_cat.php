@@ -6,21 +6,21 @@ include '../../config/database.php';
 
 // Obtener el ID del registro a editar
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+  $id = $_GET['id'];
 
-    // Obtener los datos del registro
-    $sql = "SELECT * FROM categorias WHERE id = $id";
-    $result = $conn->query($sql);
+  // Obtener los datos del registro
+  $sql = "SELECT * FROM categorias WHERE id = $id";
+  $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-    } else {
-        echo "Registro no encontrado.";
-        exit();
-    }
-} else {
-    echo "ID no proporcionado.";
+  if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+  } else {
+    echo "Registro no encontrado.";
     exit();
+  }
+} else {
+  echo "ID no proporcionado.";
+  exit();
 }
 ?>
 <!-- Termina conexion de base de datos -->
@@ -243,38 +243,40 @@ if (isset($_GET['id'])) {
             </h2>
             <form method="POST" action="./php/update_cat.php">
               <div class="mb-3">
-                <label
-                  class="form-label"
-                  for="nombre"
-                  style="color: rgb(0, 0, 0)">Nombre:</label>
-                  <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                <input
-                  class="form-control form-control"
-                  type="text"
-                  id="nombre"
-                  value="<?php echo $row['nombre']; ?>"
-                  required="" />
-                <div id="errorCategoria" class="text-danger"></div>
+              <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+              <label
+                class="form-label"
+                for="nombre"
+                style="color: rgb(0, 0, 0)">Nombre:</label>
+
+              <input
+                class="form-control form-control"
+                type="text"
+                id="nombre"
+                name="nombre"
+                value="<?php echo $row['nombre']; ?>"
+                required="" />
+              <div id="errorCategoria" class="text-danger"></div>
               </div>
               <div class="d-flex justify-content-end gap-2">
-                <button
-                  class="btn btn-primary"
-                  id="btnAgregar"
-                  type="submit"
-                  style="
-                      background: var(--bs-info);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    ">
-                  Agregar</button><a
-                  class="btn btn-secondary"
-                  role="button"
-                  style="
-                      background: var(--bs-success);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    "
-                  href="../categories.html">Cancelar</a>
+              <button
+                class="btn btn-primary"
+                id="btnAgregar"
+                type="submit"
+                style="
+                  background: var(--bs-info);
+                  font-weight: bold;
+                  margin-top: 10px;
+                ">
+                Agregar</button><a
+                class="btn btn-secondary"
+                role="button"
+                style="
+                  background: var(--bs-success);
+                  font-weight: bold;
+                  margin-top: 10px;
+                "
+                href="../categories.html">Cancelar</a>
               </div>
             </form>
           </div>

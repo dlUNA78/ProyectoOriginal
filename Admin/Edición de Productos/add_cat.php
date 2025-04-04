@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
+<?php
+include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
 
+
+
+
+session_start();
+
+
+
+$_SESSION['user'] = "Luna";
+
+if (!isset($_SESSION['user'])) {
+  header("Location../Admin/Menú/login.html");
+  die();
+}
+
+
+
+?>
 <head>
   <meta charset="utf-8" />
   <meta
@@ -178,34 +197,9 @@
       </div>
     </nav>
     <div class="d-flex flex-column" id="content-wrapper">
-      <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
-        <div class="container-fluid">
-          <button
-            class="btn btn-link d-md-none rounded-circle me-3"
-            id="sidebarToggleTop"
-            type="button">
-            <i class="fas fa-bars"></i>
-          </button>
-          <ul class="navbar-nav flex-nowrap ms-auto">
-            <li class="nav-item dropdown no-arrow">
-              <div class="nav-item dropdown no-arrow">
-                <a
-                  class="dropdown-toggle nav-link"
-                  aria-expanded="false"
-                  data-bs-toggle="dropdown"
-                  href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small">Yesid Amalec</span><img
-                    class="border rounded-circle img-profile"
-                    src="../assets/img/avatars/avatar1.jpeg" /></a>
-                <div
-                  class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                  <a class="dropdown-item" href="../Menú/login.html"><i
-                      class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar Sesión</a>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </nav>
+    <?php  
+    include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\Admin\Menú\menú.php';
+    ?>
       <div id="content">
         <div
           class="container d-flex justify-content-center align-items-center"
@@ -221,8 +215,10 @@
                 <label
                   class="form-label"
                   for="nombre"
-                  style="color: rgb(0, 0, 0)">Nombre:</label><input
+                  style="color: rgb(0, 0, 0)">Nombre:</label>
+                  <input
                   class="form-control form-control"
+                  name="nombre"
                   type="text"
                   id="nombre"
                   required="" />
@@ -238,7 +234,8 @@
                       font-weight: bold;
                       margin-top: 10px;
                     ">
-                  Agregar</button><a
+                  Agregar</button>
+                  <a
                   class="btn btn-secondary"
                   role="button"
                   style="

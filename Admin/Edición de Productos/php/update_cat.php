@@ -1,5 +1,5 @@
 <?php
-include '/config/database.php';
+include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $conn->close();
-    header("Location: Admin\categories.php"); // Redirige de vuelta a la página principal
+    header("Location: ../../categories.php "); // Redirige de vuelta a la página principal
     exit();
 }
+?>
