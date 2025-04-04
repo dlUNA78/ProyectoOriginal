@@ -70,7 +70,7 @@
           <hr class="sidebar-divider my-0" />
           <ul class="navbar-nav text-light" id="accordionSidebar">
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/index.html"
+              <a class="nav-link" href="../Menú/index.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -91,7 +91,10 @@
                 ><span style="color: var(--bs-black)">Principal</span></a
               >
             </li>
+
+
             <li class="nav-item">
+
               <a class="nav-link" href="../Menú/products.html"
                 ><i
                   class="typcn typcn-shopping-cart"
@@ -101,7 +104,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../categories.html"
+              <a class="nav-link" href="../categories.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -126,7 +129,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="view_produc.html"
+              <a class="nav-link" href="view_produc.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -145,7 +148,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/user.html"
+              <a class="nav-link" href="../Menú/user.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -278,26 +281,36 @@
                               class="text-center"
                               style="background: var(--bs-info)"
                             >
-                              Nombre del Producto
+                              Nombre del Producto:
                             </th>
                             <th
                               class="text-center"
                               style="background: var(--bs-info)"
                             >
-                              Descripción
+                            Descripción de la Oferta:
                             </th>
                             <th
                               class="text-center"
                               style="background: var(--bs-info)"
                             >
-                              Precio
+                              Precio:
                             </th>
                             <th
                               class="text-center"
                               style="background: var(--bs-info)"
                             >
-                              Precio con descuento
+                              Precio con descuento:
                             </th>
+
+
+                            <th
+                              class="text-center"
+                              style="background: var(--bs-info)"
+                            >
+                              categoria:
+                            </th>
+
+
                             <th
                               class="text-center"
                               style="background: var(--bs-info)"
@@ -325,6 +338,7 @@
                             </td>
                             <td>500</td>
                             <td>250</td>
+                            <td>hogar</td>
                             <td>
                               <img
                                 src="../assets/img/molino.png"
@@ -341,7 +355,7 @@
                                 class="btn"
                                 role="button"
                                 onclick="editButtonClick(this)"
-                                href="../Edición%20de%20Productos/modify_offer.html"
+                                href="../Edición%20de%20Productos/modify_offer.php"
                                 style="background: #f6c23e"
                                 ><svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -387,6 +401,7 @@
                             </td>
                             <td>300</td>
                             <td>175</td>
+                            <td>Hogar</td>
                             <td>
                               <img
                                 src="../assets/img/clipboard-image-2.png"
@@ -402,7 +417,7 @@
                                 class="btn"
                                 role="button"
                                 onclick="editButtonClick(this)"
-                                href="../Edición%20de%20Productos/modify_offer.html"
+                                href="../Edición%20de%20Productos/modify_offer.php"
                                 style="
                                   color: var(--bs-black);
                                   background: var(--bs-warning);
@@ -452,7 +467,7 @@
                 class="btn btn-primary"
                 role="button"
                 style="background: var(--bs-info); font-weight: bold"
-                href="../Ofertas/add_offer.html"
+                href="../Ofertas/add_offer.php"
                 >Agregar una Nueva Oferta</a
               >
             </div>

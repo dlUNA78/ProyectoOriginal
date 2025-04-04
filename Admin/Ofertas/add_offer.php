@@ -49,7 +49,7 @@
   </head>
 
   <body>
-    <!-- Modal -->
+    <!-- Inicia Modal -->
     <div class="modal fade" role="dialog" tabindex="-1" id="Agregado">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -81,7 +81,30 @@
         </div>
       </div>
     </div>
-    <!-- Terrmina el Modal -->
+    <!-- Termina Modal -->
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Desea continuar</h4>
+            <button
+              class="btn-close"
+              type="button"
+              aria-label="Close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>The content of your modal.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-light" type="button" data-bs-dismiss="modal">
+              Close</button
+            ><button class="btn btn-primary" type="button">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="wrapper">
       <nav
         class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
@@ -103,7 +126,7 @@
           <hr class="sidebar-divider my-0" />
           <ul class="navbar-nav text-light" id="accordionSidebar">
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/index.html"
+              <a class="nav-link" href="../Menú/index.pphp"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -125,6 +148,7 @@
               >
             </li>
             <li class="nav-item">
+
               <a class="nav-link" href="../Menú/products.html"
                 ><i
                   class="typcn typcn-shopping-cart"
@@ -134,7 +158,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../categories.html"
+              <a class="nav-link" href="../categories.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -159,7 +183,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Ofertas/view_produc.html"
+              <a class="nav-link" href="view_produc.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -176,7 +200,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/user.html"
+              <a class="nav-link" href="../Menú/user.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -236,6 +260,7 @@
                   <div
                     class="dropdown-menu shadow dropdown-menu-end animated--grow-in"
                   >
+
                     <a class="dropdown-item" href="../Menú/login.html"
                       ><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"
@@ -248,6 +273,7 @@
             </ul>
           </div>
         </nav>
+        
         <div
           class="d-flex justify-content-center align-items-center"
           id="content"
@@ -268,60 +294,87 @@
                 class="text-center mb-4"
                 style="color: rgb(0, 0, 0); font-weight: bold"
               >
-                Agregar productos
+                Agregar Oferta
               </h2>
-              <form>
+              <form novalidate>
                 <div class="mb-3">
                   <label
-                  id="producto"
                     class="form-label"
                     for="nombre"
                     style="color: rgb(0, 0, 0)"
-                    >Nombre del producto:</label
+                    >Nombre del Producto:</label
                   >
-                  <div id="errorNombre" class="text-danger"></div>
                   <input
                     class="form-control form-control"
                     type="text"
                     id="nombre"
                     required=""
                   />
+                  <div id="errorNombre" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="descripcion"
+                  style="color: rgb(0, 0, 0)"
+                  >Descripción de la Oferta:</label
+                >
+                <div id="errorDescripcion" class="text-danger"></div>
+                <textarea
+                  class="form-control form-control"
+                  id="descripcion"
+                  rows="3"
+                  required=""
+                ></textarea>
+              </div>
+                <div class="mb-3">
+                  <label
+                    class="form-label"
+                    for="codigo-1"
+                    style="color: rgb(0, 0, 0)"
+                    >Precio Normal:</label
+                  >
+                  <input id="sProducto" class="form-control" type="search" />
+                  <div id="errorsProduct" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
                   <label
                     class="form-label"
-                    for="precio"
+                    for="existencia"
                     style="color: rgb(0, 0, 0)"
-                    >Precio:</label
+                    >Precio con Descuento:</label
                   >
-                  <div id="errorPrecio" class="text-danger"></div>
                   <input
+                    id="descuento"
                     class="form-control form-control"
-                    type="text"
-                    id="precio"
+                    type="number"
+                    id="descuento"
                     required=""
                   />
+                  <div id="errorDescuento" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
-                  <label
-                    class="form-label"
-                    for="categoria"
-                    style="color: rgb(0, 0, 0)"
-                    >Categoría:</label
-                  ><select
-                    class="form-select form-select"
-                    id="categoria"
-                    required=""
-                  >
-                    <option value="">Automotriz</option>
-                    <option value="">Energia solar</option>
-                    <option value="">Hogar</option>
-                    <option value="">Plagnicidas</option>
-                    <option value="">Tv satelital</option>
-                    <option value="">Radiocomunicacion</option>
-                  </select>
-                  <div id="errorCategoria" class="text-danger"></div>
-                </div>
+                <label
+                  class="form-label"
+                  for="categoria"
+                  style="color: rgb(0, 0, 0)"
+                  >Categoría:</label
+                ><select
+                  class="form-select form-select"
+                  id="categoria"
+                  name="categoria"
+                  required=""
+                >
+                  <option value="" disabled selected>Seleccione una categoría</option>
+                  <option value="Automotriz">Automotriz</option>
+                  <option value="Energia Solar">Energia solar</option>
+                  <option value="Hogar">Hogar</option>
+                  <option value="Plaguicidas">Plagnicidas</option>
+                  <option value="Tv satelital">Tv satelital</option>
+                  <option value="Radiocomunicacion">Radiocomunicacion</option>
+                </select>
+                <div id="errorCategoria" class="text-danger"></div>
+              </div>
                 <div class="mb-3">
                   <label
                     class="form-label"
@@ -335,20 +388,22 @@
                     accept="image/*"
                   />
                 </div>
+                <div class="mb-3">
+                  <div id="errorEstadoOferta" class="text-danger"></div>
+                </div>
                 <div class="d-flex justify-content-end gap-2">
                   <button
+                    id="btn_agregar"
                     class="btn btn-primary"
-                    type="button"
-                    id="btnAgregar"
+                    type="submit"
                     style="
                       background: var(--bs-info);
                       font-weight: bold;
                       margin-top: 10px;
                     "
                   >
-                    Agregar
-                  </button>
-                  <a
+                    Agregar</button
+                  ><a
                     class="btn btn-secondary"
                     role="button"
                     style="
@@ -356,7 +411,7 @@
                       font-weight: bold;
                       margin-top: 10px;
                     "
-                    href="../Menú/products.html"
+                    href="../Ofertas/view_produc.php"
                     >Cancelar</a
                   >
                 </div>
@@ -367,10 +422,7 @@
         <footer class="bg-white sticky-footer">
           <div class="container my-auto">
             <div class="text-center my-auto copyright">
-              <span
-                ><br />TECNM Campus Coalcomán Ingeniería en Sistemas
-                Computacionales 6°Semestre -2025<br /><br
-              /></span>
+              <span>TECNM Campus Coalcomán Ingeniería en Sistemas Computacionales 6°Semestre -2025</span>
             </div>
           </div>
         </footer>
@@ -387,6 +439,6 @@
     <script src="../assets/js/TableZoomSorter.js"></script>
     <script src="../assets/js/Tema_Admin.js"></script>
     <script src="../assets/js/WaveClickFX.js"></script>
-    <script src="../JS/validar_add_prod.js"></script>
+    <script src="../JS/validar_ofertas.js"></script>
   </body>
 </html>

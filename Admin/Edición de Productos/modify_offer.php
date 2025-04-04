@@ -98,7 +98,7 @@
           <hr class="sidebar-divider my-0" />
           <ul class="navbar-nav text-light" id="accordionSidebar">
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/index.html"
+              <a class="nav-link" href="../Menú/index.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -129,7 +129,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../categories.html"
+              <a class="nav-link" href="../categories.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -154,7 +154,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Ofertas/view_produc.html"
+              <a class="nav-link" href="../Ofertas/view_produc.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -171,7 +171,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/user.html"
+              <a class="nav-link" href="../Menú/user.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -274,23 +274,24 @@
               <div class="mb-3">
                 <label
                   class="form-label"
-                  for="codigo"
+                  for="descripcion"
                   style="color: rgb(0, 0, 0)"
                   >Descripción de la Oferta:</label
                 >
-                <input
+                <div id="errorDescripcion" class="text-danger"></div>
+                <textarea
                   class="form-control form-control"
-                  type="text"
                   id="descripcion"
+                  rows="3"
                   required=""
-                />
+                ></textarea>
               </div>
               <div class="mb-3">
                 <label
                   class="form-label"
                   for="codigo-1"
                   style="color: rgb(0, 0, 0)"
-                  >Precio Anterior:</label
+                  >Precio:</label
                 >
                 <input id="precioBe" class="form-control" type="search" />
               </div>
@@ -299,7 +300,7 @@
                   class="form-label"
                   for="existencia"
                   style="color: rgb(0, 0, 0)"
-                  >Nuevo Precio:</label
+                  >Precio con descuento:</label
                 >
                 <input
                   id="precioNew"
@@ -308,6 +309,27 @@
                   required=""
                 />
                 <div id="errorPrecioNew" class="text-danger"></div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label"
+                  for="categoria"
+                  style="color: rgb(0, 0, 0)"
+                  >Categoría:</label
+                ><select
+                  class="form-select form-select"
+                  id="categoria"
+                  name="categoria"
+                  required=""
+                >
+                  <option value="Automotriz">Automotriz</option>
+                  <option value="Energia Solar">Energia solar</option>
+                  <option value="Hogar">Hogar</option>
+                  <option value="Plaguicidas">Plagnicidas</option>
+                  <option value="Tv satelital">Tv satelital</option>
+                  <option value="Radiocomunicacion">Radiocomunicacion</option>
+                </select>
+                <div id="errorCategoria" class="text-danger"></div>
               </div>
               <div class="mb-3">
                 <label
@@ -333,8 +355,7 @@
                     font-weight: bold;
                     margin-top: 10px;
                   "
-                >
-                  Agregar</button
+                  >Agregar</button
                 ><a
                   class="btn btn-secondary"
                   role="button"
@@ -343,7 +364,7 @@
                     font-weight: bold;
                     margin-top: 10px;
                   "
-                  href="../Ofertas/view_produc.html"
+                  href="../Ofertas/view_produc.php"
                   >Cancelar</a
                 >
               </div>
