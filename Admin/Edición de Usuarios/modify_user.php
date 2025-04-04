@@ -1,63 +1,71 @@
 <?php
-require_once '../../config/database.php';
+// Configuración de la conexión PDO
+$servername = "localhost:3306";
+$username = "root";
+$password = "";
+$dbname = "productos";
 
-// Crear conexión usando la clase Database
-$db = new Database();
-$conn = $db->connect();
 
-$usuario = $_GET['usuario'] ?? ''; // Obtener el usuario desde la URL
-$datos = null;
+session_start();
 
-if ($usuario) {
-    try {
+try {
+    // Crear conexión PDO
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $usuario = $_GET['usuario'] ?? '';
+    $datos = null;
+
+    if ($usuario) {
         $stmt = $conn->prepare("SELECT usuario, nombre, contraseña, imagen FROM Usuarios WHERE usuario = ?");
         $stmt->execute([$usuario]);
         $datos = $stmt->fetch(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        die("Error al obtener datos de usuario: " . $e->getMessage());
     }
-}
 
-// Procesar el formulario cuando se envía
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuario = $_POST['usuario'];
         $nombre = $_POST['nombre'];
         $contraseñaActual = $_POST['contraseñaAct'];
         $nuevaContraseña = $_POST['contraseña'];
-        
-        // Verificar contraseña actual
+
+        // Verificar contraseña actual (comparación directa en texto plano)
         $stmt = $conn->prepare("SELECT contraseña FROM Usuarios WHERE usuario = ?");
         $stmt->execute([$usuario]);
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$userData || $userData['contraseña'] !== $contraseñaActual) {
-            // Contraseña actual incorrecta
+
+        if (!$userData || !password_verify($contraseñaActual, $userData['contraseña'])) {
             header("Location: modify_user.php?usuario=$usuario&error=La contraseña actual es incorrecta");
             exit();
         }
-        
-        // Si llegamos aquí, la contraseña actual es correcta
-        
-        // Manejar imagen si se ha subido una nueva
-        $imagen = $datos['imagen']; // Mantener la imagen actual por defecto
+
+        // Hash de la nueva contraseña si se proporciona
+        if (!empty($nuevaContraseña)) {
+            $nuevaContraseña = password_hash($nuevaContraseña, PASSWORD_DEFAULT);
+        }
+
+        // Manejo de imagen
+        $imagen = $datos['imagen'] ?? '';
         
         if (!empty($_FILES['imagen']['name'])) {
             $targetDir = "../assets/img/avatars/";
-            $fileName = basename($_FILES['imagen']['name']);
-            $targetFilePath = $targetDir . $fileName;
-            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+            if (!file_exists($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
             
-            // Validar formato y tamaño
-            $allowTypes = array('jpg', 'png', 'jpeg', 'webp');
-            if (in_array($fileType, $allowTypes) && $_FILES['imagen']['size'] < 2097152) { // 2MB
+            $fileExt = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+            $newFileName = uniqid().'.'.$fileExt;
+            $targetFilePath = $targetDir.$newFileName;
+
+            $allowedTypes = ['jpg', 'png', 'jpeg', 'webp'];
+            
+            if (in_array(strtolower($fileExt), $allowedTypes) && $_FILES['imagen']['size'] < 2097152) {
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFilePath)) {
-                    $imagen = $targetFilePath;
+                    $imagen = $newFileName;
                 }
             }
         }
-        
-        // Actualizar usuario (con o sin nueva contraseña)
+
+        // Actualizar usuario
         if (!empty($nuevaContraseña)) {
             $stmt = $conn->prepare("UPDATE Usuarios SET nombre = ?, contraseña = ?, imagen = ? WHERE usuario = ?");
             $stmt->execute([$nombre, $nuevaContraseña, $imagen, $usuario]);
@@ -65,17 +73,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare("UPDATE Usuarios SET nombre = ?, imagen = ? WHERE usuario = ?");
             $stmt->execute([$nombre, $imagen, $usuario]);
         }
-        
 
-    } catch (PDOException $e) {
-        die("Error al actualizar usuario: " . $e->getMessage());
+        header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
+        exit();
     }
-// Redirigir a la página de usuario después de la modificación
-    header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
-    
+} catch (PDOException $e) {
+    die("Error: " . $e->getMessage());
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (datos) {
                 document.getElementById('usuario').value = datos.usuario;
                 document.getElementById('nombre').value = datos.nombre;
-                
+
                 // Precargar la imagen si existe
                 if (datos.imagen) {
                     const imgProfile = document.querySelector('.img-profile');
@@ -128,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             document.getElementById('contraseñaConf').type = type;
         }
     </script>
-    
+
     <!-- Modal -->
     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
         <div class="modal-dialog" role="document">
@@ -151,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
-    
+
     <div id="wrapper">
         <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
             style="background: var(--bs-primary)">
@@ -235,7 +239,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <li class="nav-item dropdown no-arrow">
                             <div class="nav-item dropdown no-arrow">
                                 <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown"
-                                    href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small"><?php echo htmlspecialchars($datos['nombre'] ?? 'Yesid Amalec'); ?></span><img class="border rounded-circle img-profile"
+                                    href="#"><span
+                                        class="d-none d-lg-inline me-2 text-gray-600 small"><?php echo htmlspecialchars($datos['nombre'] ?? 'Yesid Amalec'); ?></span><img
+                                        class="border rounded-circle img-profile"
                                         src="<?php echo htmlspecialchars($datos['imagen'] ?? '../assets/img/avatars/avatar1.jpeg'); ?>" /></a>
                                 <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
                                     <a class="dropdown-item" href="/Admin/Menú/login.html"><i
@@ -257,27 +263,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <form id="formularioModificacion" method="POST" action="" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label class="form-label" for="nombre" style="color: rgb(0, 0, 0)">Nombre:</label>
-                                <input class="form-control" type="text" id="nombre" name="nombre"     oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]/g, '')"
+                                <input class="form-control" type="text" id="nombre" name="nombre"
+                                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]/g, '')"
                                     value="<?php echo htmlspecialchars($datos['nombre'] ?? ''); ?>" required />
                                 <div id="errorNombre" class="text-danger"></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="usuario" style="color: rgb(0, 0, 0)">Usuario:</label>
-                                <input class="form-control" type="text" id="usuario" name="usuario" 
+                                <input class="form-control" type="text" id="usuario" name="usuario"
                                     value="<?php echo htmlspecialchars($datos['usuario'] ?? ''); ?>" readonly />
                                 <div id="errorUsuario" class="text-danger"></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="contraseñaAct" style="color: rgb(0, 0, 0)">
                                     Contraseña Actual:</label>
-                                <input class="form-control" type="password" id="contraseñaAct" name="contraseñaAct" required
-                                placeholder="Ingresa la contraseña actual"/>
+                                <input class="form-control" type="password" id="contraseñaAct" name="contraseñaAct"
+                                    required placeholder="Ingresa la contraseña actual" />
                                 <div id="errorContraseñaAct" class="text-danger"></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="contraseña" style="color: rgb(0, 0, 0)">
                                     Nueva Contraseña:</label>
-                                <input class="form-control" type="password" id="contraseña" name="contraseña" 
+                                <input class="form-control" type="password" id="contraseña" name="contraseña"
                                     placeholder="Dejar en blanco para mantener la actual" />
                                 <div id="errorContraseña" class="text-danger"></div>
                             </div>
@@ -285,7 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label class="form-label" for="contraseñaConf" style="color: rgb(0, 0, 0)">
                                     Confirmar Nueva Contraseña:</label>
                                 <input class="form-control" type="password" id="contraseñaConf" name="contraseñaConf"
-                                placeholder="Confirma la contraseña" />
+                                    placeholder="Confirma la contraseña" />
                                 <div id="errorContraseñaConf" class="text-danger"></div>
                             </div>
                             <div class="mb-3">
@@ -312,13 +319,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       background: var(--bs-success);
                       font-weight: bold;
                       margin-top: 10px;
-                    " href="../Menú/user.html">Cancelar</a>
+                    " href="../Menú/user.php">Cancelar</a>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            
+
             <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
                     <div class="text-center my-auto copyright">
@@ -330,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
-    
+
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
     <script
@@ -343,4 +350,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="../assets/js/WaveClickFX.js"></script>
     <script src="../JS/validar_mod_user.js"></script>
 </body>
+
 </html>
