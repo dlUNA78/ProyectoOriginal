@@ -1,11 +1,6 @@
 <?php
 // Configuración de la conexión PDO
-$servername = "localhost:3306";
-$username = "root";
-$password = "";
-$dbname = "productos";
-
-
+include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
 session_start();
 
 try {

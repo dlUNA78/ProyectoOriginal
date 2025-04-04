@@ -169,12 +169,11 @@
                 </tr>
               </thead>
               <?php
-              $conexion = new mysqli("localhost:3306", "root", "", "productos");
-              if ($conexion->connect_error) {
-                die("Error de conexión: " . $conexion->connect_error);
-              }
+              include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
 
-              $resultado = $conexion->query("SELECT * FROM Usuarios");
+              // Opción 1: Usando $conexion directamente
+              $resultado = $conn->query("SELECT * FROM Usuarios");
+              
               ?>
               <tbody>
                 <!-- Inicia datos ingresados a la tabla de usuarios -->
@@ -219,7 +218,7 @@
 
 
               </tbody>
-              <?php $conexion->close(); ?>
+              <?php $conn->close(); ?>
             </table>
           </div>
           <div class="d-grid float-end">
