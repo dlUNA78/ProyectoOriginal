@@ -1,63 +1,72 @@
 <?php
-require_once '../../config/database.php';
+// Configuración de la conexión PDO
+$servername = "localhost:3308";
+$username = "root";
+$password = "1234";
+$dbname = "proof";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $database = new Database();
-  $conn = $database->connect();
 
-  // Validar y limpiar datos
-  $nombre = $_POST['nombre'] ?? '';
-  $usuario = strtolower($_POST['usuario']); // Convertir a minúsculas
-  $contraseña = $_POST['contraseña'] ?? '';
-  $confirmacion = $_POST['contraseñaConf'] ?? '';
+session_start();
 
-  // Validaciones
-  $errores = [];
-  if (empty($nombre))
-    $errores[] = "El nombre es obligatorio";
-  if (empty($usuario))
-    $errores[] = "El usuario es obligatorio";
-  if (empty($contraseña))
-    $errores[] = "La contraseña es obligatoria";
-  if ($contraseña !== $confirmacion)
-    $errores[] = "Las contraseñas no coinciden";
+try {
+    // Crear conexión PDO
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Validar y limpiar datos
+        $nombre = $_POST['nombre'] ?? '';
+        $usuario = strtolower($_POST['usuario']); // Convertir a minúsculas
+        $contraseña = $_POST['contraseña'] ?? '';
+        $confirmacion = $_POST['contraseñaConf'] ?? ''; // Nota: Hay un error de tipeo aquí (contraseña vs contraseñaConf)
 
-  if (!empty($errores)) {
-    header("Location: ?error=" . urlencode(implode(", ", $errores)));
-    exit();
-  }
+        // Validaciones
+        $errores = [];
+        if (empty($nombre))
+            $errores[] = "El nombre es obligatorio";
+        if (empty($usuario))
+            $errores[] = "El usuario es obligatorio";
+        if (empty($contraseña))
+            $errores[] = "La contraseña es obligatoria";
+        if ($contraseña !== $confirmacion)
+            $errores[] = "Las contraseñas no coinciden";
+        if (!empty($errores)) {
+            header("Location: ?error=" . urlencode(implode(", ", $errores)));
+            exit();
+        }
 
-  // Procesar imagen
-  $imagen_nombre = '';
-  if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-    $directorio = '../assets/img/avatars/';
-    if (!file_exists($directorio)) {
-      mkdir($directorio, 0777, true);
+        // Procesar imagen
+        $imagen_nombre = '';
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $directorio = '../assets/img/avatars/';
+            if (!file_exists($directorio)) {
+                mkdir($directorio, 0777, true);
+            }
+            $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+            $imagen_nombre = uniqid() . '.' . $extension;
+
+            if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $directorio . $imagen_nombre)) {
+                header("Location: ?error=Error al subir la imagen");
+                exit();
+            }
+        }
+
+        // Insertar en BD usando PDO
+        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$nombre, $usuario, $contraseña, $imagen_nombre]);
+
+        if ($stmt && $stmt->rowCount() > 0) {
+            // Redirigir a la página de usuario después de la modificación
+            header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
+            exit();
+        } else {
+            $error = $stmt ? $stmt->errorInfo()[2] : "Error al ejecutar la consulta";
+            header("Location: ?error=" . urlencode($error));
+            exit();
+        }
     }
-    $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-    $imagen_nombre = uniqid() . '.' . $extension;
-
-    if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $directorio . $imagen_nombre)) {
-      header("Location: ?error=Error al subir la imagen");
-      exit();
-    }
-  }
-
-
-
-  // Insertar en BD
-  $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
-  $stmt->execute([$nombre, $usuario, $contraseña, $imagen_nombre]);
-
-  if ($stmt && $stmt->rowCount() > 0) {
-// Redirigir a la página de usuario después de la modificación
-header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
-    exit();
-  } else {
-    $error = $stmt ? $stmt->errorInfo()[2] : "Error al ejecutar la consulta";
-    header("Location: ?error=" . urlencode($error));
-    exit();
-  }
+} catch(PDOException $e) {
+    die("Error en la conexión o consulta: " . $e->getMessage());
 }
 ?>
 
@@ -118,12 +127,12 @@ header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
               </svg><span style="color: var(--bs-black)">Principal</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/products.html"><i class="typcn typcn-shopping-cart"
+            <a class="nav-link" href="../Menú/products.php"><i class="typcn typcn-shopping-cart"
                 style="color: rgb(0, 0, 0); font-size: 22.6px"></i><span
                 style="color: var(--bs-black)">Productos</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../categories.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link" href="../categories.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                 stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-category"
                 style="color: rgb(0, 0, 0); font-size: 22.6px">
@@ -135,7 +144,7 @@ header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
               </svg><span style="color: var(--bs-black)">Categorías</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Ofertas/view_produc.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link" href="../Ofertas/view_produc.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-currency-dollar"
                 style="color: rgb(0, 0, 0); font-size: 22.6px">
                 <path
@@ -144,7 +153,7 @@ header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
               </svg><span style="color: var(--bs-black)">Ofertas</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/user.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <a class="nav-link" href="../Menú/user.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                 height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                 stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-users"
                 style="font-size: 22.6px; color: rgb(0, 0, 0)">
@@ -175,7 +184,7 @@ header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
                     class="d-none d-lg-inline me-2 text-gray-600 small">Yesid Amalec</span><img
                     class="border rounded-circle img-profile" src="../assets/img/avatars/avatar1.jpeg" /></a>
                 <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                  <a class="dropdown-item" href="../Menú/login.html"><i
+                  <a class="dropdown-item" href="../Menú/login.php"><i
                       class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar Sesión</a>
                 </div>
               </div>
@@ -195,7 +204,8 @@ header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
               <!-- Campo Nombre -->
               <div class="mb-3">
                 <label class="form-label" for="nombre" style="color: #000">Nombre:</label>
-                <input class="form-control" type="text" id="nombre" name="nombre" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]/g, '')"
+                <input class="form-control" type="text" id="nombre" name="nombre" required
+                  oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]/g, '')"
                   placeholder="Ingrese el nombre completo">
                 <div id="errorNombre" class="text-danger small mt-1"></div>
               </div>
