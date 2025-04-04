@@ -1,39 +1,55 @@
-Create if no exists database `proyecto1`;
--- Use the database
+-- Crear base de datos si no existe
+CREATE DATABASE IF NOT EXISTS `proyecto1`;
 USE `proyecto1`;
 
-Create table if no exists `usuarios` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(50) NOT NULL,
-    `usuario` VARCHAR(50) NOT NULL,
-    `contraseña` VARCHAR(255) NOT NULL,
-    `imagen` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`)
+-- Tabla de usuarios
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    contraseña VARCHAR(255) NOT NULL,
+    imagen VARCHAR(255) NOT NULL
 );
 
-Create table if no exists `productos` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(50) NOT NULL,
-    `descripcion` TEXT NOT NULL,
-    `precio` DECIMAL(10, 2) NOT NULL,
-    `imagenes` TEXT NOT NULL,
-    PRIMARY KEY (`id`)
+-- Tabla de categorías
+CREATE TABLE IF NOT EXISTS categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL
 );
 
-Create  table if no exists `categorias` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(50) NOT NULL,
-    PRIMARY KEY (`id`)
+-- Tabla de productos
+CREATE TABLE IF NOT EXISTS productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion TEXT NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    id_categoria INT NOT NULL,
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id)
 );
 
-Create table  if no exists ofertas (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(50) NOT NULL,
-    `descripcion` TEXT NOT NULL,
-    `precioNormal` DECIMAL(10, 2) NOT NULL,
-    `precioOferta` DECIMAL(10, 2) NOT NULL,
-    `imagenes` TEXT NOT NULL,
-    PRIMARY KEY (`id`)
+-- Tabla de imágenes por producto (para múltiples imágenes por producto)
+CREATE TABLE IF NOT EXISTS imagenes_producto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_producto INT NOT NULL,
+    ruta_imagen VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_producto) REFERENCES productos(id) ON DELETE CASCADE
+);
+
+-- Tabla de ofertas (referencia a un producto)
+CREATE TABLE IF NOT EXISTS ofertas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_producto INT NOT NULL,
+    precio_oferta DECIMAL(10, 2) NOT NULL,
+    descripcion TEXT,
+    FOREIGN KEY (id_producto) REFERENCES productos(id) ON DELETE CASCADE
+);
+
+-- Tabla de imágenes para ofertas (si son distintas a las del producto)
+CREATE TABLE IF NOT EXISTS imagenes_oferta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_oferta INT NOT NULL,
+    ruta_imagen VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_oferta) REFERENCES ofertas(id) ON DELETE CASCADE
 );
 
 ESTE ES UN SQL PARA LA BASE DE DATOS, SIENTO QUE AUN FALTAN CAMBIOS, CHEQUEN BIEN, AUN NO HAGAN CAMBIOS GRANDDES

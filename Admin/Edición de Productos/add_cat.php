@@ -243,7 +243,7 @@ if (!isset($_SESSION['user'])) {
                       font-weight: bold;
                       margin-top: 10px;
                     "
-                  href="../categories.html">Cancelar</a>
+                  href="/Admin/categories.php">Cancelar</a>
               </div>
             </form>
           </div>

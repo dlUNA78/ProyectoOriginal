@@ -66,35 +66,7 @@ if (isset($_GET['id'])) {
 </head>
 
 <body>
-  <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" style="color: rgb(0, 0, 0)">
-            ModificadoCorrectamente
-          </h4>
-          <button
-            class="btn-close"
-            type="button"
-            aria-label="Close"
-            data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body"></div>
-        <div class="modal-footer">
-          <button
-            class="btn btn-light"
-            type="button"
-            data-bs-dismiss="modal"
-            style="
-                background: var(--bs-form-valid-border-color);
-                color: rgb(255, 255, 255);
-              ">
-            Ok
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+
   <div id="wrapper">
     <nav
       class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
@@ -276,7 +248,7 @@ if (isset($_GET['id'])) {
                   font-weight: bold;
                   margin-top: 10px;
                 "
-                href="../categories.html">Cancelar</a>
+                href="/Admin/categories.php">Cancelar</a>
               </div>
             </form>
           </div>

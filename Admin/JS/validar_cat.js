@@ -1,26 +1,23 @@
-// document.getElementById('btnAgregar').addEventListener('click', function(event) {
-//     event.preventDefault();
+document.getElementById('nombre').addEventListener('keypress', function(event) {
+    const charCode = event.charCode || event.keyCode;
+    const charStr = String.fromCharCode(charCode);
 
-//     const nombre = document.getElementById('nombre').value.trim();
-//     const errorCategoria = document.getElementById('errorCategoria');
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]$/.test(charStr)) {
+        event.preventDefault(); // Evita que se ingrese el carácter no válido
+    }
+});
 
-//     errorCategoria.innerText = "";
-    
-//     let isValid = true;
+document.getElementById('btnAgregar').addEventListener('click', function(event) {
+    const nombre = document.getElementById('nombre').value.trim();
+    const errorCategoria = document.getElementById('errorCategoria');
 
-//     if (nombre === "") {
-//         errorCategoria.innerText = "Ingrese un nombre";
-//         isValid = false;
-//     } else if (nombre.length < 3) {
-//         errorCategoria.innerText = "El nombre debe tener al menos 3 caracteres.";
-//         isValid = false;
-//     } else if (nombre.length > 50) {
-//         errorCategoria.innerText = "El nombre no debe superar los 50 caracteres.";
-//         isValid = false;
-//     } else if (!/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ]+$/.test(nombre)) {
-//         errorCategoria.innerText = "El nombre solo puede contener letras, y espacios.";
-//         isValid = false;
-//     }
+    errorCategoria.innerText = "";
 
-  
-// });
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/.test(nombre)) {
+        errorCategoria.innerText = "El nombre solo puede contener letras.";
+        event.preventDefault(); // Evita que se procese el formulario si no es válido
+    }
+});
+
+
+
