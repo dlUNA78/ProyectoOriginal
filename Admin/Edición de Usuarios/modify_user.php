@@ -1,9 +1,9 @@
 <?php
 // Configuración de la conexión PDO
-$servername = "localhost:3308";
+$servername = "localhost:3306";
 $username = "root";
-$password = "1234";
-$dbname = "proof";
+$password = "";
+$dbname = "productos";
 
 
 session_start();
@@ -33,9 +33,14 @@ try {
         $stmt->execute([$usuario]);
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$userData || $userData['contraseña'] !== $contraseñaActual) {
+        if (!$userData || !password_verify($contraseñaActual, $userData['contraseña'])) {
             header("Location: modify_user.php?usuario=$usuario&error=La contraseña actual es incorrecta");
             exit();
+        }
+
+        // Hash de la nueva contraseña si se proporciona
+        if (!empty($nuevaContraseña)) {
+            $nuevaContraseña = password_hash($nuevaContraseña, PASSWORD_DEFAULT);
         }
 
         // Manejo de imagen
@@ -314,7 +319,7 @@ try {
                       background: var(--bs-success);
                       font-weight: bold;
                       margin-top: 10px;
-                    " href="../Menú/user.html">Cancelar</a>
+                    " href="../Menú/user.php">Cancelar</a>
                             </div>
                         </form>
                     </div>

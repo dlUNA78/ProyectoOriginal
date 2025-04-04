@@ -1,9 +1,9 @@
 <?php
 // Configuración de la conexión PDO
-$servername = "localhost:3308";
+$servername = "localhost:3306";
 $username = "root";
-$password = "1234";
-$dbname = "proof";
+$password = "";
+$dbname = "productos";
 
 
 session_start();
@@ -52,8 +52,11 @@ try {
         }
 
         // Insertar en BD usando PDO
+        // Hash de la contraseña
+        $hashed_password = password_hash($contraseña, PASSWORD_BCRYPT);
+
         $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$nombre, $usuario, $contraseña, $imagen_nombre]);
+        $stmt->execute([$nombre, $usuario, $hashed_password, $imagen_nombre]);
 
         if ($stmt && $stmt->rowCount() > 0) {
             // Redirigir a la página de usuario después de la modificación
@@ -64,10 +67,10 @@ try {
             header("Location: ?error=" . urlencode($error));
             exit();
         }
-    }
-} catch(PDOException $e) {
-    die("Error en la conexión o consulta: " . $e->getMessage());
-}
+          }
+      } catch(PDOException $e) {
+          die("Error en la conexión o consulta: " . $e->getMessage());
+      }
 ?>
 
 

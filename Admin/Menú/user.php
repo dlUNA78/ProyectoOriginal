@@ -169,7 +169,7 @@
                 </tr>
               </thead>
               <?php
-              $conexion = new mysqli("localhost:3308", "root", "1234", "proof");
+              $conexion = new mysqli("localhost:3306", "root", "", "productos");
               if ($conexion->connect_error) {
                 die("Error de conexión: " . $conexion->connect_error);
               }
