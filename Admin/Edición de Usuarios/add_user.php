@@ -4,68 +4,78 @@ include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
 session_start();
 
 try {
-    // Crear conexión PDO
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Validar y limpiar datos
-        $nombre = $_POST['nombre'] ?? '';
-        $usuario = strtolower($_POST['usuario']); // Convertir a minúsculas
-        $contraseña = $_POST['contraseña'] ?? '';
-        $confirmacion = $_POST['contraseñaConf'] ?? ''; // Nota: Hay un error de tipeo aquí (contraseña vs contraseñaConf)
+  // Crear conexión PDO
+  $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Validaciones
-        $errores = [];
-        if (empty($nombre))
-            $errores[] = "El nombre es obligatorio";
-        if (empty($usuario))
-            $errores[] = "El usuario es obligatorio";
-        if (empty($contraseña))
-            $errores[] = "La contraseña es obligatoria";
-        if ($contraseña !== $confirmacion)
-            $errores[] = "Las contraseñas no coinciden";
-        if (!empty($errores)) {
-            header("Location: ?error=" . urlencode(implode(", ", $errores)));
-            exit();
-        }
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validar y limpiar datos
+    $nombre = $_POST['nombre'] ?? '';
+    $usuario = strtolower($_POST['usuario']); // Convertir a minúsculas
+    $contraseña = $_POST['contraseña'] ?? '';
+    $confirmacion = $_POST['contraseñaConf'] ?? ''; // Nota: Hay un error de tipeo aquí (contraseña vs contraseñaConf)
 
-        // Procesar imagen
-        $imagen_nombre = '';
-        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-            $directorio = '../assets/img/avatars/';
-            if (!file_exists($directorio)) {
-                mkdir($directorio, 0777, true);
-            }
-            $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-            $imagen_nombre = uniqid() . '.' . $extension;
+    // Verificar si el usuario ya existe
+    $stmt = $conn->prepare("SELECT id FROM Usuarios WHERE usuario = ?");
+    $stmt->execute([$usuario]);
 
-            if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $directorio . $imagen_nombre)) {
-                header("Location: ?error=Error al subir la imagen");
-                exit();
-            }
-        }
+    if ($stmt->rowCount() > 0) {
+      header("Location: add_user.php?usuario=$usuario&error=El usuario ya existe");
+      exit();
+    }
 
-        // Insertar en BD usando PDO
-        // Hash de la contraseña
-        $hashed_password = password_hash($contraseña, PASSWORD_BCRYPT);
 
-        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$nombre, $usuario, $hashed_password, $imagen_nombre]);
+    // Validaciones
+    $errores = [];
+    if (empty($nombre))
+      $errores[] = "El nombre es obligatorio";
+    if (empty($usuario))
+      $errores[] = "El usuario es obligatorio";
+    if (empty($contraseña))
+      $errores[] = "La contraseña es obligatoria";
+    if ($contraseña !== $confirmacion)
+      $errores[] = "Las contraseñas no coinciden";
+    if (!empty($errores)) {
+      header("Location: ?error=" . urlencode(implode(", ", $errores)));
+      exit();
+    }
 
-        if ($stmt && $stmt->rowCount() > 0) {
-            // Redirigir a la página de usuario después de la modificación
-            header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
-            exit();
-        } else {
-            $error = $stmt ? $stmt->errorInfo()[2] : "Error al ejecutar la consulta";
-            header("Location: ?error=" . urlencode($error));
-            exit();
-        }
-          }
-      } catch(PDOException $e) {
-          die("Error en la conexión o consulta: " . $e->getMessage());
+    // Procesar imagen
+    $imagen_nombre = '';
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+      $directorio = '../assets/img/avatars/';
+      if (!file_exists($directorio)) {
+        mkdir($directorio, 0777, true);
       }
+      $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+      $imagen_nombre = uniqid() . '.' . $extension;
+
+      if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $directorio . $imagen_nombre)) {
+        header("Location: ?error=Error al subir la imagen");
+        exit();
+      }
+    }
+
+    // Insertar en BD usando PDO
+    // Hash de la contraseña
+    $hashed_password = password_hash($contraseña, PASSWORD_BCRYPT);
+
+    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$nombre, $usuario, $hashed_password, $imagen_nombre]);
+
+    if ($stmt && $stmt->rowCount() > 0) {
+      // Redirigir a la página de usuario después de agregarlo
+      header("Location: ../Menú/user.php?success=Usuario agregado correctamente");
+      exit();
+    } else {
+      $error = $stmt ? $stmt->errorInfo()[2] : "Error al ejecutar la consulta";
+      header("Location: ?error=" . urlencode($error));
+      exit();
+    }
+  }
+} catch (PDOException $e) {
+  die("Error en la conexión o consulta: " . $e->getMessage());
+}
 ?>
 
 
@@ -151,9 +161,9 @@ try {
               </svg><span style="color: var(--bs-black)">Ofertas</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/user.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
-                height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-users"
+            <a class="nav-link" href="../Menú/user.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" class="icon icon-tabler icon-tabler-users"
                 style="font-size: 22.6px; color: rgb(0, 0, 0)">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
@@ -197,7 +207,7 @@ try {
             <h2 class="text-center mb-4" style="color: #000; font-weight: bold">
               Agregar Nuevo Usuario
             </h2>
-
+            <!-- Inicio del formulario -->
             <form method="POST" action="add_user.php" enctype="multipart/form-data" id="formulario">
               <!-- Campo Nombre -->
               <div class="mb-3">
@@ -212,10 +222,17 @@ try {
               <div class="mb-3">
                 <label class="form-label" for="usuario" style="color: #000">Usuario (Email):</label>
                 <input class="form-control" type="email" required id="usuario" name="usuario"
-                  placeholder="ejemplo@dominio.com">
-                <div id="errorUsuario" class="text-danger small mt-1"></div>
-              </div>
+                  placeholder="ejemplo@dominio.com"
+                  value="<?php echo isset($_GET['usuario']) ? htmlspecialchars($_GET['usuario']) : ''; ?>">
 
+                <div id="errorUsuario" class="text-danger small mt-1">
+                  <?php
+                  if (isset($_GET['error']) && strpos($_GET['error'], 'usuario ya existe') !== false) {
+                    echo htmlspecialchars($_GET['error']);
+                  }
+                  ?>
+                </div>
+              </div>
               <!-- Campo Contraseña -->
               <div class="mb-3 position-relative">
                 <label class="form-label" for="contraseña" style="color: #000">Contraseña:</label>
@@ -260,6 +277,8 @@ try {
               margin-top: 10px;">Cancelar</a>
               </div>
             </form>
+            <!-- Fin del formulario -->
+
           </div>
         </div>
         <script src="..\JS\validar_user.js" defer></script>

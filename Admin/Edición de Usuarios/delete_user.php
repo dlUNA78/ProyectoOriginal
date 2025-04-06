@@ -1,21 +1,21 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $conexion = new mysqli("localhost:3308", "root", "1234", "proof");
-    if ($conexion->connect_error) {
-        die("Error de conexión: " . $conexion->connect_error);
-    }
+include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
+session_start();
 
+    // Tomar el valor del campo 'usuario' del formulario
     $usuario = $_POST['usuario'];
 
-    $stmt = $conexion->prepare("DELETE FROM Usuarios WHERE usuario = ?");
+    //realizar la consulta para eliminar el usuario
+    $stmt = $conn->prepare("DELETE FROM Usuarios WHERE usuario = ?");
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
 
+    //cerrar la consulta y la conexión
     $stmt->close();
-    $conexion->close();
+    $conn->close();
 
     // Redirigir con un parámetro indicando éxito
     header("Location: ../Menú/user.php?mensaje=Usuario eliminado correctamente");
     exit();
-}
+
 ?>

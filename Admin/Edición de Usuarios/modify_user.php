@@ -12,12 +12,14 @@ try {
     $usuario = $_GET['usuario'] ?? '';
     $datos = null;
 
+    // Seleccionar el usuario a modificar
     if ($usuario) {
         $stmt = $conn->prepare("SELECT usuario, nombre, contraseña, imagen FROM Usuarios WHERE usuario = ?");
         $stmt->execute([$usuario]);
         $datos = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Verificar si el usuario existe
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuario = $_POST['usuario'];
         $nombre = $_POST['nombre'];
@@ -29,6 +31,7 @@ try {
         $stmt->execute([$usuario]);
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // Verificar si la contraseña actual es correcta
         if (!$userData || !password_verify($contraseñaActual, $userData['contraseña'])) {
             header("Location: modify_user.php?usuario=$usuario&error=La contraseña actual es incorrecta");
             exit();
@@ -41,19 +44,19 @@ try {
 
         // Manejo de imagen
         $imagen = $datos['imagen'] ?? '';
-        
+
         if (!empty($_FILES['imagen']['name'])) {
             $targetDir = "../assets/img/avatars/";
             if (!file_exists($targetDir)) {
                 mkdir($targetDir, 0777, true);
             }
-            
+
             $fileExt = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-            $newFileName = uniqid().'.'.$fileExt;
-            $targetFilePath = $targetDir.$newFileName;
+            $newFileName = uniqid() . '.' . $fileExt;
+            $targetFilePath = $targetDir . $newFileName;
 
             $allowedTypes = ['jpg', 'png', 'jpeg', 'webp'];
-            
+
             if (in_array(strtolower($fileExt), $allowedTypes) && $_FILES['imagen']['size'] < 2097152) {
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFilePath)) {
                     $imagen = $newFileName;
@@ -69,7 +72,7 @@ try {
             $stmt = $conn->prepare("UPDATE Usuarios SET nombre = ?, imagen = ? WHERE usuario = ?");
             $stmt->execute([$nombre, $imagen, $usuario]);
         }
-
+        // Redirigir con un mensaje de éxito
         header("Location: ../Menú/user.php?success=Usuario modificado correctamente");
         exit();
     }

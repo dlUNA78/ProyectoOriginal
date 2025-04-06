@@ -171,7 +171,7 @@
               <?php
               include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
 
-              // Opción 1: Usando $conexion directamente
+              // Opción 1: Usando $conn directamente
               $resultado = $conn->query("SELECT * FROM Usuarios");
               
               ?>
