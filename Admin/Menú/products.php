@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<?php
+//conexcion a la base de datos
+include ("../Edición de Productos/php/conexionEfra.php");
+// realizamos la sentecia sql
+$sql = "SELECT * FROM productos";
+//ejecutamos la sentecia y la gardamos en una varible
+$result = $connn->query($sql);
+
+?>
+<html data-bs-theme="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Dashboard - Brand</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alef&amp;display=swap" />
+    <link rel="stylesheet" href="../assets/fonts/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="../assets/fonts/typicons.min.css" />
+    <link rel="stylesheet" href="../assets/css/bs-theme-overrides.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+  </head>
+
+  <body id="page-top">
+    <div id="wrapper">
+      <!-- Barra lateral de navegación -->
+      <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark" style="background: var(--bs-primary)">
+        <div class="container-fluid d-flex flex-column p-0">
+          <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+            <img src="../assets/img/Logo%20Yesid.svg" style="width: 50px; height: 50px; margin-right: -11px" />
+            <div class="sidebar-brand-text mx-3">
+              <span style="color: var(--bs-black)">Administrador</span>
+            </div>
+          </a>
+          <hr class="sidebar-divider my-0" />
+          <ul class="navbar-nav text-light" id="accordionSidebar">
+            <!-- Menú de navegación -->
+            <li class="nav-item">
+              <a class="nav-link" href="../Menú/index.php">
+                <i class="fas fa-home"></i>
+                <span style="color: var(--bs-black)">Principal</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="../Menú/products.php">
+                <i class="typcn typcn-shopping-cart"></i>
+                <span style="color: var(--bs-black)">Productos</span>
+              </a>
+            </li>
+            <!-- Más elementos del menú... -->
+          </ul>
+        </div>
+      </nav>
+
+      <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+          <!-- Barra superior -->
+          <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
+            <div class="container-fluid">
+              <!-- Buscador -->
+              <div class="d-flex float-end">
+                <div class="input-group" style="background: var(--bs-light); margin-right: 50px;">
+                  <input class="bg-light form-control border-0 small" type="text" id="buscadorProductos"
+                         placeholder="Buscar Producto..." style="background: var(--bs-light); color: rgb(0, 0, 0)" />
+                  <button class="btn btn-primary py-0" type="button" id="btnBuscar"
+                          style="color: var(--bs-light); background: var(--bs-info)">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <!-- Contenido principal -->
+          <div class="col search-table-col" style="margin-top: 50px;">
+            <h1 style="color: rgb(0, 0, 0); font-family: Alef, sans-serif; margin-left: 15px;">
+              Productos
+            </h1>
+
+            <!-- Tabla de productos (mostrará solo 1 producto) -->
+            <div class="table-responsive" style="margin: 0 50px;">
+              <table class="table table-striped table-hover text-center table-bordered" id="tablaProductos">
+                <thead class="bill-header cs">
+                  <tr style="background: var(--bs-info);">
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Imágenes</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody style="text-align: center" id="cuerpoTabla">
+                  <!-- Producto se cargará aquí -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-grid float-end">
+              <a class="btn btn-primary" role="button" style="background: var(--bs-info); font-weight: bold; margin-right: 50px;"
+              href="../Edición%20de%20Productos/add_product.php">
+                Agregar un Nuevo Producto
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <footer class="bg-white sticky-footer">
+          <div class="container my-auto">
+            <div class="text-center my-auto copyright">
+              <span>TECNM Campus Coalcomán Ingeniería en Sistemas Computacionales 6°Semestre -2025</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <script>
+      // Datos de ejemplo (en producción vendrían de una base de datos)
+      const productos = [
+        {
+          id: 1,
+          nombre: "Extractor",
+          precio: "10",
+          categoria: "Hogar",
+          descripcion: "Extractor de jugos manual de gran tamaño, diseñado para obtener jugo de cítricos como naranjas, toronjas y limones con facilidad y eficiencia.",
+          imagen: "../assets/img/clipboard-image-3.png"
+        },
+        {
+          id: 2,
+          nombre: "Panel Solar",
+          precio: "250",
+          categoria: "Energía Solar",
+          descripcion: "Panel solar de 100W para generación de energía renovable.",
+          imagen: "../assets/img/panel-solar.jpg"
+        },
+        {
+          id: 3,
+          nombre: "Antena TV",
+          precio: "75",
+          categoria: "Tv satelital",
+          descripcion: "Antena parabólica para recepción de señal satelital.",
+          imagen: "../assets/img/antena-tv.jpg"
+        }
+      ];
+
+      // Función para mostrar un producto en la tabla
+      function mostrarProducto(producto) {
+        const cuerpoTabla = document.getElementById('cuerpoTabla');
+        cuerpoTabla.innerHTML = `
+        
+          <tr>
+            <td>${producto.nombre}</td>
+            <td>${producto.precio}</td>
+            <td>${producto.categoria}</td>
+            <td>${producto.descripcion}</td>
+            <td><img src="${producto.imagen}" style="width: 75px; height: auto" /></td>
+            <td>
+              <a class="btn" role="button" style="margin-left: 5px; background: var(--bs-warning);"
+                 href="../Edición%20de%20Productos/modify_product.php?id=${producto.id}">
+                <i class="far fa-edit" style="font-size: 15px; color: rgb(14, 14, 13)"></i>
+              </a>
+              <button class="btn btn-danger" style="margin-left: 5px" type="submit"
+                      data-bs-target="#miModal" data-bs-toggle="modal">
+                <i class="fa fa-trash" style="font-size: 15px"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }
+
+      // Función para buscar productos
+      function buscarProducto() {
+        const termino = $("#buscadorProductos").val().toLowerCase();
+        const productoEncontrado = productos.find(p =>
+          p.nombre.toLowerCase().includes(termino)
+        );
+
+        if (productoEncontrado) {
+          mostrarProducto(productoEncontrado);
+        } else {
+          alert("Producto no encontrado");
+        }
+      }
+
+      // Inicialización
+      $(document).ready(function() {
+        // Mostrar el primer producto al cargar
+        mostrarProducto(productos[0]);
+
+        // Configurar autocompletado
+        $("#buscadorProductos").autocomplete({
+          source: productos.map(p => p.nombre),
+          minLength: 1,
+          select: function(event, ui) {
+            const producto = productos.find(p => p.nombre === ui.item.value);
+            if (producto) mostrarProducto(producto);
+          }
+        });
+
+        // Configurar eventos
+        $("#btnBuscar").click(buscarProducto);
+        $("#buscadorProductos").keypress(function(e) {
+          if (e.which === 13) buscarProducto();
+        });
+      });
+    </script>
+  </body>
+</html>
