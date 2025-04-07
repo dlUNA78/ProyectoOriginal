@@ -2,23 +2,25 @@
 <html data-bs-theme="light" lang="en">
 <!-- Inicia conexion para actulizar datos -->
 <?php
-if (!defined('MODIFY_CAT_INCLUDED')) {
-    define('MODIFY_CAT_INCLUDED', true);
-    
-    function modificarCategoria($id, $nuevosDatos) {
-        global $conn;
-        
-        try {
-            $stmt = $conn->prepare("UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?");
-            $stmt->bind_param("ssi", $nuevosDatos['nombre'], $nuevosDatos['descripcion'], $id);
-            return $stmt->execute();
-        } catch (Exception $e) {
-            error_log("Error al modificar categoría: " . $e->getMessage());
-            return false;
-        }
-    }
-    
-    // Otras funciones relacionadas con categorías...
+include '../../config/database.php';
+
+// Obtener el ID del registro a editar
+if (isset($_GET['id'])) {
+  $id = $_GET['id'];
+
+  // Obtener los datos del registro
+  $sql = "SELECT * FROM categorias WHERE id = $id";
+  $result = $conn->query($sql);
+
+  if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+  } else {
+    echo "Registro no encontrado.";
+    exit();
+  }
+} else {
+  echo "ID no proporcionado.";
+  exit();
 }
 ?>
 <!-- Termina conexion de base de datos -->
@@ -64,35 +66,7 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
 </head>
 
 <body>
-  <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" style="color: rgb(0, 0, 0)">
-            ModificadoCorrectamente
-          </h4>
-          <button
-            class="btn-close"
-            type="button"
-            aria-label="Close"
-            data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body"></div>
-        <div class="modal-footer">
-          <button
-            class="btn btn-light"
-            type="button"
-            data-bs-dismiss="modal"
-            style="
-                background: var(--bs-form-valid-border-color);
-                color: rgb(255, 255, 255);
-              ">
-            Ok
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+
   <div id="wrapper">
     <nav
       class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
@@ -239,39 +213,42 @@ if (!defined('MODIFY_CAT_INCLUDED')) {
               style="color: rgb(0, 0, 0); font-weight: bold">
               Nuevo Nombre:
             </h2>
-            <form>
+            <form method="POST" action="./php/update_cat.php">
               <div class="mb-3">
-                <label
-                  class="form-label"
-                  for="nombre"
-                  style="color: rgb(0, 0, 0)">Nombre:</label>
-                <input
-                  class="form-control form-control"
-                  type="text"
-                  id="nombre"
-                  value="<?php echo $row['nombre']; ?>"
-                  required="" />
-                <div id="errorCategoria" class="text-danger"></div>
+              <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+              <label
+                class="form-label"
+                for="nombre"
+                style="color: rgb(0, 0, 0)">Nombre:</label>
+
+              <input
+                class="form-control form-control"
+                type="text"
+                id="nombre"
+                name="nombre"
+                value="<?php echo $row['nombre']; ?>"
+                required="" />
+              <div id="errorCategoria" class="text-danger"></div>
               </div>
               <div class="d-flex justify-content-end gap-2">
-                <button
-                  class="btn btn-primary"
-                  id="btnAgregar"
-                  type="submit"
-                  style="
-                      background: var(--bs-info);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    ">
-                  Agregar</button><a
-                  class="btn btn-secondary"
-                  role="button"
-                  style="
-                      background: var(--bs-success);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    "
-                  href="../categories.html">Cancelar</a>
+              <button
+                class="btn btn-primary"
+                id="btnAgregar"
+                type="submit"
+                style="
+                  background: var(--bs-info);
+                  font-weight: bold;
+                  margin-top: 10px;
+                ">
+                Agregar</button><a
+                class="btn btn-secondary"
+                role="button"
+                style="
+                  background: var(--bs-success);
+                  font-weight: bold;
+                  margin-top: 10px;
+                "
+                href="/Admin/categories.php">Cancelar</a>
               </div>
             </form>
           </div>

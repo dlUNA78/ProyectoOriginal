@@ -7,6 +7,7 @@ include("../config/database.php");
 
 
 
+
 session_start();
 
 
@@ -64,6 +65,35 @@ if (!isset($_SESSION['user'])) {
 </head>
 
 <body>
+  <div class="modal fade" role="dialog" tabindex="-1" id="deleteModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" style="color: rgb(0, 0, 0)">
+            ModificadoCorrectamente
+          </h4>
+          <button
+            class="btn-close"
+            type="button"
+            aria-label="Close"
+            data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-light"
+            type="button"
+            data-bs-dismiss="modal"
+            style="
+                background: var(--bs-form-valid-border-color);
+                color: rgb(255, 255, 255);
+              ">
+            Ok
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="wrapper">
     <nav
       class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
@@ -176,25 +206,25 @@ if (!isset($_SESSION['user'])) {
       <div id="content">
         <div class="d-flex justify-content-end">
           <form
-            class="d-none d-sm-inline-block ms-md-3 my-2 my-md-0 mw-100 navbar-search"
-            style="
-                background: var(--bs-white);
-                color: rgb(255, 255, 255);
-                margin-right: 20px;
-              ">
-            <div class="input-group" style="background: var(--bs-light)">
-              <input
-                class="bg-light form-control border-0 small"
-                type="text"
-                placeholder="Buscar...Categoría..."
-                style="background: var(--bs-light); color: rgb(0, 0, 0)" /><button
-                class="btn btn-primary py-0"
-                type="button"
-                style="color: var(--bs-light); background: var(--bs-info)">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </form>
+            action="/Admin/JS/search_input.js"
+            method="GET"
+            class="input-group"
+            id="buscador"
+            style="background: var(--bs-light)">
+            <input
+              name="query"
+              class="bg-light form-control border-0 small"
+              type="text"
+              placeholder="Buscar categoría..."
+              style="background: var(--bs-light); color: rgb(0, 0, 0)" />
+            <button
+              class="btn btn-primary py-0"
+              type="submit"
+              style="color: var(--bs-light); background: var(--bs-info)">
+              <i class="fas fa-search"></i>
+            </button>
+            </form>
+
         </div>
         <div>
           <div
@@ -217,33 +247,54 @@ if (!isset($_SESSION['user'])) {
                     </th>
                   </tr>
                 </thead>
-                <tbody class="text-center">
+                <tbody class="text-center" id="table_cat">
+
+                  .
                   <!-- Verificar si hay registros -->
                   <?php
                   $sql = "SELECT * FROM categorias";
-                  $stmt = $conn->prepare($sql);
-                  $stmt->execute();
-                  $result = $stmt->get_result();  // Obtener el resultado
+                  $result = $conn->query($sql);
 
-                  if ($result->num_rows > 0) {  // Verificar si hay datos
-                    while ($row = $result->fetch_assoc()) {  // Obtener cada fila
+                  if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
                       echo "<tr>
-        <td>" . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</td>  
-        <td class='text-center align-middle' style='max-height: 60px; height: 60px'>
-          <a class='btn' role='button' href='Edición%20de%20Productos/modify_cat.php' style='background: #f6c23e'>
-            <svg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' fill='currentColor' viewBox='0 0 16 16' class='bi bi-pencil-square' style='color: rgb(0, 0, 0)'>
-              <path d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z'></path>
-              <path fill-rule='evenodd' d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z'></path>
-            </svg>
-          </a>
-          <a class='btn' role='button' style='margin-left: 5px; background: var(--bs-form-invalid-color);' data-bs-toggle='modal' data-bs-target='#modal-1' href='#'>
-            <i class='fas fa-trash btnNoBorders' style='color: var(--bs-light)'></i>
-          </a>
-        </td>
-        </tr>";
+            <td style='padding: 10px; border: 1px solid #ddd;'>" . htmlspecialchars($row['nombre']) . "</td>
+            <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>
+                <a class='btn btn-success' role='button' 
+                   style='margin-left: 5px; background: var(--bs-warning); color: var(--bs-yellow);'
+                   href='\Admin\Edición de Productos\modify_cat.php?id=" . $row['id'] . "'>
+                    <i class='far fa-edit' style='font-size: 15px; color: rgb(7, 7, 7)'></i>
+                </a>
+                <button class='btn btn-danger' style='margin-left: 5px' type='button' data-bs-toggle='modal' data-bs-target='#deleteModal" . $row['id'] . "'>
+                  <i class='fa fa-trash' style='font-size: 15px'></i>
+                </button>
+
+                <!-- Modal -->
+                <div class='modal fade' id='deleteModal" . $row['id'] . "' tabindex='-1' aria-labelledby='deleteModalLabel" . $row['id'] . "' aria-hidden='true'>
+                  <div class='modal-dialog'>
+                    <div class='modal-content'>
+                      <div class='modal-header'>
+                        <h5 class='modal-title' id='deleteModalLabel" . $row['id'] . "'>Confirmar Eliminación</h5>
+                        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                      </div>
+                      <div class='modal-body'>
+                        ¿Estás seguro de que deseas eliminar esta categoría?
+                      </div>
+                      <div class='modal-footer'>
+                        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancelar</button>
+                        <form action='./Edición de Productos/php/eliminar_cat.php' method='post' style='display:inline;'>
+                          <input type='hidden' name='id' value='" . $row['id'] . "'>
+                          <button class='btn btn-danger' type='submit'>Eliminar</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </td>
+          </tr>";
                     }
                   } else {
-                    echo "<tr><td colspan='3' style='padding: 10px; border: 1px solid #ddd;'>0 resultados</td></tr>";
+                    echo "<tr><td colspan='2' style='padding: 10px; border: 1px solid #ddd; text-align: center;'>No se encontraron categorías</td></tr>";
                   }
                   ?>
 
@@ -311,6 +362,7 @@ if (!isset($_SESSION['user'])) {
   <script src="assets/js/TableZoomSorter.js"></script>
   <script src="assets/js/Tema_Admin.js"></script>
   <script src="assets/js/WaveClickFX.js"></script>
+  <script src="/Admin/JS/search_input.js"></script>
 </body>
 
 </html>

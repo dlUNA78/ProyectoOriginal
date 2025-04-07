@@ -313,21 +313,6 @@
                   <div id="errorNombre" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
-                <label
-                  class="form-label"
-                  for="descripcion"
-                  style="color: rgb(0, 0, 0)"
-                  >Descripción de la Oferta:</label
-                >
-                <div id="errorDescripcion" class="text-danger"></div>
-                <textarea
-                  class="form-control form-control"
-                  id="descripcion"
-                  rows="3"
-                  required=""
-                ></textarea>
-              </div>
-                <div class="mb-3">
                   <label
                     class="form-label"
                     for="codigo-1"
@@ -352,41 +337,6 @@
                     required=""
                   />
                   <div id="errorDescuento" class="text-danger"></div>
-                </div>
-                <div class="mb-3">
-                <label
-                  class="form-label"
-                  for="categoria"
-                  style="color: rgb(0, 0, 0)"
-                  >Categoría:</label
-                ><select
-                  class="form-select form-select"
-                  id="categoria"
-                  name="categoria"
-                  required=""
-                >
-                  <option value="" disabled selected>Seleccione una categoría</option>
-                  <option value="Automotriz">Automotriz</option>
-                  <option value="Energia Solar">Energia solar</option>
-                  <option value="Hogar">Hogar</option>
-                  <option value="Plaguicidas">Plagnicidas</option>
-                  <option value="Tv satelital">Tv satelital</option>
-                  <option value="Radiocomunicacion">Radiocomunicacion</option>
-                </select>
-                <div id="errorCategoria" class="text-danger"></div>
-              </div>
-                <div class="mb-3">
-                  <label
-                    class="form-label"
-                    for="categoria-1"
-                    style="color: rgb(0, 0, 0)"
-                    >Agregar Imágenes:</label
-                  ><input
-                    class="form-control"
-                    type="file"
-                    multiple=""
-                    accept="image/*"
-                  />
                 </div>
                 <div class="mb-3">
                   <div id="errorEstadoOferta" class="text-danger"></div>

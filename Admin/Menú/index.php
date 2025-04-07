@@ -214,7 +214,7 @@
       <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
           <!-- AUN FALTA AGREGAR EL LOGIN -->
-          <?php include 'menu.php';
+          <?php include 'menú.php';
   ?>
         </div>
         <div
