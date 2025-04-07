@@ -126,11 +126,9 @@
                 margin-right: 20px;
               ">
             <div class="input-group" style="background: var(--bs-light)">
-              <input class="bg-light form-control border-0 small" type="text" placeholder="Buscar...Usuario.."
-                style="background: var(--bs-light); color: rgb(0, 0, 0)" /><button class="btn btn-primary py-0"
-                type="button" style="color: var(--bs-light); background: var(--bs-info)">
-                <i class="fas fa-search"></i>
-              </button>
+              <input id="searchInput" class="bg-light form-control border-0 small" type="text"
+                placeholder="Buscar usuario o nombre..." style="background: var(--bs-light); color: rgb(0, 0, 0)"
+                onkeyup="searchUsers()" />
             </div>
           </form>
         </div>
@@ -173,9 +171,10 @@
 
               // Opción 1: Usando $conn directamente
               $resultado = $conn->query("SELECT * FROM Usuarios");
-              
+
               ?>
               <tbody>
+
                 <!-- Inicia datos ingresados a la tabla de usuarios -->
                 <?php if ($resultado->num_rows > 0): ?>
                   <?php while ($fila = $resultado->fetch_assoc()): ?>
@@ -214,11 +213,15 @@
                     </td>
                   </tr>
                 <?php endif; ?>
+
+
+
                 <!-- Termina los datos ingresados a la tabla de usuarios -->
 
-
               </tbody>
+
               <?php $conn->close(); ?>
+
             </table>
           </div>
           <div class="d-grid float-end">
@@ -271,6 +274,75 @@
       }));
     }
   </script>
+
+  <script>
+
+    //Este script es para buscar los usuarios o nombres en la tabla de usuarios principal
+    //Inicia la función de búsqueda de usuarios
+    function searchUsers() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toUpperCase();
+      const table = document.querySelector('table'); // Asegúrate de que selecciona la tabla correcta
+      const tr = table.getElementsByTagName('tr');
+
+      // Convertimos las filas a un array para poder ordenarlas
+      const rowsArray = Array.from(tr).slice(1); // Excluimos el encabezado
+
+      // Ordenamos las filas según la coincidencia
+      rowsArray.sort((a, b) => {
+        const aUser = a.getElementsByTagName('td')[0].textContent.toUpperCase();
+        const aName = a.getElementsByTagName('td')[1].textContent.toUpperCase();
+        const bUser = b.getElementsByTagName('td')[0].textContent.toUpperCase();
+        const bName = b.getElementsByTagName('td')[1].textContent.toUpperCase();
+
+        // Calculamos puntajes de coincidencia
+        const aUserScore = calculateMatchScore(aUser, filter);
+        const aNameScore = calculateMatchScore(aName, filter);
+        const bUserScore = calculateMatchScore(bUser, filter);
+        const bNameScore = calculateMatchScore(bName, filter);
+
+        // Tomamos el mejor puntaje para cada fila
+        const aMaxScore = Math.max(aUserScore, aNameScore);
+        const bMaxScore = Math.max(bUserScore, bNameScore);
+
+        // Ordenamos de mayor a menor puntaje
+        return bMaxScore - aMaxScore;
+      });
+
+      // Mostramos/ocultamos filas según si coinciden
+      rowsArray.forEach(row => {
+        const user = row.getElementsByTagName('td')[0].textContent.toUpperCase();
+        const name = row.getElementsByTagName('td')[1].textContent.toUpperCase();
+
+        if (user.includes(filter) || name.includes(filter) || filter === '') {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Reinsertamos las filas ordenadas
+      const tbody = table.querySelector('tbody');
+      rowsArray.forEach(row => tbody.appendChild(row));
+    }
+
+    function calculateMatchScore(text, filter) {
+      if (filter === '') return 0;
+
+      // Puntaje más alto si coincide desde el inicio
+      if (text.startsWith(filter)) return 3;
+
+      // Puntaje medio si contiene el filtro
+      if (text.includes(filter)) return 2;
+
+      // Puntaje bajo si coincide parcialmente (solo algunas letras)
+      const filterLetters = filter.split('');
+      const matches = filterLetters.filter(letter => text.includes(letter)).length;
+      return matches / filterLetters.length;
+    }
+  </script>
+  <!-- Termina la función de búsqueda por usuarios o nombres en la tabla de usuarios principal -->
+
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
   <script
