@@ -1,5 +1,31 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
+  
+<?php include 'conexion.php';
+//Verificamos si el usuario y contraseña trae información
+if (isset($_POST['usuario']) || isset($_POST['contraseña'])) {
+  //Se reciben los valores del formulario en variables
+  $usuario = $_POST['usuario'];
+  $pass = $_POST['password'];
+  //Realizar consulta a base de datos
+  $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario' and password = '$pass'";
+  //Se ejecuta la consulta
+  $resultado = $conn->query($sql);
+  //Condicional por si encuentra registro
+  if ($resultado->num_rows  == 1) {
+    session_start();
+    $row = $resultado->fetch_assoc();
+    //Se crea variable de sesion
+    $_SESSION['usuario'] = $row['usuario'];
+    //Se redirecciona al INDEX
+    header("Location:index.php");
+    die();
+  } else {
+    echo '<div class = "alert alert-danger" role = "alert"> Usuario o Contraseña incorrectos.</div>';
+  }
+}
+?>
+  
   <head>
     <meta charset="utf-8" />
     <meta
