@@ -1,6 +1,6 @@
 <?php
-include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
-session_start();
+              include '..\..\config\database.php';
+              session_start();
 
     // Tomar el valor del campo 'usuario' del formulario
     $usuario = $_POST['usuario'];
