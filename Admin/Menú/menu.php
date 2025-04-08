@@ -40,7 +40,7 @@
                     </svg><span style="color: var(--bs-black)">Categorías</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../Ofertas/view_produc.php"><svg xmlns="http://www.w3.org/2000/svg"
+                <a class="nav-link" href="../Ofertas/view_ofer_produc.php"><svg xmlns="http://www.w3.org/2000/svg"
                         width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-currency-dollar"
                         style="color: rgb(0, 0, 0); font-size: 22.6px">
                         <path
