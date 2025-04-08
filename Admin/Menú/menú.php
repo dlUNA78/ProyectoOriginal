@@ -14,7 +14,7 @@
                         aria-expanded="false"
                         data-bs-toggle="dropdown"
                         href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small"><?php
-                                                                                            echo $_SESSION['user']; ?></span><img
+                            echo isset($_SESSION['user']) ? $_SESSION['user'] : 'Guest'; ?></span><img
                             class="border rounded-circle img-profile"
                             src="../assets/img/avatars/avatar1.jpeg" /></a>
 
