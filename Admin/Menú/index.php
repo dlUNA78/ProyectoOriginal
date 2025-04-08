@@ -284,7 +284,7 @@
                 margin-left: 20px;
               "
             >
-              <a class="text-decoration-none" href="../Ofertas/add_offer.html">
+              <a class="text-decoration-none" href="../Ofertas/add_offer.php">
                 <div
                   class="card d-flex justify-content-center align-items-center"
                   style="width: 350px; height: 200px"
