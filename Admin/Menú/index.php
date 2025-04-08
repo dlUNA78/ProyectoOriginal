@@ -147,7 +147,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Ofertas/view_produc.html"
+              <a class="nav-link" href="../Ofertas/view_produc.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
