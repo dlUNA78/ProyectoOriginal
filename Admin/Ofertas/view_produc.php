@@ -95,7 +95,7 @@
 
             <li class="nav-item">
 
-              <a class="nav-link" href="../Menú/products.html"
+              <a class="nav-link" href="../Menú/products.php"
                 ><i
                   class="typcn typcn-shopping-cart"
                   style="color: rgb(0, 0, 0); font-size: 22.6px"
@@ -208,7 +208,7 @@
                   <div
                     class="dropdown-menu shadow dropdown-menu-end animated--grow-in"
                   >
-                    <a class="dropdown-item" href="../Menú/login.html"
+                    <a class="dropdown-item" href="../Menú/login.php"
                       ><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"
                       ></i

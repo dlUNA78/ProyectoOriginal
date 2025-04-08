@@ -109,7 +109,7 @@
               </svg><span style="color: var(--bs-black)">Principal</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/products.html"><i
+            <a class="nav-link" href="../Menú/products.php"><i
                 class="typcn typcn-shopping-cart"
                 style="color: rgb(0, 0, 0); font-size: 22.6px"></i><span style="color: var(--bs-black)">Productos</span></a>
           </li>
@@ -198,7 +198,7 @@
                     src="../assets/img/avatars/avatar1.jpeg" /></a>
                 <div
                   class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                  <a class="dropdown-item" href="../Menú/login.html"><i
+                  <a class="dropdown-item" href="../Menú/login.php"><i
                       class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar Sesión</a>
                 </div>
               </div>

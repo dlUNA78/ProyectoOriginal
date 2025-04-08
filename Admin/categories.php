@@ -15,7 +15,7 @@ session_start();
 $_SESSION['user'] = "Luna";
 
 if (!isset($_SESSION['user'])) {
-  header("Location../Admin/Menú/login.html");
+  header("Location../Admin/Menú/login.php");
   die();
 }
 
@@ -112,7 +112,7 @@ if (!isset($_SESSION['user'])) {
         <hr class="sidebar-divider my-0" />
         <ul class="navbar-nav text-light" id="accordionSidebar">
           <li class="nav-item">
-            <a class="nav-link" href="../Admin/Menú/index.html"><svg
+            <a class="nav-link" href="../Admin/Menú/index.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -131,12 +131,12 @@ if (!isset($_SESSION['user'])) {
               </svg><span style="color: var(--bs-black)">Principal</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Admin/Menú/products.html"><i
+            <a class="nav-link" href="../Admin/Menú/products.php"><i
                 class="typcn typcn-shopping-cart"
                 style="color: rgb(0, 0, 0); font-size: 22.6px"></i><span style="color: var(--bs-black)">Productos</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Admin/categories.html"><svg
+            <a class="nav-link" href="../Admin/categories.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -157,7 +157,7 @@ if (!isset($_SESSION['user'])) {
               </svg><span style="color: var(--bs-black); font-weight: bold">Categorías</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Admin/Ofertas/view_produc.html"><svg
+            <a class="nav-link" href="../Admin/Ofertas/view_produc.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -170,7 +170,7 @@ if (!isset($_SESSION['user'])) {
               </svg><span style="color: var(--bs-black)">Ofertas</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Admin/Menú/user.html"><svg
+            <a class="nav-link" href="../Admin/Menú/user.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"

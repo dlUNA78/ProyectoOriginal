@@ -87,7 +87,7 @@ if (isset($_GET['id'])) {
         <hr class="sidebar-divider my-0" />
         <ul class="navbar-nav text-light" id="accordionSidebar">
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/index.html"><svg
+            <a class="nav-link" href="../Menú/index.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -106,12 +106,12 @@ if (isset($_GET['id'])) {
               </svg><span style="color: var(--bs-black)">Principal</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/products.html"><i
+            <a class="nav-link" href="../Menú/products.php"><i
                 class="typcn typcn-shopping-cart"
                 style="color: rgb(0, 0, 0); font-size: 22.6px"></i><span style="color: var(--bs-black)">Productos</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../categories.html"><svg
+            <a class="nav-link" href="../categories.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -132,7 +132,7 @@ if (isset($_GET['id'])) {
               </svg><span style="color: var(--bs-black)">Categorías</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Ofertas/view_produc.html"><svg
+            <a class="nav-link" href="../Ofertas/view_produc.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -145,7 +145,7 @@ if (isset($_GET['id'])) {
               </svg><span style="color: var(--bs-black)">Ofertas</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../Menú/user.html"><svg
+            <a class="nav-link" href="../Menú/user.php"><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -195,7 +195,7 @@ if (isset($_GET['id'])) {
                     src="../assets/img/avatars/avatar1.jpeg" /></a>
                 <div
                   class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                  <a class="dropdown-item" href="../Menú/login.html"><i
+                  <a class="dropdown-item" href="../Menú/login.php"><i
                       class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar Sesión</a>
                 </div>
               </div>

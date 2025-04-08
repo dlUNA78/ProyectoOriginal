@@ -21,7 +21,7 @@
                     <!-- esto se reeemplazara por los datos del login, queda pendiente -->
                     <div
                         class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                        <a class="dropdown-item" href="../Menú/login.html"><i
+                        <a class="dropdown-item" href="../Menú/login.php"><i
                                 class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar Sesión</a>
                     </div>
                 </div>

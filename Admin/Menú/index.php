@@ -70,7 +70,7 @@
           <hr class="sidebar-divider my-0" />
           <ul class="navbar-nav text-light" id="accordionSidebar">
             <li class="nav-item">
-              <a class="nav-link active" href="../Menú/index.html"
+              <a class="nav-link active" href="../Menú/index.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -99,7 +99,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/products.html"
+              <a class="nav-link" href="../Menú/products.php"
                 ><i
                   class="typcn typcn-shopping-cart"
                   style="
@@ -115,7 +115,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../categories.html"
+              <a class="nav-link" href="../categories.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -147,7 +147,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Ofertas/view_produc.html"
+              <a class="nav-link" href="../Ofertas/view_produc.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -171,7 +171,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/user.html"
+              <a class="nav-link" href="../Menú/user.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -238,7 +238,7 @@
             >
               <a
                 class="text-decoration-none"
-                href="../Edición%20de%20Productos/add_product.html"
+                href="../Edición%20de%20Productos/add_product.php"
               >
                 <div
                   class="card d-flex justify-content-center align-items-center"
@@ -284,7 +284,7 @@
                 margin-left: 20px;
               "
             >
-              <a class="text-decoration-none" href="../Ofertas/add_offer.html">
+              <a class="text-decoration-none" href="../Ofertas/add_offer.php">
                 <div
                   class="card d-flex justify-content-center align-items-center"
                   style="width: 350px; height: 200px"
@@ -331,7 +331,7 @@
             >
               <a
                 class="text-decoration-none"
-                href="../Edición%20de%20Usuarios/add_user.html"
+                href="../Edición%20de%20Usuarios/add_user.php"
               >
                 <div
                   class="card d-flex justify-content-center align-items-center"
@@ -382,7 +382,7 @@
             >
               <a
                 class="text-decoration-none"
-                href="../Edición%20de%20Productos/add_cat.html"
+                href="../Edición%20de%20Productos/add_cat.php"
               >
                 <div
                   class="card d-flex justify-content-center align-items-center"
