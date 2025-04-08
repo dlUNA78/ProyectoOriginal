@@ -1,6 +1,6 @@
 <?php
 // Configuración de la conexión PDO
-include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
+include '..\..\config\database.php';
 session_start();
 
 try {
