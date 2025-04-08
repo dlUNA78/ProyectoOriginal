@@ -225,7 +225,7 @@
               style="color: rgb(0, 0, 0); font-weight: bold">
               Agregar productos
             </h2>
-            <form action="guardar_producto.php" method="POST" enctype="multipart/form-data">
+            <form action="/Admin/Edición de Productos/php/guardarProducto.php" method="POST" enctype="multipart/form-data">
               <div class="mb-3">
                 <label
                   id="producto"
@@ -245,12 +245,7 @@
                   class="form-label"
                   for="descripcion"
                   style="color: rgb(0, 0, 0)">Descripción:</label>
-                <textarea
-                  class="form-control"
-                  id="descripcion"
-                  name="descripcion"
-                  rows="4"
-                  required=""></textarea>
+                  <input class="form-control" type="text" id="name-1" name="Descripción" >
                 </div>
               <div class="mb-3">
                 <label
@@ -292,13 +287,7 @@
                   class="form-label"
                   for="imagenes"
                   style="color: rgb(0, 0, 0)">Agregar Imágenes:</label>
-                <input
-                  class="form-control"
-                  type="file"
-                  id="imagenes"
-                  name="imagenes[]"
-                  multiple=""
-                  accept="image/*" />
+                  <input class="form-control" type="file" name="imagen" style="margin: 0px;margin-top: 14px;">
               </div>
               <div class="d-flex justify-content-end gap-2">
                 <button
@@ -320,7 +309,7 @@
                     font-weight: bold;
                     margin-top: 10px;
                   "
-                  href="../Menú/products.html">Cancelar</a>
+                  href="../Menú/products.php">Cancelar</a>
               </div>
             </form>
           </div>

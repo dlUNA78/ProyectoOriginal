@@ -210,13 +210,15 @@ if (!isset($_SESSION['user'])) {
             method="GET"
             class="input-group"
             id="buscador"
-            style="background: var(--bs-light)">
+            style="background: var(--bs-light); width: 300px; margin-right: 10px; margin-top: 10px">
             <input
               name="query"
               class="bg-light form-control border-0 small"
               type="text"
               placeholder="Buscar categoría..."
-              style="background: var(--bs-light); color: rgb(0, 0, 0)" />
+              style="background: var(--bs-light); color: rgb(0, 0, 0)"
+              onkeyup="searchCategories()"
+              id="searchInput" />
             <button
               class="btn btn-primary py-0"
               type="submit"
@@ -247,7 +249,7 @@ if (!isset($_SESSION['user'])) {
                     </th>
                   </tr>
                 </thead>
-                <tbody class="text-center" id="table_cat">
+                <tbody class="text-center" id="tableBody">
 
                   .
                   <!-- Verificar si hay registros -->
@@ -354,6 +356,64 @@ if (!isset($_SESSION['user'])) {
       </div>
     </div>
   </div>
+
+  <script>
+    // Este script es para buscar las categorías en la tabla de categorías principal
+    // Inicia la función de búsqueda de categorías
+    function searchCategories() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toUpperCase();
+      const table = document.querySelector('table'); // Asegúrate de que selecciona la tabla correcta
+      const tr = table.getElementsByTagName('tr');
+
+      // Convertimos las filas a un array para poder ordenarlas
+      const rowsArray = Array.from(tr).slice(1); // Excluimos el encabezado
+
+      // Ordenamos las filas según la coincidencia
+      rowsArray.sort((a, b) => {
+        const aCategory = a.getElementsByTagName('td')[0].textContent.toUpperCase();
+        const bCategory = b.getElementsByTagName('td')[0].textContent.toUpperCase();
+
+        // Calculamos puntajes de coincidencia
+        const aCategoryScore = calculateMatchScore(aCategory, filter);
+        const bCategoryScore = calculateMatchScore(bCategory, filter);
+
+        // Ordenamos de mayor a menor puntaje
+        return bCategoryScore - aCategoryScore;
+      });
+
+      // Mostramos/ocultamos filas según si coinciden
+      rowsArray.forEach(row => {
+        const category = row.getElementsByTagName('td')[0].textContent.toUpperCase();
+
+        if (category.includes(filter) || filter === '') {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Reinsertamos las filas ordenadas
+      const tbody = table.querySelector('tbody');
+      rowsArray.forEach(row => tbody.appendChild(row));
+    }
+
+    function calculateMatchScore(text, filter) {
+      if (filter === '') return 0;
+
+      // Puntaje más alto si coincide desde el inicio
+      if (text.startsWith(filter)) return 3;
+
+      // Puntaje medio si contiene el filtro
+      if (text.includes(filter)) return 2;
+
+      // Puntaje bajo si coincide parcialmente (solo algunas letras)
+      const filterLetters = filter.split('');
+      const matches = filterLetters.filter(letter => text.includes(letter)).length;
+      return matches / filterLetters.length;
+    }
+  </script>
+  <!-- Termina la función de búsqueda por categorías en la tabla de categorías principal -->
   <script src="assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
