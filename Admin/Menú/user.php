@@ -128,7 +128,7 @@
             <div class="input-group" style="background: var(--bs-light)">
               <input id="searchInput" class="bg-light form-control border-0 small" type="text"
                 placeholder="Buscar usuario o nombre..." style="background: var(--bs-light); color: rgb(0, 0, 0)"
-                onkeyup="searchUsers()" />
+                onkeyup="searchUsers()" id="searchInput" />
             </div>
           </form>
         </div>
@@ -149,31 +149,35 @@
                 border-bottom-right-radius: 2px;
                 border-bottom-left-radius: 2px;
               ">
+
+            <!-- Tabla completa de usuarios -->
             <table class="table table-hover">
               <thead>
-                <tr style="background: var(--bs-info)">
-                  <th style="background: var(--bs-table-accent-bg)">
+                <tr style="background: var(--bs-info)" width="100%">
+                  <th style="background: var(--bs-table-accent-bg)" width="30%">
                     Usuario
                   </th>
-                  <th style="background: var(--bs-table-accent-bg)">
+                  <th style="background: var(--bs-table-accent-bg)" width="30%">
                     Nombre
                   </th>
-                  <th style="background: var(--bs-table-accent-bg)">
+                  <th style="background: var(--bs-table-accent-bg)" width="30%">
                     Imagen
                   </th>
-                  <th style="background: var(--bs-table-accent-bg)">
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">
                     Acción
                   </th>
                 </tr>
               </thead>
+
+              <!-- Se conecta a la base de datos y se obtienen los datos de la tabla Usuarios -->
               <?php
-              include 'C:\Users\PC\Documents\GitHub\ProyectoOriginal\config\database.php';
+              include '..\..\config\database.php';
 
               // Opción 1: Usando $conn directamente
               $resultado = $conn->query("SELECT * FROM Usuarios");
 
               ?>
-              <tbody>
+              <tbody id="userTable">
 
                 <!-- Inicia datos ingresados a la tabla de usuarios -->
                 <?php if ($resultado->num_rows > 0): ?>
@@ -223,6 +227,7 @@
               <?php $conn->close(); ?>
 
             </table>
+            <!-- Termina la tabla de usuarios -->
           </div>
           <div class="d-grid float-end">
             <a class="btn btn-primary" role="button" style="
@@ -274,6 +279,7 @@
       }));
     }
   </script>
+
 
   <script>
 
