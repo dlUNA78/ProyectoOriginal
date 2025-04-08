@@ -153,20 +153,26 @@ $result = $connn->query($sql);
         }
       ];
 
+      <?php
+      if($result->num_rows > 0 ){
+
+        while($row = $result->fetch_assoc()){
+
+      ?>
       // Función para mostrar un producto en la tabla
       function mostrarProducto(producto) {
         const cuerpoTabla = document.getElementById('cuerpoTabla');
         cuerpoTabla.innerHTML = `
-        
+
           <tr>
-            <td>${producto.nombre}</td>
-            <td>${producto.precio}</td>
-            <td>${producto.categoria}</td>
-            <td>${producto.descripcion}</td>
-            <td><img src="${producto.imagen}" style="width: 75px; height: auto" /></td>
+            <td><?=$row['nombre'] ?></td>
+            <td><?=$row['precio'] ?></td>
+            <td><?=$row['Categoria'] ?></td>
+            <td><?=$row['descripcion'] ?></td>
+            <td><img src="<?=$row['imagenes'] ?>" style="width: 75px; height: auto" /></td>
             <td>
               <a class="btn" role="button" style="margin-left: 5px; background: var(--bs-warning);"
-                 href="../Edición%20de%20Productos/modify_product.php?id=${producto.id}">
+                href="../Edición%20de%20Productos/modify_product.php?id=${producto.id}">
                 <i class="far fa-edit" style="font-size: 15px; color: rgb(14, 14, 13)"></i>
               </a>
               <button class="btn btn-danger" style="margin-left: 5px" type="submit"
@@ -177,6 +183,13 @@ $result = $connn->query($sql);
           </tr>
         `;
       }
+      <?php
+        }
+      }else{
+        echo "No hay productos disponibles.";
+      }
+      // Cerrar la conexión a la base de datos
+        ?>
 
       // Función para buscar productos
       function buscarProducto() {
