@@ -49,6 +49,16 @@
   </head>
 
   <body>
+
+  <?php
+// Configuración de la conexión PDO
+include '..\..\config\database.php';
+
+
+
+
+
+?>
     <div id="wrapper">
       <nav
         class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
@@ -208,7 +218,7 @@
                   <div
                     class="dropdown-menu shadow dropdown-menu-end animated--grow-in"
                   >
-                    <a class="dropdown-item" href="../Menú/login.html"
+                    <a class="dropdown-item" href="../Menú/login.php"
                       ><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"
                       ></i
@@ -263,213 +273,103 @@
                 margin-left: 15px;
               "
             >
+            <div style="margin: 10px 15px;">
+  <input
+    type="text"
+    id="searchInput"
+    onkeyup="searchOfertas()"
+    placeholder="Buscar producto por nombre..."
+    class="form-control"
+    style="max-width: 300px;"
+    
+  />
+</div>
               Productos en Oferta
             </h1>
-            <span class="counter pull-right"></span>
-            <div class="container" style="margin-bottom: 19px">
-              <div class="card" id="TableSorterCard" style="width: auto">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="table-responsive">
-                      <table
-                        class="table table-striped table tablesorter"
-                        id="ipi-table"
-                      >
-                        <thead class="thead-dark">
-                          <tr data-id="1">
-                            <th
-                              class="text-center"
-                              style="background: var(--bs-info)"
-                            >
-                              Nombre del Producto:
-                            </th>
-                            <th
-                              class="text-center"
-                              style="background: var(--bs-info)"
-                            >
-                            Descripción de la Oferta:
-                            </th>
-                            <th
-                              class="text-center"
-                              style="background: var(--bs-info)"
-                            >
-                              Precio:
-                            </th>
-                            <th
-                              class="text-center"
-                              style="background: var(--bs-info)"
-                            >
-                              Precio con descuento:
-                            </th>
+            
+            
+<!-- no borara por que se me descuadra -->
+            <div class="d-grid float-end" style="margin-right: 50px"> 
+  
+</div>
 
+<div>
+  
+  <div class="table-responsive text-center d-flex" style="margin-left: 50px; margin-right: 50px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;">
+  
+    <!-- Tabla de Ofertas -->
+    <table class="table table-hover">
+      <thead>
+        <tr style="background: var(--bs-info)" width="100%">
+          <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre de la Oferta</th>
+          <th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>
+          <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
+          <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
+          <th style="background: var(--bs-table-accent-bg)" width="20%">Categoría</th>
+          <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
+          <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
+        </tr>
+      </thead>
 
-                            <th
-                              class="text-center"
-                              style="background: var(--bs-info)"
-                            >
-                              categoria:
-                            </th>
+      <?php
+      include '..\..\config\database.php';
+      $resultado = $conn->query("SELECT * FROM ofertas");
+      ?>
 
+      <tbody id="offerTable">
 
-                            <th
-                              class="text-center"
-                              style="background: var(--bs-info)"
-                            >
-                              Imagenes
-                            </th>
+        <!-- Datos de la tabla -->
+        <?php if ($resultado->num_rows > 0): ?>
+          <?php while ($fila = $resultado->fetch_assoc()): ?>
+            <tr>
+              <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
+              <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
+              <td>$<?php echo number_format($fila['precio'], 2); ?></td>
+              <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
+              <td><?php echo htmlspecialchars($fila['categoria']); ?></td>
+              <td><?php echo htmlspecialchars($fila['imagen']); ?></td>
+            
+              
+              <!-- Columna de Imagen -->
+              
+             
+              <!-- Acciones -->
+              <td style="text-align: center">
+                <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
+                  href="..\Edición de Productos\modify_offer.php?id=<?php echo urlencode($fila['id_oferta']); ?>">
+                  <i class="fa fa-edit" style="color: var(--bs-black)"></i>
+                </a>
+                <form method="POST" action="../Edición%20de%20Ofertas/delete_offer.php" style="display:inline;">
+                  <input type="hidden" name="id_oferta" value="<?php echo htmlspecialchars($fila['id_oferta']); ?>">
+                  <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
+                    <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <?php endwhile; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="7" style="text-align: center; font-weight: bold;">
+              <p>No hay ofertas disponibles actualmente</p>
+            </td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
 
-                            <th
-                              class="text-center filter-false sorter-false"
-                              style="background: var(--bs-info); width: 150px"
-                            >
-                              Acciones
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody class="text-center">
-                          <tr data-id="2">
-                            <td>Molino</td>
-                            <td>
-                              Prepara masa fresca y de calidad con nuestro
-                              molino para masa, ideal para moler maíz y otros
-                              granos con facilidad. Disponible en versiones
-                              manual, eléctrica y de motor, garantiza una
-                              molienda uniforme y sin esfuerzo.
-                            </td>
-                            <td>500</td>
-                            <td>250</td>
-                            <td>hogar</td>
-                            <td>
-                              <img
-                                src="../assets/img/molino.png"
-                                style="width: 75px; height: auto"
-                              />
-                            </td>
+      <?php $conn->close(); ?>
 
-                            <td
-                              class="text-center align-middle"
-                              style="max-height: 60px; height: 60px"
-                            >
-                              <!-- Botones de acciones -->
-                              <a
-                                class="btn"
-                                role="button"
-                                onclick="editButtonClick(this)"
-                                href="../Edición%20de%20Productos/modify_offer.php"
-                                style="background: #f6c23e"
-                                ><svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1em"
-                                  height="1em"
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16"
-                                  class="bi bi-pencil-square"
-                                  style="color: rgb(0, 0, 0)"
-                                >
-                                  <path
-                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
-                                  ></path>
-                                  <path
-                                    fill-rule="evenodd"
-                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-                                  ></path></svg></a
-                              ><a
-                                class="btn"
-                                role="button"
-                                style="
-                                  margin-left: 5px;
-                                  background: var(--bs-form-invalid-color);
-                                "
-                                data-bs-toggle="modal"
-                                data-bs-target="#miModal"
-                                href="#"
-                                ><i
-                                  class="fas fa-trash btnNoBorders"
-                                  style="color: var(--bs-light)"
-                                ></i
-                              ></a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Plaguicida</td>
-                            <td>
-                              Mantén tus plantas libres de plagas con nuestro
-                              plaguicida de alta eficacia, diseñado para
-                              eliminar insectos y enfermedades sin dañar tus
-                              cultivos. Ideal para uso en jardines, huertos y
-                              cultivos agrícolas.
-                            </td>
-                            <td>300</td>
-                            <td>175</td>
-                            <td>Hogar</td>
-                            <td>
-                              <img
-                                src="../assets/img/clipboard-image-2.png"
-                                style="width: 75px; height: auto"
-                              />
-                            </td>
+    </table>
+    <!-- Fin de la tabla de ofertas -->
+  </div>
+          <div class="d-grid float-end">
+            <a class="btn btn-primary" role="button" style="
+                  background: var(--bs-info);
+                  font-weight: bold;
+                  margin-right: 50px;
+                " href="../Ofertas/add_offer.php">Agregar nueva oferta</a>
+          </div>
 
-                            <td
-                              class="text-center align-middle"
-                              style="max-height: 60px; height: 60px"
-                            >
-                              <a
-                                class="btn"
-                                role="button"
-                                onclick="editButtonClick(this)"
-                                href="../Edición%20de%20Productos/modify_offer.php"
-                                style="
-                                  color: var(--bs-black);
-                                  background: var(--bs-warning);
-                                "
-                                ><svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1em"
-                                  height="1em"
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16"
-                                  class="bi bi-pencil-square"
-                                >
-                                  <path
-                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
-                                  ></path>
-                                  <path
-                                    fill-rule="evenodd"
-                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-                                  ></path></svg></a
-                              ><a
-                                class="btn"
-                                role="button"
-                                style="
-                                  margin-left: 5px;
-                                  color: var(--bs-light);
-                                  background: var(--bs-danger);
-                                "
-                                data-bs-toggle="modal"
-                                data-bs-target="#miModal"
-                                href="#"
-                                ><i
-                                  class="fas fa-trash btnNoBorders"
-                                  style="color: var(--bs-light)"
-                                ></i
-                              ></a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="d-grid float-end">
-              <a
-                class="btn btn-primary"
-                role="button"
-                style="background: var(--bs-info); font-weight: bold"
-                href="../Ofertas/add_offer.php"
-                >Agregar una Nueva Oferta</a
-              >
             </div>
           </div>
         </div>
@@ -515,7 +415,96 @@
           </div>
         </div>
       </div>
+      
     </div>
+    <script>
+    function cargarDatosModificacion(id, nombre, precio) {
+      localStorage.setItem('usuarioEditar', JSON.stringify({
+        id: id,
+        nombre: nombre,
+        contraseña: precio,
+      }));
+    }
+  </script>
+
+
+    <script>
+
+    //Este script es para buscar los usuarios o nombres en la tabla de usuarios principal
+    //Inicia la función de búsqueda de usuarios
+    function searchUsers() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toUpperCase();
+      const table = document.querySelector('table'); // Asegúrate de que selecciona la tabla correcta
+      const tr = table.getElementsByTagName('tr');
+
+      // Convertimos las filas a un array para poder ordenarlas
+      const rowsArray = Array.from(tr).slice(1); // Excluimos el encabezado
+
+      // Ordenamos las filas según la coincidencia
+      rowsArray.sort((a, b) => {
+        const aUser = a.getElementsByTagName('td')[0].textContent.toUpperCase();
+        const aName = a.getElementsByTagName('td')[1].textContent.toUpperCase();
+        const bUser = b.getElementsByTagName('td')[0].textContent.toUpperCase();
+        const bName = b.getElementsByTagName('td')[1].textContent.toUpperCase();
+        
+
+        // Calculamos puntajes de coincidencia
+        const aUserScore = calculateMatchScore(aUser, filter);
+        const aNameScore = calculateMatchScore(aName, filter);
+        const bUserScore = calculateMatchScore(bUser, filter);
+        const bNameScore = calculateMatchScore(bName, filter);
+
+        // Tomamos el mejor puntaje para cada fila
+        const aMaxScore = Math.max(aUserScore, aNameScore);
+        const bMaxScore = Math.max(bUserScore, bNameScore);
+
+        // Ordenamos de mayor a menor puntaje
+        return bMaxScore - aMaxScore;
+      });
+
+      // Mostramos/ocultamos filas según si coinciden
+      rowsArray.forEach(row => {
+        const user = row.getElementsByTagName('td')[0].textContent.toUpperCase();
+        const name = row.getElementsByTagName('td')[1].textContent.toUpperCase();
+
+        if (user.includes(filter) || name.includes(filter) || filter === '') {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Reinsertamos las filas ordenadas
+      const tbody = table.querySelector('tbody');
+      rowsArray.forEach(row => tbody.appendChild(row));
+    }
+
+    function calculateMatchScore(text, filter) {
+      if (filter === '') return 0;
+
+      // Puntaje más alto si coincide desde el inicio
+      if (text.startsWith(filter)) return 3;
+
+      // Puntaje medio si contiene el filtro
+      if (text.includes(filter)) return 2;
+
+      // Puntaje bajo si coincide parcialmente (solo algunas letras)
+      const filterLetters = filter.split('');
+      const matches = filterLetters.filter(letter => text.includes(letter)).length;
+      return matches / filterLetters.length;
+    }
+  </script>
+  <!-- Termina la función de búsqueda por usuarios o nombres en la tabla de usuarios principal -->
+
+    
+
+
+
+
+
+
+
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
