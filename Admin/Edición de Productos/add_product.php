@@ -309,7 +309,7 @@
                     font-weight: bold;
                     margin-top: 10px;
                   "
-                  href="../Menú/products.html">Cancelar</a>
+                  href="../Menú/products.php">Cancelar</a>
               </div>
             </form>
           </div>
