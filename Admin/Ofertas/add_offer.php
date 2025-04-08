@@ -49,6 +49,16 @@
   </head>
 
   <body>
+    <?php
+// Configuración de la conexión PDO
+include '..\..\config\database.php';
+
+
+
+?>
+
+
+
     <!-- Inicia Modal -->
     <div class="modal fade" role="dialog" tabindex="-1" id="Agregado">
       <div class="modal-dialog" role="document">
@@ -307,7 +317,7 @@
                   <input
                     class="form-control form-control"
                     type="text"
-                    id="nombre"
+                    id="search"
                     required=""
                   />
                   <div id="errorNombre" class="text-danger"></div>
