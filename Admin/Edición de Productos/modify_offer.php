@@ -49,6 +49,13 @@
   </head>
 
   <body>
+
+
+  <?php
+// Configuración de la conexión PDO
+include '..\..\config\database.php';
+?>
+
     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -231,7 +238,7 @@
                   <div
                     class="dropdown-menu shadow dropdown-menu-end animated--grow-in"
                   >
-                    <a class="dropdown-item" href="../Menú/login.html"
+                    <a class="dropdown-item" href="../Menú/login.php"
                       ><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"
                       ></i
@@ -307,6 +314,7 @@
                     font-weight: bold;
                     margin-top: 10px;
                   "
+                  href="../Ofertas/view_ofer_produc.php"
                   >Agregar</button
                 ><a
                   class="btn btn-secondary"
@@ -316,9 +324,13 @@
                     font-weight: bold;
                     margin-top: 10px;
                   "
-                  href="../Ofertas/view_produc.php"
+                  href="../Ofertas/view_ofer_produc.php"
                   >Cancelar</a
                 >
+
+
+
+
               </div>
             </form>
           </div>

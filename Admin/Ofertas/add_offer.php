@@ -49,6 +49,16 @@
   </head>
 
   <body>
+    <?php
+// Configuración de la conexión PDO
+include '..\..\config\database.php';
+
+
+
+?>
+
+
+
     <!-- Inicia Modal -->
     <div class="modal fade" role="dialog" tabindex="-1" id="Agregado">
       <div class="modal-dialog" role="document">
@@ -261,7 +271,7 @@
                     class="dropdown-menu shadow dropdown-menu-end animated--grow-in"
                   >
 
-                    <a class="dropdown-item" href="../Menú/login.html"
+                    <a class="dropdown-item" href="../Menú/login.php"
                       ><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"
                       ></i
@@ -307,7 +317,7 @@
                   <input
                     class="form-control form-control"
                     type="text"
-                    id="nombre"
+                    id="search"
                     required=""
                   />
                   <div id="errorNombre" class="text-danger"></div>
