@@ -1,4 +1,37 @@
 <!DOCTYPE html>
+<?php
+// Configuración de la conexión PDO
+include '..\..\config\database.php';
+
+
+// Lógica AJAX para búsqueda
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
+  $busqueda = $_POST['query'];
+  $stmt = $conn->prepare("SELECT id AS id_producto, nombre, precio FROM productos WHERE nombre LIKE ?");
+  $like = "%$busqueda%";
+  $stmt->bind_param("s", $like);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  $datos = [];
+  while ($row = $result->fetch_assoc()) {
+      $datos[] = $row;
+  }
+
+  echo json_encode($datos);
+  exit;
+}
+
+
+?>
+
+
+
+
+
+
+
+
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -49,14 +82,6 @@
   </head>
 
   <body>
-    <?php
-// Configuración de la conexión PDO
-include '..\..\config\database.php';
-
-
-
-?>
-
 
 
     <!-- Inicia Modal -->
@@ -299,80 +324,217 @@ include '..\..\config\database.php';
               margin-bottom: 40px;
             "
           >
-            <div class="card shadow-sm p-4">
-              <h2
-                class="text-center mb-4"
-                style="color: rgb(0, 0, 0); font-weight: bold"
-              >
-                Agregar Oferta
-              </h2>
-              <form novalidate>
-                <div class="mb-3">
-                  <label
-                    class="form-label"
-                    for="nombre"
-                    style="color: rgb(0, 0, 0)"
-                    >Nombre del Producto:</label
-                  >
-                  <input
-                    class="form-control form-control"
-                    type="text"
-                    id="search"
-                    required=""
-                  />
-                  <div id="errorNombre" class="text-danger"></div>
-                </div>
-                <div class="mb-3">
-                  <label
-                    class="form-label"
-                    for="codigo-1"
-                    style="color: rgb(0, 0, 0)"
-                    >Precio Normal:</label
-                  >
-                  <input id="sProducto" class="form-control" type="search" />
-                  <div id="errorsProduct" class="text-danger"></div>
-                </div>
-                <div class="mb-3">
-                  <label
-                    class="form-label"
-                    for="existencia"
-                    style="color: rgb(0, 0, 0)"
-                    >Precio con Descuento:</label
-                  >
-                  <input
-                    id="descuento"
-                    class="form-control form-control"
-                    type="number"
-                    id="descuento"
-                    required=""
-                  />
-                  <div id="errorDescuento" class="text-danger"></div>
-                </div>
-                <div class="mb-3">
-                  <div id="errorEstadoOferta" class="text-danger"></div>
-                </div>
-                <div class="d-flex justify-content-end gap-2">
-                  <button
-                    id="btn_agregar"
-                    class="btn btn-primary"
-                    type="submit"
-                    style="
-                      background: var(--bs-info);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    "
-                  >
-                    Agregar</button
-                  ><a
-                    class="btn btn-secondary"
-                    role="button"
-                    style="
-                      background: var(--bs-success);
-                      font-weight: bold;
-                      margin-top: 10px;
-                    "
-                    href="../Ofertas/view_ofer_produc.php"
-                    >Cancelar</a>
+<div class="card shadow-sm p-4">
+  <h2 class="text-center mb-4" style="color: rgb(0, 0, 0); font-weight: bold">
+    Agregar Oferta
+  </h2>
+  <form id="form_oferta" method="POST" action="add_offer.php" novalidate>
+    <!-- Buscador de producto -->
+    <div class="mb-3 position-relative">
+      <label class="form-label" for="search" style="color: rgb(0, 0, 0)"> Nombre del Producto:</label>
+      <input class="form-control" type="text" id="search" autocomplete="off" required name="Nombre_b"/>
+      <div id="sugerencias" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+      <!-- <input type="hidden" name="id_producto" id="id_producto" /> -->
+      <div id="errorNombre" class="text-danger"></div>
+    </div>
+
+    <!-- Precio normal (auto) -->
+    <div class="mb-3">
+      <label class="form-label" style="color: rgb(0, 0, 0)">Precio Normal:</label>
+      <input id="precio" class="form-control" type="text" readonly name="precio_normal" />
+      <div id="errorsProduct" class="text-danger"></div>
+    </div>
+
+    <!-- Precio con descuento -->
+    <div class="mb-3">
+      <label class="form-label" style="color: rgb(0, 0, 0)">Precio con Descuento:</label>
+      <input id="descuento" name="precio_oferta" class="form-control" type="number" required />
+      <div id="errorDescuento" class="text-danger"></div>
+    </div>
+
+    <!-- Fecha inicio -->
+    <div class="mb-3">
+      <label style="color: rgb(0, 0, 0)">Fecha de inicio:</label>
+      <input type="date" name="Fecha_inicio" class="form-control" required />
+    </div>
+
+    <!-- Fecha expiración -->
+    <div class="mb-3">
+      <label style="color: rgb(0, 0, 0)">Fecha de expiración:</label>
+      <input type="date" name="Fecha_expirada" class="form-control" required />
+    </div>
+
+   <!-- <div class="mb-3">
+      <div id="errorEstadoOferta" class="text-danger"></div>
+    </div> -->
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-end gap-2">
+      <button type="submit" class="btn btn-primary" style="font-weight: bold; margin-top: 10px;" href="../Ofertas/view_ofer_produc.php">Agregar Oferta</button>
+      <a class="btn btn-secondary" role="button" style="background: var(--bs-success); font-weight: bold; margin-top: 10px;" href="../Ofertas/view_ofer_produc.php">Cancelar</a>
+    </div>
+  </form>
+  <div id="message"></div>  <!-- Para mostrar los mensajes de éxito o error -->
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+  $("#search").keyup(function () {
+    let query = $(this).val();
+
+    if (query.length >= 2) {
+      $.ajax({
+        url: "buscar_producto.php", // Debes crear este archivo
+        method: "POST",
+        data: { query: query },
+        success: function (data) {
+          let productos = JSON.parse(data);
+          let sugerencias = "";
+
+          if (productos.length > 0) {
+            productos.forEach(function (producto) {
+              sugerencias += `<button type="button" class="list-group-item list-group-item-action sugerencia-item"
+                            data-id="${producto.id}"
+                            data-nombre="${producto.nombre}"
+                            data-precio="${producto.precio}">
+                            ${producto.nombre}
+                          </button>`;
+            });
+            $("#sugerencias").html(sugerencias).show();
+          } else {
+            $("#sugerencias").hide();
+          }
+        }
+      });
+    } else {
+      $("#sugerencias").hide();
+    }
+  });
+
+  $(document).on("click", ".sugerencia-item", function () {
+    let id = $(this).data("id");
+    let nombre = $(this).data("nombre");
+    let precio = $(this).data("precio");
+
+    $("#search").val(nombre);
+    $("#id").val(id);
+    $("#precio").val(precio);
+    $("#sugerencias").hide();
+  });
+});
+</script>
+
+
+
+<?php
+//session_start(); // Para poder usar variables de sesión si necesitas mostrar mensajes
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $id_productob = $_POST['Nombre_b'];
+    $precio_normal = $_POST['precio_normal'];
+    $precio_oferta = $_POST['precio_oferta'];
+    $fecha_inicio = $_POST['Fecha_inicio'];
+    $fecha_expirada = $_POST['Fecha_expirada'];
+
+    $sql = "INSERT INTO ofertas (	Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada) 
+            VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada')";
+
+    if (mysqli_query($conn, $sql)) {
+        // Guarda un mensaje para mostrar después
+        $_SESSION['success'] = "¡Oferta agregada correctamente!";
+    } else {
+        $_SESSION['error'] = "Error al agregar la oferta: " . mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+//Este script es para buscar 
+function searchUsers() {
+  const input = document.getElementById('searchInput');
+  const filter = input.value.toUpperCase();
+  const table = document.querySelector('table'); // Asegúrate de que selecciona la tabla correcta
+  const tr = table.getElementsByTagName('tr');
+
+  // Convertimos las filas a un array para poder ordenarlas
+  const rowsArray = Array.from(tr).slice(1); // Excluimos el encabezado
+
+  // Ordenamos las filas según la coincidencia
+  rowsArray.sort((a, b) => {
+    const aUser = a.getElementsByTagName('td')[0].textContent.toUpperCase();
+    const aName = a.getElementsByTagName('td')[1].textContent.toUpperCase();
+    const bUser = b.getElementsByTagName('td')[0].textContent.toUpperCase();
+    const bName = b.getElementsByTagName('td')[1].textContent.toUpperCase();
+    
+
+    // Calculamos puntajes de coincidencia
+    const aUserScore = calculateMatchScore(aUser, filter);
+    const aNameScore = calculateMatchScore(aName, filter);
+    const bUserScore = calculateMatchScore(bUser, filter);
+    const bNameScore = calculateMatchScore(bName, filter);
+
+    // Tomamos el mejor puntaje para cada fila
+    const aMaxScore = Math.max(aUserScore, aNameScore);
+    const bMaxScore = Math.max(bUserScore, bNameScore);
+
+    // Ordenamos de mayor a menor puntaje
+    return bMaxScore - aMaxScore;
+  });
+
+  // Mostramos/ocultamos filas según si coinciden
+  rowsArray.forEach(row => {
+    const user = row.getElementsByTagName('td')[0].textContent.toUpperCase();
+    const name = row.getElementsByTagName('td')[1].textContent.toUpperCase();
+
+    if (user.includes(filter) || name.includes(filter) || filter === '') {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+
+  // Reinsertamos las filas ordenadas
+  const tbody = table.querySelector('tbody');
+  rowsArray.forEach(row => tbody.appendChild(row));
+}
+
+function calculateMatchScore(text, filter) {
+  if (filter === '') return 0;
+
+  // Puntaje más alto si coincide desde el inicio
+  if (text.startsWith(filter)) return 3;
+
+  // Puntaje medio si contiene el filtro
+  if (text.includes(filter)) return 2;
+
+  // Puntaje bajo si coincide parcialmente (solo algunas letras)
+  const filterLetters = filter.split('');
+  const matches = filterLetters.filter(letter => text.includes(letter)).length;
+  return matches / filterLetters.length;
+}
+</script>
+
+
+</div>
+
                 </div>
               </form>
             </div>

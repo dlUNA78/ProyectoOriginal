@@ -51,10 +51,76 @@
   <body>
 
 
-  <?php
+
+<?php
 // Configuración de la conexión PDO
 include '..\..\config\database.php';
+
+
+if (isset($_GET['id'])) {
+    $id_oferta = $_GET['id'];
+    
+    $stmt = $conn->prepare("SELECT * FROM ofertas WHERE id = ?");
+    $stmt->bind_param("i", $id_oferta);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    if ($resultado->num_rows === 1) {
+        $oferta = $resultado->fetch_assoc();
+    } else {
+        echo "No se encontró la oferta";
+        exit;
+    }
+} else {
+    echo "ID de oferta no proporcionado";
+    exit;
+}
 ?>
+
+
+
+<?php
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $id = $_POST['id'];
+    $nombre = $_POST['Nombre_oferta'];
+    $precio = $_POST['precio'];
+    $precio_oferta = $_POST['precio_oferta'];
+    $fecha_inicio = $_POST['Fecha_inicio'];
+    $fecha_expirada = $_POST['Fecha_expirada'];
+
+    // Si subió una nueva imagen
+    //if (!empty($_FILES['imagen']['name'])) {
+    //    $nombre_imagen = $_FILES['imagen']['name'];
+    //    $ruta_imagen = '../../ruta/imagenes/' . $nombre_imagen; // Ajusta la ruta según tu estructura
+    //    move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta_imagen);
+    //} else {
+        // Mantener la imagen anterior
+    //    $query = $conn->prepare("SELECT imagen FROM ofertas WHERE id_oferta = ?");
+    //    $query->bind_param("i", $id);
+    //    $query->execute();
+    //    $resultado = $query->get_result()->fetch_assoc();
+    //    $nombre_imagen = $resultado['imagen'];
+    //}
+
+    $stmt = $conn->prepare("UPDATE ofertas SET Nombre_oferta=?, precio=?, precio_oferta=?, Fecha_inicio=?, Fecha_expirada=? WHERE id=?");
+    $stmt->bind_param("sddsssi", $nombre, $precio, $precio_oferta, $fecha_inicio, $fecha_expirada, $nombre_imagen, $id);
+
+    if ($stmt->execute()) {
+        header("Location: ../Ofertas/listado_ofertas.php?actualizado=1");
+        exit;
+    } else {
+        echo "Error al actualizar la oferta";
+    }
+}
+?>
+
+
+
+
+
+
+
 
     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
       <div class="modal-dialog" role="document">
@@ -302,6 +368,22 @@ include '..\..\config\database.php';
                 />
                 <div id="errorPrecioNew" class="text-danger"></div>
               </div>
+
+              <div class="mb-3">
+                <label
+                required=""
+                style="color: rgb(0, 0, 0)"
+                >Fecha de inicio:</label>
+              <input type="date" name="fecha_salida"><br><br>
+              </div>
+
+              <div class="mb-3">
+              <label
+              style="color: rgb(0, 0, 0)"
+              required=""
+              >Fecha de expiracion:</label>
+              <input type="date" name="fecha_salida"><br>
+              </div>
               
               <div class="mb-3"></div>
               <div class="d-flex justify-content-end gap-2">
@@ -326,11 +408,12 @@ include '..\..\config\database.php';
                   "
                   href="../Ofertas/view_ofer_produc.php"
                   >Cancelar</a>
-
-
-
-
               </div>
+
+
+
+
+              
             </form>
           </div>
         </div>

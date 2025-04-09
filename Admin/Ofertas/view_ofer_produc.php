@@ -9,7 +9,7 @@ $hoy = date("Y-m-d");
 $sql = "DELETE FROM ofertas WHERE Fecha_expirada < '$hoy'";
 
 if ($conn->query($sql) === TRUE) { 
-    echo "Ofertas vencidas eliminadas correctamente.";
+   // echo "Ofertas vencidas eliminadas correctamente.";
 } else {
     echo "Error eliminando ofertas: " . $conn->error;
 }
@@ -65,18 +65,8 @@ if ($conn->query($sql) === TRUE) {
     />
     <link rel="stylesheet" href="../assets/css/untitled.css" />
   </head>
+<body>
 
-  <body>
-
-  <?php
-// Configuración de la conexión PDO
-include '..\..\config\database.php';
-
-
-
-
-
-?>
     <div id="wrapper">
       <nav
         class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
@@ -344,7 +334,7 @@ include '..\..\config\database.php';
               <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
               <td>$<?php echo number_format($fila['precio'], 2); ?></td>
               <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
-              <td><?php echo $fila['Fecha_inico'] !== null ? htmlspecialchars($fila['Fecha_inico']) : 'N/A'; ?></td>
+              <td><?php echo $fila['Fecha_inicio'] !== null ? htmlspecialchars($fila['Fecha_inicio']) : 'N/A'; ?></td>
               <td><?php echo $fila['Fecha_expirada'] !== null ? htmlspecialchars($fila['Fecha_expirada']) : 'N/A'; ?></td>
 
               
@@ -448,8 +438,8 @@ include '..\..\config\database.php';
 
     <script>
 
-    //Este script es para buscar los usuarios o nombres en la tabla de usuarios principal
-    //Inicia la función de búsqueda de usuarios
+  
+    //Inicia la función de búsqueda de nombres
     function searchUsers() {
       const input = document.getElementById('searchInput');
       const filter = input.value.toUpperCase();
