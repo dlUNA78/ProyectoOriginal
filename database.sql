@@ -36,13 +36,24 @@ CREATE TABLE IF NOT EXISTS imagenes_producto (
 );
 
 -- Tabla de ofertas (referencia a un producto)
-CREATE TABLE IF NOT EXISTS ofertas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_producto INT NOT NULL,
-    precio_oferta DECIMAL(10, 2) NOT NULL,
-    descripcion TEXT,
-    FOREIGN KEY (id_producto) REFERENCES productos(id) ON DELETE CASCADE
-);
+--CREATE TABLE IF NOT EXISTS ofertas (
+--    id INT AUTO_INCREMENT PRIMARY KEY,
+--   id_producto INT NOT NULL,
+--   precio_oferta DECIMAL(10, 2) NOT NULL,
+--    descripcion TEXT,
+--    FOREIGN KEY (id_producto) REFERENCES productos(id) ON DELETE CASCADE
+--);
+
+CREATE TABLE `ofertas` (
+  `id_oferta` int NOT NULL,
+  `Nombre_oferta` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `precio` int NOT NULL,
+  `precio_oferta` decimal(10,2) NOT NULL,
+  `imagen` varchar(100) NOT NULL,
+  `Fecha_inicio` date NOT NULL,
+  `Fecha_expirada` date NOT NULL,
+  `id_producto` int NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Tabla de imágenes para ofertas (si son distintas a las del producto)
 CREATE TABLE IF NOT EXISTS imagenes_oferta (
