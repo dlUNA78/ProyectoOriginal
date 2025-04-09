@@ -1,4 +1,22 @@
 <!DOCTYPE html>
+
+<?php
+
+include '..\..\config\database.php';
+//eliminar ofertas caducadas
+// Eliminar ofertas cuya fecha de salida es menor que hoy
+$hoy = date("Y-m-d");
+$sql = "DELETE FROM ofertas WHERE Fecha_expirada < '$hoy'";
+
+if ($conn->query($sql) === TRUE) { 
+    echo "Ofertas vencidas eliminadas correctamente.";
+} else {
+    echo "Error eliminando ofertas: " . $conn->error;
+}
+
+//$conn->close(); 
+?>
+
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -301,12 +319,12 @@ include '..\..\config\database.php';
     <table class="table table-hover">
       <thead>
         <tr style="background: var(--bs-info)" width="100%">
+          <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
           <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre de la Oferta</th>
-          <th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>
           <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
           <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
-          <th style="background: var(--bs-table-accent-bg)" width="20%">Categoría</th>
-          <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
+          <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de inicio</th>
+          <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de expiracion</th>
           <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
         </tr>
       </thead>
@@ -322,13 +340,13 @@ include '..\..\config\database.php';
         <?php if ($resultado->num_rows > 0): ?>
           <?php while ($fila = $resultado->fetch_assoc()): ?>
             <tr>
+              <td><?php echo htmlspecialchars($fila['imagen']); ?></td>
               <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
-              <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
               <td>$<?php echo number_format($fila['precio'], 2); ?></td>
               <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
-              <td><?php echo htmlspecialchars($fila['categoria']); ?></td>
-              <td><?php echo htmlspecialchars($fila['imagen']); ?></td>
-            
+              <td><?php echo $fila['Fecha_inico'] !== null ? htmlspecialchars($fila['Fecha_inico']) : 'N/A'; ?></td>
+              <td><?php echo $fila['Fecha_expirada'] !== null ? htmlspecialchars($fila['Fecha_expirada']) : 'N/A'; ?></td>
+
               
               <!-- Columna de Imagen -->
               

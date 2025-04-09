@@ -325,8 +325,7 @@ include '..\..\config\database.php';
                     margin-top: 10px;
                   "
                   href="../Ofertas/view_ofer_produc.php"
-                  >Cancelar</a
-                >
+                  >Cancelar</a>
 
 
 

@@ -371,9 +371,8 @@ include '..\..\config\database.php';
                       font-weight: bold;
                       margin-top: 10px;
                     "
-                    href="../Ofertas/view_produc.php"
-                    >Cancelar</a
-                  >
+                    href="../Ofertas/view_ofer_produc.php"
+                    >Cancelar</a>
                 </div>
               </form>
             </div>
