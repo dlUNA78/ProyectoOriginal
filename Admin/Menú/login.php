@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="en">
-  
-<?php include 'conexion.php';
+<?php include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
+
+
 //Verificamos si el usuario y contraseña trae información
-if (isset($_POST['usuario']) || isset($_POST['contraseña'])) {
+if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
   //Se reciben los valores del formulario en variables
   $usuario = $_POST['usuario'];
-  $pass = $_POST['password'];
+  $pass = $_POST['contraseña'];
   //Realizar consulta a base de datos
-  $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario' and password = '$pass'";
+  $sql = "SELECT * FROM usuarios WHERE email = '$usuario' and password = '$pass'";
   //Se ejecuta la consulta
   $resultado = $conn->query($sql);
   //Condicional por si encuentra registro
@@ -16,15 +16,18 @@ if (isset($_POST['usuario']) || isset($_POST['contraseña'])) {
     session_start();
     $row = $resultado->fetch_assoc();
     //Se crea variable de sesion
-    $_SESSION['usuario'] = $row['usuario'];
+    $_SESSION['user'] = $row['nombre'];
     //Se redirecciona al INDEX
     header("Location:index.php");
     die();
   } else {
     echo '<div class = "alert alert-danger" role = "alert"> Usuario o Contraseña incorrectos.</div>';
-  }
-}
+}}
+  
 ?>
+<html data-bs-theme="light" lang="en">
+  
+
   
   <head>
     <meta charset="utf-8" />
@@ -86,7 +89,7 @@ if (isset($_POST['usuario']) || isset($_POST['contraseña'])) {
         >
           Iniciar Sesión
         </h3>
-        <form id="FormularioLogin" novalidate>
+        <form method="post">
           <div class="mb-3">
             <label
               class="form-label"
@@ -94,8 +97,8 @@ if (isset($_POST['usuario']) || isset($_POST['contraseña'])) {
               >Usuario</label
             ><input
               class="form-control form-control"
-              oninput="validarUsuario()"
-              id="usuario"
+             
+              name="usuario"
               type="text"
             />
             <div id="errorUsuario" class="text-danger"></div>
@@ -107,8 +110,8 @@ if (isset($_POST['usuario']) || isset($_POST['contraseña'])) {
               >Contraseña</label
             ><input
               class="form-control form-control"
-              oninput="validarContraseñaEnTiempoReal()"
-              id="contraseña"
+              
+              name="contraseña"
               type="password"
             />
             <div id="errorContraseña" class="text-danger"></div>
@@ -147,7 +150,7 @@ if (isset($_POST['usuario']) || isset($_POST['contraseña'])) {
               class="btn btn-primary"
               role="button"
               style="background: var(--bs-info); font-weight: bold"
-              href="../../Views/Paginas Principales/index_prin.html"
+              href="../../Views/Paginas Principales/index_prin.php"
               ><i class="icon ion-android-arrow-back"></i
             ></a>
           </div>

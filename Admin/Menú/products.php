@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <?php
 //conexcion a la base de datos
-include ("../Edición de Productos/php/conexionEfra.php");
+include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
 // realizamos la sentecia sql
 $sql = "SELECT * FROM productos";
 //ejecutamos la sentecia y la gardamos en una varible
-$result = $connn->query($sql);
+$result = $conn->query($sql);
 
 ?>
 <html data-bs-theme="light" lang="en">
@@ -26,54 +26,13 @@ $result = $connn->query($sql);
   </head>
 
   <body id="page-top">
+  
     <div id="wrapper">
+    <?php 
+    include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\Admin\Menú\menu.php';
+    ?>
       <!-- Barra lateral de navegación -->
-      <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark" style="background: var(--bs-primary)">
-        <div class="container-fluid d-flex flex-column p-0">
-          <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-            <img src="../assets/img/Logo%20Yesid.svg" style="width: 50px; height: 50px; margin-right: -11px" />
-            <div class="sidebar-brand-text mx-3">
-              <span style="color: var(--bs-black)">Administrador</span>
-            </div>
-          </a>
-          <hr class="sidebar-divider my-0" />
-          <ul class="navbar-nav text-light" id="accordionSidebar">
-            <!-- Menú de navegación -->
-            <li class="nav-item">
-              <a class="nav-link" href="../Menú/index.php">
-                <i class="fas fa-home"></i>
-                <span style="color: var(--bs-black)">Principal</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="../Menú/products.php">
-                <i class="typcn typcn-shopping-cart"></i>
-                <span style="color: var(--bs-black)">Productos</span>
-              </a>
-            </li>
-            <!-- Más elementos del menú... -->
-          </ul>
-        </div>
-      </nav>
-
-      <div class="d-flex flex-column" id="content-wrapper">
-        <div id="content">
-          <!-- Barra superior -->
-          <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
-            <div class="container-fluid">
-              <!-- Buscador -->
-              <div class="d-flex float-end">
-                <div class="input-group" style="background: var(--bs-light); margin-right: 50px;">
-                  <input class="bg-light form-control border-0 small" type="text" id="buscadorProductos"
-                         placeholder="Buscar Producto..." style="background: var(--bs-light); color: rgb(0, 0, 0)" />
-                  <button class="btn btn-primary py-0" type="button" id="btnBuscar"
-                          style="color: var(--bs-light); background: var(--bs-info)">
-                    <i class="fas fa-search"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </nav>
+      
 
           <!-- Contenido principal -->
           <div class="col search-table-col" style="margin-top: 50px;">

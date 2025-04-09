@@ -40,7 +40,7 @@
                     </svg><span style="color: var(--bs-black)">Categorías</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../Ofertas/view_ofer_produc.php"><svg xmlns="http://www.w3.org/2000/svg"
+                <a class="nav-link" href="/Admin/Ofertas/view_ofer_produc.php"><svg xmlns="http://www.w3.org/2000/svg"
                         width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-currency-dollar"
                         style="color: rgb(0, 0, 0); font-size: 22.6px">
                         <path
@@ -49,7 +49,7 @@
                     </svg><span style="color: var(--bs-black)">Ofertas</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="../Menú/user.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+                <a class="nav-link active" href="/Admin/Menú/user.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                         height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                         stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-users"
                         style="font-size: 22.6px; color: rgb(0, 0, 0)">
@@ -88,7 +88,7 @@
 
 
                             <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                                <a class="dropdown-item" href="../Menú/login.php"><i
+                                <a class="dropdown-item" role="button" href="/Admin/Menú/log_out.php"><i
                                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Cerrar
                                     Sesión</a>
                             </div>
