@@ -1,6 +1,6 @@
 <?php
 //Recibe datos del formulario
-include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
+include_once realpath(__DIR__ . '/../../../init.php');
 $nombre = $_POST['nombre'];
 
 // Verifica si el valor ya existe en la base de datos

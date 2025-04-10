@@ -1,7 +1,11 @@
 <!-- guadaremos el producto en la base de datos -->
 <?php
 //conexcion a la base de datos
-include("conexionEfra.php");
+
+include_once realpath(__DIR__ . '/../../../init.php');
+
+
+
 
 
 
@@ -50,12 +54,12 @@ echo"Lo sinto, tu archivo no fue subido";
   // si cumple movemos la imagen a la carpeta de img que esta en assets
   if(move_uploaded_file($_FILES['imagen']['tmp_name'], $target_file)){
     // insertar los datos a la base de dato
-    $sqle = "INSERT INTO  productos (nombre, descripcion, precio, Categoria ,imagenes) VALUES ('$nombreproducto', '$Descripción', '$Precio', '$Categoria', '$target_file')";
+    $sqle = "INSERT INTO  productos (nombre, descripcion, precio, id_categoria ,imagenes) VALUES ('$nombreproducto', '$Descripción', '$Precio', '$Categoria', '$target_file')";
     //ejecutar la consulta de sql
-    if($connn->query($sqle) == true){
+    if($conn->query($sqle) == true){
     echo "El producto ha sido guardado correctamente";
     }else{
-      echo "Error".$sqle."<br>".$connn->error;
+      echo "Error".$sqle."<br>".$conn->error;
     }
 
   }else{
@@ -63,9 +67,9 @@ echo"Lo sinto, tu archivo no fue subido";
 
 
   }
-}
+}  
 
-$connn->close();
+$conn->close();
 
 //funcion para limpiar los datos del formulario
 function limpiarDatos($datos){
@@ -80,4 +84,4 @@ function limpiarDatos($datos){
   return $datos;
 }
 //redirecconar al index despues de  segundos
-header('Refresh: 2; URL= ../Menú/products.php');
+// header('Refresh: 2; URL= ../Menú/products.php');

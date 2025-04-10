@@ -3,7 +3,7 @@
 
 <?php
 //Recibe datos del formulario
-include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
+include_once realpath(__DIR__ . '/../../../init.php');
 $id = $_POST['id'];
 $nombre = $_POST['nombre'];
 
