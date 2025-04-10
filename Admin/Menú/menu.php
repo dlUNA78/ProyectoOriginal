@@ -23,7 +23,7 @@
                     </svg><span style="color: var(--bs-black)">Principal</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../Menú/products.php"><i class="typcn typcn-shopping-cart"
+                <a class="nav-link" href="/Admin/Menú/products.php"><i class="typcn typcn-shopping-cart"
                         style="color: rgb(0, 0, 0); font-size: 22.6px"></i><span
                         style="color: var(--bs-black)">Productos</span></a>
             </li>
