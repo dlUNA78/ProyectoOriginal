@@ -84,4 +84,4 @@ function limpiarDatos($datos){
   return $datos;
 }
 //redirecconar al index despues de  segundos
-// header('Refresh: 2; URL= ../Menú/products.php');
+header('Refresh: 2; URL= ../Menú/products.php');

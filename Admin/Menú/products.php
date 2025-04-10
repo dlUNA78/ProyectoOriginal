@@ -138,7 +138,7 @@ $result = $conn->query($sql);
           <tr>
             <td><?=$row['nombre'] ?></td>
             <td><?=$row['precio'] ?></td>
-            <td><?=$row['Categoria'] ?></td>
+            <td><?=$row['id_categoria'] ?></td>
             <td><?=$row['descripcion'] ?></td>
             <td><img src="<?=$row['imagenes'] ?>" style="width: 75px; height: auto" /></td>
             <td>

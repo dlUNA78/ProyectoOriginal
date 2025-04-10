@@ -283,12 +283,31 @@ if (!isset($_SESSION['user'])) {
                   id="categoria"
                   name="categoria"
                   required="">
-                  <option value="Automotriz">Automotriz</option>
-                  <option value="Energia solar">Energía solar</option>
-                  <option value="Hogar">Hogar</option>
-                  <option value="Plagnicidas">Plaguicidas</option>
-                  <option value="Tv satelital">TV satelital</option>
-                  <option value="Radiocomunicacion">Radiocomunicación</option>
+                  <?php
+                  // Conexión a la base de datos
+                  $conn = new mysqli("localhost", "root", "586226", "proyecto1");
+
+                  // Verificar conexión
+                  if ($conn->connect_error) {
+                    die("Conexión fallida: " . $conn->connect_error);
+                  }
+
+                  // Consulta para obtener las categorías
+                  $sql = "SELECT id, nombre FROM categorias";
+                  $result = $conn->query($sql);
+
+                  // Generar opciones del select
+                  if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                      echo "<option value='" . $row['id'] . "'>" . $row['nombre'] . "</option>";
+                    }
+                  } else {
+                    echo "<option value=''>No hay categorías disponibles</option>";
+                  }
+
+                  // Cerrar conexión
+                  $conn->close();
+                  ?>
                 </select>
                 <div id="errorCategoria" class="text-danger"></div>
               </div>
