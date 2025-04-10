@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <?php
+
+
+
+session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location:login.php");
+  die();
+}
+
+
+
 //conexcion a la base de datos
 include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
 // realizamos la sentecia sql

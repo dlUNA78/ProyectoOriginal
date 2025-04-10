@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 <?php
+
+
+
+session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location:login.php");
+  die();
+}
+
+
+
 include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
 
 

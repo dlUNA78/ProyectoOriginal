@@ -1,7 +1,16 @@
 <?php
 // Configuración de la conexión PDO
 include '..\..\config\database.php';
+
 session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location:login.php");
+  die();
+}
+
+
+
 
 try {
   // Crear conexión PDO

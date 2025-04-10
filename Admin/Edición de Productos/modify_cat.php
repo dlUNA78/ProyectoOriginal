@@ -2,6 +2,17 @@
 <html data-bs-theme="light" lang="en">
 <!-- Inicia conexion para actulizar datos -->
 <?php
+
+
+session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location:login.php");
+  die();
+}
+
+
+
 include '../../config/database.php';
 
 // Obtener el ID del registro a editar

@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
+<?php
+session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location:login.php");
+  die();
+}
+
+
+?>
   <head>
     <meta charset="utf-8" />
     <meta

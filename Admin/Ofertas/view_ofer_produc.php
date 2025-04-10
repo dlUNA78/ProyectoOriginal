@@ -2,6 +2,17 @@
 
 <?php
 
+
+session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location:login.php");
+  die();
+}
+
+
+
+
 include '..\..\config\database.php';
 //eliminar ofertas caducadas
 // Eliminar ofertas cuya fecha de salida es menor que hoy

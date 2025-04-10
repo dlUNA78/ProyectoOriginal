@@ -8,7 +8,7 @@ if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
   $usuario = $_POST['usuario'];
   $pass = $_POST['contraseña'];
   //Realizar consulta a base de datos
-  $sql = "SELECT * FROM usuarios WHERE email = '$usuario' and password = '$pass'";
+  $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario' and contraseña = '$pass'";
   //Se ejecuta la consulta
   $resultado = $conn->query($sql);
   //Condicional por si encuentra registro
