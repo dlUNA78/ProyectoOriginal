@@ -1,9 +1,13 @@
 <?php
-// Define la ruta base del proyecto
-define('ROOT_PATH', __DIR__);
+// init.php
 
-// Incluye la conexión a la base de datos
-include ROOT_PATH . '/config/database.php';
-  // incluye el menú
+// Define la ruta raíz de tu proyecto
+define('BASE_PATH', __DIR__);
+
+// Ruta global al archivo de conexión
+define('DB_PATH', BASE_PATH . '/config/database.php');
+
+// Puedes incluir directamente la conexión si quieres que siempre esté disponible
+require_once DB_PATH;
 
 ?>

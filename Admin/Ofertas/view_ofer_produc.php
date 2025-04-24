@@ -262,6 +262,8 @@ if ($conn->query($sql) === TRUE) {
               <div class="input-group" style="background: var(--bs-light)">
                 <input
                   class="bg-light form-control border-0 small"
+                  onkeyup="searchOfertas()"
+                  id="searchInput"
                   type="text"
                   placeholder="Buscar...Producto..."
                   style="background: var(--bs-light); color: rgb(0, 0, 0)"
@@ -293,15 +295,7 @@ if ($conn->query($sql) === TRUE) {
               "
             >
             <div style="margin: 10px 15px;">
-  <input
-    type="text"
-    id="searchInput"
-    onkeyup="searchOfertas()"
-    placeholder="Buscar producto por nombre..."
-    class="form-control"
-    style="max-width: 300px;"
-    
-  />
+  
 </div>
               Productos en Oferta
             </h1>
