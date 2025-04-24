@@ -33,6 +33,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
   exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_productob = $_POST['Nombre_b'];
+    $precio_normal = $_POST['precio_normal'];
+    $precio_oferta = $_POST['precio_oferta'];
+    $fecha_inicio = $_POST['Fecha_inicio'];
+    $fecha_expirada = $_POST['Fecha_expirada'];
+
+    // Manejo de la imagen
+    $ruta_imagen = '';
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $directorio_destino = '../../uploads/ofertas/';
+        if (!is_dir($directorio_destino)) {
+            mkdir($directorio_destino, 0777, true); // Crear el directorio si no existe
+        }
+
+        $nombre_imagen = uniqid() . '_' . basename($_FILES['imagen']['name']);
+        $ruta_imagen = $directorio_destino . $nombre_imagen;
+
+        if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta_imagen)) {
+            $_SESSION['error'] = "Error al subir la imagen.";
+            header("Location: add_offer.php");
+            exit();
+        }
+
+        // Guardar solo la ruta relativa para la base de datos
+        $ruta_imagen = 'uploads/ofertas/' . $nombre_imagen;
+    }
+
+    // Insertar en la base de datos
+    $sql = "INSERT INTO ofertas (Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada, imagen) 
+            VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada', '$ruta_imagen')";
+
+    if (mysqli_query($conn, $sql)) {
+        $_SESSION['success'] = "¡Oferta agregada correctamente!";
+    } else {
+        $_SESSION['error'] = "Error al agregar la oferta: " . mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
+    header("Location: view_ofer_produc.php");
+    exit();
+}
+
 
 ?>
 
@@ -310,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <a class="dropdown-item" href="../Menú/login.php"
                       ><i
                         class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"
-                      ></i
+                      ></i>
                       >&nbsp;Cerrar Sesión</a
                     >
                   </div>
@@ -339,13 +382,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
   <h2 class="text-center mb-4" style="color: rgb(0, 0, 0); font-weight: bold">
     Agregar Oferta
   </h2>
-  <form id="form_oferta" method="POST" action="add_offer.php" novalidate>
+  <form id="form_oferta" method="POST" action="add_offer.php" enctype="multipart/form-data" novalidate>
     <!-- Buscador de producto -->
     <div class="mb-3 position-relative">
-      <label class="form-label" for="search" style="color: rgb(0, 0, 0)"> Nombre del Producto:</label>
-      <input class="form-control" type="text" id="search" autocomplete="off" required name="Nombre_b"/>
+      <label class="form-label" for="search" style="color: rgb(0, 0, 0)">Nombre del Producto:</label>
+      <input class="form-control" type="text" id="search" autocomplete="off" required name="Nombre_b" />
       <div id="sugerencias" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
-      <!-- <input type="hidden" name="id_producto" id="id_producto" /> -->
       <div id="errorNombre" class="text-danger"></div>
     </div>
 
@@ -367,21 +409,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
     <div class="mb-3">
       <label style="color: rgb(0, 0, 0)">Fecha de inicio:</label>
       <input type="date" name="Fecha_inicio" class="form-control" required />
+      <div id="errorFechaInicio" class="text-danger"></div>
     </div>
 
     <!-- Fecha expiración -->
     <div class="mb-3">
       <label style="color: rgb(0, 0, 0)">Fecha de expiración:</label>
       <input type="date" name="Fecha_expirada" class="form-control" required />
+      <div id="errorFechaExpiracion" class="text-danger"></div>
     </div>
 
-   <!-- <div class="mb-3">
-      <div id="errorEstadoOferta" class="text-danger"></div>
-    </div> -->
+    <!-- Imagen -->
+    <div class="mb-3">
+      <label style="color: rgb(0, 0, 0)">Imagen:</label>
+      <input type="file" name="imagen" class="form-control" />
+      <div id="errorImagen" class="text-danger"></div>
+    </div>
 
     <!-- Botones -->
     <div class="d-flex justify-content-end gap-2">
-      <button type="submit" class="btn btn-primary" style="font-weight: bold; margin-top: 10px;" href="../Ofertas/view_ofer_produc.php">Agregar Oferta</button>
+      <button type="submit" class="btn btn-primary" style="font-weight: bold; margin-top: 10px;" id="btn_agregar">Agregar Oferta</button>
       <a class="btn btn-secondary" role="button" style="background: var(--bs-success); font-weight: bold; margin-top: 10px;" href="../Ofertas/view_ofer_produc.php">Cancelar</a>
     </div>
   </form>
@@ -435,34 +482,133 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$(document).ready(function () {
+  // Validar el formulario al enviarlo
+  $("#form_oferta").on("submit", function (e) {
+    let isValid = true;
 
-
-<?php
-//session_start(); // Para poder usar variables de sesión si necesitas mostrar mensajes
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    $id_productob = $_POST['Nombre_b'];
-    $precio_normal = $_POST['precio_normal'];
-    $precio_oferta = $_POST['precio_oferta'];
-    $fecha_inicio = $_POST['Fecha_inicio'];
-    $fecha_expirada = $_POST['Fecha_expirada'];
-
-    $sql = "INSERT INTO ofertas (	Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada) 
-            VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada')";
-
-    if (mysqli_query($conn, $sql)) {
-        // Guarda un mensaje para mostrar después
-        $_SESSION['success'] = "¡Oferta agregada correctamente!";
+    // Validar el campo de búsqueda (Nombre del Producto)
+    const nombreProducto = $("#search").val().trim();
+    if (nombreProducto === "") {
+      $("#errorNombre").text("El nombre del producto es obligatorio.");
+      isValid = false;
     } else {
-        $_SESSION['error'] = "Error al agregar la oferta: " . mysqli_error($conn);
+      $("#errorNombre").text("");
     }
 
-    mysqli_close($conn);
-}
-?>
+    // Validar el precio normal
+    const precioNormal = $("#precio").val().trim();
+    if (precioNormal === "" || isNaN(precioNormal) || parseFloat(precioNormal) <= 0 || !/^\d+(\.\d{1,2})?$/.test(precioNormal)) {
+      $("#errorsProduct").text("El precio normal debe ser un número mayor a 0 con hasta 2 decimales.");
+      isValid = false;
+    } else {
+      $("#errorsProduct").text("");
+    }
 
+    // Validar el precio con descuento
+    const precioDescuento = $("#descuento").val().trim();
+    if (precioDescuento === "" || isNaN(precioDescuento) || parseFloat(precioDescuento) <= 0 || !/^\d+(\.\d{1,2})?$/.test(precioDescuento)) {
+      $("#errorDescuento").text("El precio con descuento debe ser un número mayor a 0 con hasta 2 decimales.");
+      isValid = false;
+    } else if (parseFloat(precioDescuento) >= parseFloat(precioNormal)) {
+      $("#errorDescuento").text("El precio con descuento debe ser menor que el precio normal.");
+      isValid = false;
+    } else {
+      $("#errorDescuento").text("");
+    }
+
+    // Validar la fecha de inicio
+    const fechaInicio = $("input[name='Fecha_inicio']").val().trim();
+    if (fechaInicio === "") {
+      $("#errorFechaInicio").text("La fecha de inicio es obligatoria.");
+      isValid = false;
+    } else {
+      $("#errorFechaInicio").text("");
+    }
+
+    // Validar la fecha de expiración
+    const fechaExpiracion = $("input[name='Fecha_expirada']").val().trim();
+    if (fechaExpiracion === "") {
+      $("#errorFechaExpiracion").text("La fecha de expiración es obligatoria.");
+      isValid = false;
+    } else if (fechaInicio !== "" && new Date(fechaExpiracion) <= new Date(fechaInicio)) {
+      $("#errorFechaExpiracion").text("La fecha de expiración debe ser posterior a la fecha de inicio.");
+      isValid = false;
+    } else {
+      $("#errorFechaExpiracion").text("");
+    }
+
+    // Validar la imagen
+    const imagen = $("input[name='imagen']").val().trim();
+    if (imagen === "") {
+      $("#errorImagen").text("Debe seleccionar una imagen para la oferta.");
+      isValid = false;
+    } else {
+      $("#errorImagen").text("");
+    }
+
+    // Si alguna validación falla, prevenir el envío del formulario
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+
+  // Validar en tiempo real el campo de búsqueda (Nombre del Producto)
+  $("#search").on("input", function () {
+    const nombreProducto = $(this).val().trim();
+    if (nombreProducto === "") {
+      $("#errorNombre").text("El nombre del producto es obligatorio.");
+    } else {
+      $("#errorNombre").text("");
+    }
+  });
+
+  // Validar en tiempo real el precio normal
+  $("#precio").on("input", function () {
+    const precioNormal = $(this).val().trim();
+    if (precioNormal === "" || isNaN(precioNormal) || parseFloat(precioNormal) <= 0 || !/^\d+(\.\d{1,2})?$/.test(precioNormal)) {
+      $("#errorsProduct").text("El precio normal debe ser un número mayor a 0 con hasta 2 decimales.");
+    } else {
+      $("#errorsProduct").text("");
+    }
+  });
+
+  // Validar en tiempo real el precio con descuento
+  $("#descuento").on("input", function () {
+    const precioDescuento = $(this).val().trim();
+    const precioNormal = $("#precio").val().trim();
+    if (precioDescuento === "" || isNaN(precioDescuento) || parseFloat(precioDescuento) <= 0 || !/^\d+(\.\d{1,2})?$/.test(precioDescuento)) {
+      $("#errorDescuento").text("El precio con descuento debe ser un número mayor a 0 con hasta 2 decimales.");
+    } else if (parseFloat(precioDescuento) >= parseFloat(precioNormal)) {
+      $("#errorDescuento").text("El precio con descuento debe ser menor que el precio normal.");
+    } else {
+      $("#errorDescuento").text("");
+    }
+  });
+
+  // Restringir a 2 dígitos después del punto en los campos de precio
+  $("#precio, #descuento").on("keypress", function (e) {
+    const charCode = e.which ? e.which : e.keyCode;
+    const inputValue = $(this).val();
+    const decimalIndex = inputValue.indexOf(".");
+
+    // Permitir solo números, un punto decimal y limitar a 2 dígitos después del punto
+    if (
+      (charCode < 48 || charCode > 57) && // No es un número
+      charCode !== 46 // No es un punto
+    ) {
+      e.preventDefault();
+    } else if (charCode === 46 && decimalIndex !== -1) {
+      // No permitir más de un punto
+      e.preventDefault();
+    } else if (decimalIndex !== -1 && inputValue.length - decimalIndex > 2) {
+      // No permitir más de 2 dígitos después del punto
+      e.preventDefault();
+    }
+  });
+});
+</script>
 
 
 

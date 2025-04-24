@@ -82,7 +82,7 @@
                                 href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small"><?php
                                 echo isset($_SESSION['user']) ? $_SESSION['user'] : 'Guest'; ?></span><img
                                     class="border rounded-circle img-profile"
-                                    src="../assets/img/avatars/avatar1.jpeg" /></a>
+                                    src="<?php echo isset($_SESSION['imagen']) ? $_SESSION['imagen'] : '../assets/img/default-profile.png'; ?>"/></a>
 
                             <!-- esto se reeemplazara por los datos del login, queda pendiente -->
 
