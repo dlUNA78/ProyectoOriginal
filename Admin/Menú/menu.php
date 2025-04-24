@@ -2,7 +2,7 @@
 <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark"
     style="background: var(--bs-primary)">
     <div class="container-fluid d-flex flex-column p-0">
-        <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#"><img
+        <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="index.php"><img
                 src="../assets/img/Logo%20Yesid.svg" style="width: 50px; height: 50px; margin-right: -11px" />
             <div class="sidebar-brand-icon rotate-n-15"></div>
             <div class="sidebar-brand-text mx-3">

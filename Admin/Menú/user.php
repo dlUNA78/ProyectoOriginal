@@ -98,7 +98,6 @@ if (!isset($_SESSION['user'])) {
           <?php
           include '..\..\config\database.php';
 
-          // Opción 1: Usando $conn directamente
           $resultado = $conn->query("SELECT * FROM Usuarios");
 
           ?>
