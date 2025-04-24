@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS imagenes_producto (
 --);
 
 CREATE TABLE `ofertas` (
-  `id_oferta` int NOT NULL,
+  `id_oferta` AUTO_INCREMENT int NOT NULL,
   `Nombre_oferta` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `precio` int NOT NULL,
   `precio_oferta` decimal(10,2) NOT NULL,
