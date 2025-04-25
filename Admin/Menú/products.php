@@ -48,15 +48,11 @@ $result = $conn->query($sql);
     <!-- Barra lateral de navegación -->
 
     <div class="d-grid float-end" style="margin-right: 50px">
-      <form class="d-none d-sm-inline-block ms-md-3 my-2 my-md-0 mw-100 navbar-search" style="
-                background: var(--bs-white);
-                color: rgb(255, 255, 255);
-                margin-right: 20px;
-              ">
+      <form class="d-none d-sm-inline-block ms-md-3 my-2 my-md-0 mw-100 navbar-search"
+        style="background: var(--bs-white); color: rgb(255, 255, 255); margin-right: 20px;">
         <div class="input-group" style="background: var(--bs-light)">
-          <input id="searchInput" class="bg-light form-control border-0 small" type="text"
-            placeholder="Buscar productos" style="background: var(--bs-light); color: rgb(0, 0, 0)"
-            onkeyup="searchProducts()" id="searchInput" />
+          <input class="bg-light form-control border-0 small" type="text" placeholder="Buscar por nombre o categoría"
+            style="background: var(--bs-light); color: rgb(0, 0, 0)" id="searchInput" onkeyup="searchProducts()" />
         </div>
       </form>
     </div>
@@ -79,14 +75,14 @@ $result = $conn->query($sql);
       ?>
       <div class="table-responsive" style="margin: 0 50px 40px;">
         <table class="table table-hover text-center">
-          <thead style="background: var(--bs-info)">
+          <thead style="background: var(--bs-light); color: rgb(0, 0, 0)">
             <tr>
-              <th>Nombre</th>
-              <th>Precio</th>
-              <th>Categoría</th>
-              <th>Descripción</th>
-              <th>Imagen</th>
-              <th>Acciones</th> <!-- Nueva columna para las acciones -->
+              <th width="16.6%">Nombre</th>
+              <th width="16.6%">Precio</th>
+              <th width="16.6%">Categoría</th>
+              <th width="16.6%">Descripción</th>
+              <th width="16.6%">Imagen</th>
+              <th width="16.6%">Acciones</th> <!-- Nueva columna para las acciones -->
             </tr>
           </thead>
           <tbody>
@@ -171,6 +167,32 @@ $result = $conn->query($sql);
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
+  <!-- buscar productos -->
+  <script>
+    function searchProducts() {
+      // Obtener el valor del input de búsqueda
+      let input = document.getElementById('searchInput');
+      let filter = input.value.toUpperCase();
+
+      // Obtener la tabla y las filas
+      let table = document.querySelector('.table');
+      let rows = table.getElementsByTagName('tr');
+
+      // Recorrer todas las filas de la tabla (excepto el encabezado)
+      for (let i = 1; i < rows.length; i++) {
+        let row = rows[i];
+        let name = row.cells[0].textContent.toUpperCase(); // Columna de nombre
+        let category = row.cells[2].textContent.toUpperCase(); // Columna de categoría
+
+        // Mostrar u ocultar la fila según coincida con el filtro
+        if (name.includes(filter) || category.includes(filter)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      }
+    }
+  </script>
 
 </body>
 
