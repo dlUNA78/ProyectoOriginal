@@ -62,27 +62,88 @@ $result = $conn->query($sql);
     </div>
     <!-- Contenido principal -->
     <div class="col search-table-col" style="margin-top: 50px;">
-      <h1 style="color: rgb(0, 0, 0); font-family: Alef, sans-serif; margin-left: 15px;">
-        Productos
-      </h1>
+      <h1 style="color: rgb(0, 0, 0); font-family: Alef, sans-serif; margin-left: 15px;">Productos</h1>
 
-      <div class="table-responsive" style="margin: 0 50px;">
-        <table class="table table-striped table-hover text-center table-bordered" id="tablaProductos">
-          <thead class="bill-header cs"></thead>
-          <tr style="background: var(--bs-info);">
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Categoría</th>
-            <th>Descripción</th>
-            <th>Imágenes</th>
-            <th>Action</th>
-          </tr>
+      <?php
+      include '..\..\config\database.php';
+
+      // Consulta para obtener los productos con su categoría y descripción
+      $sqlProductos = "SELECT p.id, p.nombre, p.precio, c.nombre AS categoria, p.descripcion, 
+                        GROUP_CONCAT(i.ruta_imagen SEPARATOR ',') AS rutas_imagen
+                 FROM productos p
+                 LEFT JOIN categorias c ON p.id_categoria = c.id
+                 LEFT JOIN imagenes_producto i ON p.id = i.id_producto
+                 GROUP BY p.id";
+
+      $resultProductos = $conn->query($sqlProductos);
+      ?>
+      <div class="table-responsive" style="margin: 0 50px 40px;">
+        <table class="table table-hover text-center">
+          <thead style="background: var(--bs-info)">
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Categoría</th>
+              <th>Descripción</th>
+              <th>Imagen</th>
+              <th>Acciones</th> <!-- Nueva columna para las acciones -->
+            </tr>
           </thead>
-          <tbody style="text-align: center" id="cuerpoTabla">
-            <!-- Producto se cargará aquí -->
+          <tbody>
+            <?php if ($resultProductos->num_rows > 0): ?>
+              <?php while ($producto = $resultProductos->fetch_assoc()): ?>
+                <tr>
+                  <td><?php echo htmlspecialchars($producto['nombre']); ?></td>
+                  <td>$<?php echo number_format($producto['precio'], 2); ?></td>
+                  <td><?php echo htmlspecialchars($producto['categoria']); ?></td>
+                  <td><?php echo htmlspecialchars($producto['descripcion']); ?></td>
+                  <td>
+                    <?php
+                    // Comprobamos si la clave 'rutas_imagen' está definida y tiene imágenes
+                    if (isset($producto['rutas_imagen']) && !empty($producto['rutas_imagen'])) {
+                      // Si hay imágenes, las separamos en un array
+                      $rutasImagen = explode(',', $producto['rutas_imagen']);
+                      // Usamos la primera imagen como la principal
+                      $imagenPath = "../" . htmlspecialchars($rutasImagen[0]);
+                    } else {
+                      // Si no hay imágenes, usamos una imagen predeterminada
+                      $imagenPath = "../assets/img/productos/default.jpg";
+                    }
+                    ?>
+                    <img src="<?php echo $imagenPath; ?>" alt="Imagen del producto"
+                      style="width: 60px; height: 60px; object-fit: cover;"
+                      onerror="this.onerror=null; this.src='../assets/img/productos/default.jpg';">
+                  </td>
+                  <td style="text-align: center">
+                    <!-- Botón de editar producto -->
+                    <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
+                      href="../Edición%20de%20Productos/modify_product.php?producto=<?php echo urlencode($producto['id']); ?>">
+                      <i class="fa fa-edit" style="color: var(--bs-black)"></i>
+                    </a>
+
+                    <!-- Formulario para eliminar producto -->
+                    <form method="POST" action="../Edición%20de%20Productos/delete_products.php" style="display:inline;">
+                      <input type="hidden" name="producto" value="<?php echo htmlspecialchars($producto['id']); ?>">
+                      <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
+                        <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <?php endwhile; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="6" style="text-align: center;">No hay productos registrados.</td>
+              </tr>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
+
+
+
+
+      <?php $conn->close(); ?>
 
       <div class="d-grid float-end">
         <a class="btn btn-primary" role="button"

@@ -6,8 +6,8 @@ include '..\..\config\database.php';
 session_start();
 
 if (!isset($_SESSION['user'])) {
-    header("Location:login.php");
-    die();
+  header("Location:login.php");
+  die();
 }
 
 // Obtener categorías
@@ -16,62 +16,69 @@ $resultado = $conn->query($sql);
 $categorias = [];
 
 if ($resultado->num_rows > 0) {
-    while ($fila = $resultado->fetch_assoc()) {
-        $categorias[] = $fila;
-    }
+  while ($fila = $resultado->fetch_assoc()) {
+    $categorias[] = $fila;
+  }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = $_POST['nombre'];
-    $descripcion = $_POST['Descripción'];
-    $precio = $_POST['precio'];
-    $categoria = $_POST['categoria'];
+  $nombre = $_POST['nombre'];
+  $descripcion = $_POST['Descripción'];
+  $precio = $_POST['precio'];
+  $categoria = $_POST['categoria'];
 
-    // Insertar producto
-    $sql = "INSERT INTO productos (nombre, descripcion, precio, id_categoria) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdi", $nombre, $descripcion, $precio, $categoria);
-    $stmt->execute();
-    $producto_id = $stmt->insert_id;
-    $stmt->close();
+  // Insertar producto
+  $sql = "INSERT INTO productos (nombre, descripcion, precio, id_categoria) VALUES (?, ?, ?, ?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("ssdi", $nombre, $descripcion, $precio, $categoria);
+  $stmt->execute();
+  $producto_id = $stmt->insert_id;
+  $stmt->close();
 
-    // Manejo de imágenes
-    $imagenes = $_FILES['imagen'];
+  // Manejo de imágenes
+  $imagenes = $_FILES['imagen'];
 
-    // Verificamos si se subieron imágenes
-    if (count($imagenes['name']) > 0 && $imagenes['error'][0] == 0) {
-        $rutaDestino = "../../../productos/";
+  if (!empty($imagenes['name'][0])) {
+    // Ruta absoluta del directorio donde guardar las imágenes
+    $carpetaDestino = realpath(__DIR__ . '/../../Admin/assets/img/productos') . DIRECTORY_SEPARATOR;
 
-        // Recorremos cada imagen
-        for ($i = 0; $i < count($imagenes['name']); $i++) {
-            if ($imagenes['error'][$i] === UPLOAD_ERR_OK) {
-                $nombreArchivo = basename($imagenes['name'][$i]);
-                $rutaCompleta = $rutaDestino . uniqid() . "_" . $nombreArchivo;
-                $tmp_name = $imagenes['tmp_name'][$i];
-
-                // Verifica que la imagen se haya subido correctamente
-                if (move_uploaded_file($tmp_name, $rutaCompleta)) {
-                    // Guardamos la ruta de la imagen en la base de datos
-                    $sqlImg = "INSERT INTO imagenes_producto (id_producto, ruta_imagen) VALUES (?, ?)";
-                    $stmtImg = $conn->prepare($sqlImg);
-                    $stmtImg->bind_param("is", $producto_id, $rutaCompleta);
-                    $stmtImg->execute();
-                    $stmtImg->close();
-                } else {
-                    echo "Error al subir la imagen: " . $imagenes['name'][$i] . "<br>";
-                }
-            } else {
-                echo "Error al subir la imagen: " . $imagenes['name'][$i] . " (Código de error: " . $imagenes['error'][$i] . ")<br>";
-            }
-        }
-    } else {
-        echo "No se seleccionaron imágenes o hubo un error al intentar cargar las imágenes.";
+    if (!is_dir($carpetaDestino)) {
+      if (!mkdir($carpetaDestino, 0777, true)) {
+        die("No se pudo crear la carpeta de destino: $carpetaDestino");
+      }
     }
 
-    header("Location: ../products.php?status=success");
-    exit();
+    // Recorremos cada imagen
+    for ($i = 0; $i < count($imagenes['name']); $i++) {
+      if ($imagenes['error'][$i] === UPLOAD_ERR_OK) {
+        $nombreOriginal = basename($imagenes['name'][$i]);
+        $nombreFinal = uniqid() . "_" . $nombreOriginal;
+        $rutaCompleta = $carpetaDestino . $nombreFinal;
+        $rutaEnDB = 'assets/img/productos/' . $nombreFinal;
+
+        if (move_uploaded_file($imagenes['tmp_name'][$i], $rutaCompleta)) {
+          // Guardamos la ruta relativa en la base de datos
+          $sqlImg = "INSERT INTO imagenes_producto (id_producto, ruta_imagen) VALUES (?, ?)";
+          $stmtImg = $conn->prepare($sqlImg);
+          $stmtImg->bind_param("is", $producto_id, $rutaEnDB);
+          $stmtImg->execute();
+          $stmtImg->close();
+        } else {
+          echo "Error al subir la imagen: " . $nombreOriginal . "<br>";
+        }
+      } else {
+        echo "Error al subir la imagen: " . $imagenes['name'][$i] . " (Código de error: " . $imagenes['error'][$i] . ")<br>";
+      }
+    }
+  } else {
+    echo "No se seleccionaron imágenes o hubo un error al intentar cargar las imágenes.";
+  }
+
+  header("Location: ../Menú/products.php?status=success");
+  exit();
 }
 ?>
+
 
 
 

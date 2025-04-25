@@ -13,7 +13,6 @@ if (!isset($_SESSION['user'])) {
 // Configuración de la conexión PDO
 include '..\..\config\database.php';
 
-session_start();
 
 try {
     // Crear conexión PDO
