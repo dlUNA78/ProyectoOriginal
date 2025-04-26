@@ -4,36 +4,36 @@
 include '../../Views/Paginas Principales/menu_principal.php';
 include '../../config/database.php';
 
-// Obtener el ID del producto desde la URL
-$id_producto = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// Obtener el ID de la oferta desde la URL
+$id_oferta = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Consulta para obtener los detalles del producto
-$stmt = $conn->prepare("SELECT p.*, c.nombre as categoria 
-                       FROM productos p
-                       JOIN categorias c ON p.id_categoria = c.id
-                       WHERE p.id = ?");
-$stmt->bind_param("i", $id_producto);
+// Consulta para obtener los detalles de la oferta
+$stmt = $conn->prepare("SELECT * FROM ofertas WHERE id_oferta = ?");
+$stmt->bind_param("i", $id_oferta);
 $stmt->execute();
-$producto = $stmt->get_result()->fetch_assoc();
-
-// Consulta para obtener todas las imágenes del producto
-$stmt_img = $conn->prepare("SELECT ruta_imagen FROM imagenes_producto WHERE id_producto = ?");
-$stmt_img->bind_param("i", $id_producto);
-$stmt_img->execute();
-$imagenes = $stmt_img->get_result()->fetch_all(MYSQLI_ASSOC);
+$oferta = $stmt->get_result()->fetch_assoc();
 
 // Configuración de rutas
 define('BASE_DIR', realpath(__DIR__ . '/../../'));
 define('BASE_URL', '../');
 define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
+
+// Ruta de la imagen
+$absolute_image_path = "C:\\Users\\PC\\Documents\\GitHub\\ProyectoOriginal\\uploads\\ofertas\\" . $oferta['imagen'];
+$web_image_path = "../uploads/ofertas/" . $oferta['imagen'];
+if (!file_exists($absolute_image_path)) {
+    $web_image_path = IMG_DEFAULT;
+}
+
+$descuento = round(($oferta['precio'] - $oferta['precio_oferta']) / $oferta['precio'] * 100);
 ?>
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-    <title><?= htmlspecialchars($producto['nombre'] ?? 'Producto no encontrado') ?></title>
+    <title><?= htmlspecialchars($oferta['Nombre_oferta'] ?? 'Oferta no encontrada') ?></title>
 
-    <meta name="description" content="Detalles del producto" />
+    <meta name="description" content="Detalles de la oferta" />
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap" />
@@ -80,6 +80,11 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
         .back-button {
             margin-bottom: 20px;
         }
+
+        .discount-badge {
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+        }
     </style>
 </head>
 
@@ -89,13 +94,13 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
         <section class="clean-block" style="background: #d9dcbd; padding: 20px 0;">
             <div class="container">
                 <a href="javascript:history.back()" class="btn btn-outline-success back-button">
-                    <i class="fa fa-arrow-left"></i> Volver al catálogo
+                    <i class="fa fa-arrow-left"></i> Volver a ofertas
                 </a>
 
-                <?php if ($producto): ?>
+                <?php if ($oferta): ?>
                     <div class="block-heading">
                         <h2 style="color: #587a2e; font-family: 'ADLaM Display', serif;">
-                            <?= htmlspecialchars($producto['nombre']) ?>
+                            <?= htmlspecialchars($oferta['Nombre_oferta']) ?>
                         </h2>
                     </div>
                 <?php endif; ?>
@@ -104,58 +109,47 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
     </main>
 
     <div class="container py-5" style="background: #abba87;">
-        <?php if ($producto): ?>
+        <?php if ($oferta): ?>
             <div class="row">
-                <!-- Galería de imágenes -->
+                <!-- Imagen de la oferta -->
                 <div class="col-md-6">
                     <div class="product-gallery">
-                        <!-- Imagen principal -->
                         <div class="text-center mb-3">
-                            <?php if (!empty($imagenes)): ?>
-                                <img id="mainImage" src="../<?= htmlspecialchars($imagenes[0]['ruta_imagen']) ?>"
-                                    class="img-fluid main-image" alt="<?= htmlspecialchars($producto['nombre']) ?>"
-                                    onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
-                            <?php else: ?>
-                                <img id="mainImage" src="<?= IMG_DEFAULT ?>" class="img-fluid main-image"
-                                    alt="Imagen no disponible">
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Miniaturas -->
-                        <div class="d-flex flex-wrap gap-2 justify-content-center">
-                            <?php foreach ($imagenes as $index => $imagen): ?>
-                                <img src="../<?= htmlspecialchars($imagen['ruta_imagen']) ?>"
-                                    class="thumbnail <?= $index === 0 ? 'active' : '' ?>"
-                                    onclick="changeImage(this, '../<?= htmlspecialchars($imagen['ruta_imagen']) ?>')"
-                                    alt="Miniatura <?= $index + 1 ?>"
-                                    onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
-                            <?php endforeach; ?>
+                            <img id="mainImage" src="<?= $web_image_path ?>" class="img-fluid main-image"
+                                alt="<?= htmlspecialchars($oferta['Nombre_oferta']) ?>"
+                                onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
                         </div>
                     </div>
                 </div>
 
-                <!-- Información del producto -->
+                <!-- Información de la oferta -->
                 <div class="col-md-6">
                     <div class="product-info">
-                        <h3 class="mb-3"><?= htmlspecialchars($producto['nombre']) ?></h3>
+                        <h3 class="mb-3"><?= htmlspecialchars($oferta['Nombre_oferta']) ?></h3>
 
-                        <div class="mb-3">
-                            <span class="badge bg-success"><?= htmlspecialchars($producto['categoria']) ?></span>
+                        <div class="mb-4">
+                            <span class="badge bg-danger discount-badge">-<?= $descuento ?>%</span>
                         </div>
 
-                        <h4 class="text-success mb-3">$<?= number_format($producto['precio'], 2) ?></h4>
+                        <div class="mb-3">
+                            <span class="text-muted text-decoration-line-through me-3 fs-5">
+                                $<?= number_format($oferta['precio'], 2) ?>
+                            </span>
+                            <span class="text-success fw-bold fs-2">
+                                $<?= number_format($oferta['precio_oferta'], 2) ?>
+                            </span>
+                        </div>
 
                         <div class="mb-4">
                             <h5>Descripción:</h5>
-                            <p><?= nl2br(htmlspecialchars($producto['descripcion'])) ?></p>
+                            <p><?= nl2br(htmlspecialchars($oferta['descripcion'] ?? 'Oferta especial por tiempo limitado')) ?>
+                            </p>
                         </div>
 
-                        <?php if (!empty($producto['especificaciones'])): ?>
-                            <div class="mb-4">
-                                <h5>Especificaciones</h5>
-                                <p><?= nl2br(htmlspecialchars($producto['especificaciones'])) ?></p>
-                            </div>
-                        <?php endif; ?>
+                        <div class="mb-4">
+                            <h5>Válido hasta:</h5>
+                            <p><?= date('d/m/Y', strtotime($oferta['Fecha_expirada'])) ?></p>
+                        </div>
 
                         <div class="d-flex gap-2">
                             <div class="input-group" style="width: 120px;">
@@ -165,46 +159,33 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
                                 <button class="btn btn-outline-secondary" type="button"
                                     onclick="updateQuantity(1)">+</button>
                             </div>
-                            <a href="carrito.php?action=add&id=<?= $producto['id'] ?>&quantity=1" class="btn btn-success">
+                            <button class="btn btn-success">
                                 <i class="fa fa-cart-plus"></i> Añadir al carrito
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         <?php else: ?>
             <div class="alert alert-danger text-center">
-                <h4>Producto no encontrado</h4>
-                <p>El producto que buscas no está disponible o no existe.</p>
-                <a href="/Views/Categorias/categoria_prod.php" class="btn btn-outline-success">Volver al catálogo</a>
+                <h4>Oferta no encontrada</h4>
+                <p>La oferta que buscas no está disponible o no existe.</p>
+                <a href="ofertas.php" class="btn btn-outline-success">Volver a ofertas</a>
             </div>
         <?php endif; ?>
     </div>
 
-    
-  <!-- inicia footer -->
-  <?php include '../../Views\Paginas Principales\footer_principal.php';?>
-  <!-- termina footer -->
-   
+
+    <!-- inicia footer -->
+    <?php include './footer_principal.php'; ?>
+    <!-- termina footer -->
+
 
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="../assets/js/baguetteBox.min.js"></script>
 
     <script>
-        // Cambiar imagen principal al hacer clic en miniatura
-        function changeImage(element, newSrc) {
-            document.getElementById('mainImage').src = newSrc;
-
-            // Remover clase 'active' de todas las miniaturas
-            document.querySelectorAll('.thumbnail').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
-
-            // Agregar clase 'active' a la miniatura clickeada
-            element.classList.add('active');
-        }
-
         // Actualizar cantidad
         function updateQuantity(change) {
             const quantityInput = document.getElementById('quantity');
@@ -215,7 +196,7 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
             quantityInput.value = newValue;
         }
 
-        // Inicializar lightbox para la galería de imágenes
+        // Inicializar lightbox para la imagen
         baguetteBox.run('.product-gallery');
     </script>
 </body>

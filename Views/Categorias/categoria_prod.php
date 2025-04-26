@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="es" style="background: #abba87">
-<?php
-include '../../Views/Paginas Principales/menu_principal.php';
-?>
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
   <title>Catálogo de Productos</title>
-  
+
   <meta name="description" content="Catálogo de productos por categoría" />
   <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet"
@@ -47,6 +45,8 @@ include '../../Views/Paginas Principales/menu_principal.php';
 <body style="background: #abba87">
 
   <?php
+  // Incluir el menú principal después de abrir el body
+  include '../../Views/Paginas Principales/menu_principal.php';
   include '../../config/database.php';
 
   // Configuración de rutas
@@ -105,9 +105,9 @@ include '../../Views/Paginas Principales/menu_principal.php';
           <?php
           // Obtener la ruta de la imagen usando el método que te funciona
           if (isset($producto['imagen_principal']) && !empty($producto['imagen_principal'])) {
-              $imagenPath = "../" . htmlspecialchars($producto['imagen_principal']);
+            $imagenPath = "../" . htmlspecialchars($producto['imagen_principal']);
           } else {
-              $imagenPath = IMG_DEFAULT;
+            $imagenPath = IMG_DEFAULT;
           }
           ?>
 
@@ -117,8 +117,7 @@ include '../../Views/Paginas Principales/menu_principal.php';
                 <div class="p-3 h-100 d-flex flex-column">
                   <div class="bg-light d-flex justify-content-center align-items-center"
                     style="height: 200px; overflow: hidden; border-radius: 15px;">
-                    <img class="img-fluid mh-100" src="<?= $imagenPath ?>" 
-                      style="object-fit: contain; max-width: 100%;"
+                    <img class="img-fluid mh-100" src="<?= $imagenPath ?>" style="object-fit: contain; max-width: 100%;"
                       alt="<?= htmlspecialchars($producto['nombre']) ?>"
                       onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
                   </div>
@@ -141,7 +140,7 @@ include '../../Views/Paginas Principales/menu_principal.php';
         <div class="col-12">
           <div class="alert alert-info text-center py-4">
             <i class="fas fa-info-circle me-2"></i> No se encontraron productos en esta categoría.
-            <a href="catalogo.php" class="btn btn-sm btn-outline-success ms-3">
+            <a href="index_prin.php" class="btn btn-sm btn-outline-success ms-3">
               Ver pagina principal
             </a>
           </div>
@@ -150,43 +149,9 @@ include '../../Views/Paginas Principales/menu_principal.php';
     </div>
   </div>
 
-  <footer class="text-center py-4" style="background: #d9dcbd; margin-top: 38px">
-    <div class="container">
-      <div class="row row-cols-1 row-cols-lg-3">
-        <div class="col">
-          <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
-            <i class="icon-location-pin" style="font-weight: bold; font-size: 25px"></i>&nbsp; AV. Álvaro obregón N.-
-            1796
-          </p>
-        </div>
-        <div class="col">
-          <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
-            <i class="icon-screen-smartphone" style="
-                  color: rgb(88, 122, 46);
-                  font-size: 25px;
-                  font-weight: bold;
-                "></i>&nbsp; 453-537-06-03
-          </p>
-        </div>
-        <div class="col">
-          <p class="my-2" style="color: rgb(88, 122, 46); font-size: 19px">
-            <i class="icon-envelope" style="
-                  color: rgb(88, 122, 46);
-                  font-size: 25px;
-                  font-weight: bold;
-                "></i>&nbsp; yesid_amale@hotmail.com
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
-            <strong>TECNM Campus Coalcomán Ingeniería en Sistemas Computacionales 6º Semestre-2025</strong>
-          </p>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <!-- inicia footer -->
+  <?php include '../../Views\Paginas Principales\footer_principal.php';?>
+  <!-- termina footer -->
 
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -195,9 +160,9 @@ include '../../Views/Paginas Principales/menu_principal.php';
   <script src="../assets/js/Theme_Prin.js"></script>
   <script>
     // Depuración de imágenes
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       console.log("=== DEPURACIÓN DE IMÁGENES ===");
-      
+
       document.querySelectorAll('img').forEach(img => {
         console.group("Imagen: " + img.alt);
         console.log("Ruta de la imagen:", img.src);
@@ -207,4 +172,5 @@ include '../../Views/Paginas Principales/menu_principal.php';
     });
   </script>
 </body>
+
 </html>

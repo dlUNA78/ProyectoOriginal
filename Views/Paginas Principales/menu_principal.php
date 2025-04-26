@@ -19,40 +19,41 @@
         <li class="nav-item dropdown">
           <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"
             style="color: #587a2e; font-size: 15.8px; font-weight: bold">Productos</a>
-<?php
 
-include '../../config/database.php';
+          <?php
 
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
+          include '../../config/database.php';
 
-// Fetch categories from the database
-$sql = "SELECT nombre FROM categorias";
-$result = $conn->query($sql);
-?>
-<div class="dropdown-menu" style="background: #d9dcbd">
-  <!-- Agregar opción "Todos" primero -->
-  <a class="dropdown-item" href="../Categorias/categoria_prod.php" style="color: #587a2e">
-    <strong>Todos los productos</strong>
-  </a>
-  
-  <?php
-  if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-      echo '<a class="dropdown-item" href="../Categorias/categoria_prod.php?categoria=' . urlencode($row['nombre']) . '" style="color: #587a2e"><strong>' . htmlspecialchars($row['nombre']) . '</strong></a>';
-    }
-  } else {
-    echo '<a class="dropdown-item" href="#" style="color: #587a2e"><strong>No hay categorías disponibles</strong></a>';
-  }
-  $conn->close();
-  ?>
-</div>
-</li>
-</ul>
-<a style="color: #0b0b0b; font-size: 15.8px" href="../../Admin/Menú/login.php"><i class="fa fa-user-circle-o"
-    style="font-size: 30px; color: #587a2e"></i><label for="text" style="margin-left: 2px">Iniciar Sesión</label>
-</a>
-</div>
-</div>
+          if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+          }
+
+          // Fetch categories from the database
+          $sql = "SELECT nombre FROM categorias";
+          $result = $conn->query($sql);
+          ?>
+          <div class="dropdown-menu" style="background: #d9dcbd">
+            <!-- Agregar opción "Todos" primero -->
+            <a class="dropdown-item" href="/../Categorias/categoria_prod.php" style="color: #587a2e">
+              <strong>Todos los productos</strong>
+            </a>
+
+            <?php
+            if ($result->num_rows > 0) {
+              while ($row = $result->fetch_assoc()) {
+                echo '<a class="dropdown-item" href="/../Categorias/categoria_prod.php?categoria=' . urlencode($row['nombre']) . '" style="color: #587a2e"><strong>' . htmlspecialchars($row['nombre']) . '</strong></a>';
+              }
+            } else {
+              echo '<a class="dropdown-item" href="#" style="color: #587a2e"><strong>No hay categorías disponibles</strong></a>';
+            }
+            $conn->close();
+            ?>
+          </div>
+        </li>
+      </ul>
+      <a style="color: #0b0b0b; font-size: 15.8px" href="../../Admin/Menú/login.php"><i class="fa fa-user-circle-o"
+          style="font-size: 30px; color: #587a2e"></i><label for="text" style="margin-left: 2px">Iniciar Sesión</label>
+      </a>
+    </div>
+  </div>
 </nav>
