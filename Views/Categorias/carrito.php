@@ -88,7 +88,6 @@ if (isset($_GET['action'])) {
             unset($_SESSION['carrito']);
             header("Location: carrito.php");
             exit();
-            break;
     }
 }
 
