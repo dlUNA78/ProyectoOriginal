@@ -1,75 +1,88 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="en" style="background: #abba87">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
-    <title>About Us1 - Brand</title>
-    <meta
-      name="description"
-      content="Categorias general de productos"
-    />
-    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=AR+One+Sans&amp;display=swap"
-    />
-    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css" />
-    <link rel="stylesheet" href="../assets/fonts/simple-line-icons.min.css" />
-    <link rel="stylesheet" href="../assets/css/bs-theme-overrides.css" />
-    <link
-      rel="stylesheet"
-      href="../assets/css/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.css"
-    />
-    <link rel="stylesheet" href="../assets/css/baguetteBox.min.css" />
-    <link
-      rel="stylesheet"
-      href="../assets/css/Banner-Heading-Image-images.css"
-    />
-    <link rel="stylesheet" href="../assets/css/dark_navbar.css" />
-    <link
-      rel="stylesheet"
-      href="../assets/css/Dark-NavBar-Navigation-with-Button.css"
-    />
-    <link
-      rel="stylesheet"
-      href="../assets/css/Dark-NavBar-Navigation-with-Search.css"
-    />
-    <link
-      rel="stylesheet"
-      href="../assets/css/Footer---4-Columns---No-Social-Networks.css"
-    />
-    <link rel="stylesheet" href="../assets/css/Footer-Clean-icons.css" />
-    <link
-      rel="stylesheet"
-      href="../assets/css/multiple-item-carousel-slider.css"
-    />
-    <link rel="stylesheet" href="../assets/css/vanilla-zoom.min.css" />
-  </head>
+<html data-bs-theme="light" lang="es" style="background: #abba87">
+<?php
+include '../../Views/Paginas Principales/menu_principal.php';
+?>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <title>Catálogo de Productos</title>
+  
+  <meta name="description" content="Catálogo de productos por categoría" />
+  <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=AR+One+Sans&amp;display=swap" />
+  <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css" />
+  <link rel="stylesheet" href="../assets/fonts/simple-line-icons.min.css" />
+  <link rel="stylesheet" href="../assets/css/bs-theme-overrides.css" />
+  <link rel="stylesheet" href="../assets/css/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.css" />
+  <link rel="stylesheet" href="../assets/css/baguetteBox.min.css" />
+  <link rel="stylesheet" href="../assets/css/Banner-Heading-Image-images.css" />
+  <link rel="stylesheet" href="../assets/css/dark_navbar.css" />
+  <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Button.css" />
+  <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Search.css" />
+  <link rel="stylesheet" href="../assets/css/Footer---4-Columns---No-Social-Networks.css" />
+  <link rel="stylesheet" href="../assets/css/Footer-Clean-icons.css" />
+  <link rel="stylesheet" href="../assets/css/multiple-item-carousel-slider.css" />
+  <link rel="stylesheet" href="../assets/css/vanilla-zoom.min.css" />
 
-  <body style="background: #abba87">
+  <style>
+    .product-container {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-price {
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+
+<body style="background: #abba87">
+
   <?php
-    include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\Views\Paginas Principales\menu_principal.php';
-    ?>
-    <main class="page">
-      <section
-        class="clean-block"
-        style="background: #d9dcbd; height: 181.15px"
-      >
-        <div class="container">
-          <div class="block-heading">
-            <h2
-              style="
+  include '../../config/database.php';
+
+  // Configuración de rutas
+  define('BASE_DIR', realpath(__DIR__ . '/../../'));
+  define('BASE_URL', '../');
+  define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
+
+  $nombre_categoria = isset($_GET['categoria']) ? htmlspecialchars($_GET['categoria']) : 'Todos los productos';
+
+  // CONSULTA OPTIMIZADA
+  if (isset($_GET['categoria'])) {
+    $stmt = $conn->prepare("SELECT p.*, 
+                          (SELECT ip.ruta_imagen FROM imagenes_producto ip 
+                           WHERE ip.id_producto = p.id 
+                           ORDER BY ip.id LIMIT 1) as imagen_principal
+                          FROM productos p
+                          JOIN categorias c ON p.id_categoria = c.id
+                          WHERE c.nombre = ?");
+    $stmt->bind_param("s", $nombre_categoria);
+  } else {
+    $stmt = $conn->prepare("SELECT p.*, 
+                          (SELECT ip.ruta_imagen FROM imagenes_producto ip 
+                           WHERE ip.id_producto = p.id 
+                           ORDER BY ip.id LIMIT 1) as imagen_principal
+                          FROM productos p");
+  }
+
+  $stmt->execute();
+  $resultProductos = $stmt->get_result();
+  ?>
+
+  <main class="page">
+    <section class="clean-block" style="background: #d9dcbd; height: 181.15px">
+      <div class="container">
+        <div class="block-heading">
+          <h2 style="
                 border-color: #587a2e;
                 border-top-color: rgb(59, 153, 224);
                 border-right-color: rgb(59, 153, 224);
@@ -77,137 +90,121 @@
                 border-left-color: rgb(59, 153, 224);
                 color: #587a2e;
                 font-family: 'ADLaM Display', serif;
-              "
-            >
-              <?php
-                $categoria = isset($_GET['categoria']) ? htmlspecialchars($_GET['categoria']) : 'Categoria no especificada';
-                echo $categoria;
-              ?>
-            </h2>
-          </div>
+              ">
+            <?php echo $nombre_categoria; ?>
+          </h2>
         </div>
-      </section>
-    </main>
-    <div class="container" style="background: #abba87; margin-top: 38px">
-      <div class="row product-list dev">
-        <div
-          class="col-sm-6 col-md-4 m-auto product-item animation-element slide-top-left"
-          style="border-radius: 43px"
-        >
-          <a class="text-decoration-none m-auto" href="product_1.html">
-            <div class="product-container" style="border-radius: 20px">
-              <div class="row">
-                <div
-                  class="col-md-12 offset-lg-0 offset-xl-1 d-flex justify-content-center align-items-center"
-                  style="width: 270px"
-                >
-                  <img
-                    class="img-fluid d-flex float-start m-auto"
-                    src="../assets/img/avatars/DSC_6469.webp"
-                    style="width: 270px; text-align: center"
-                  />
-                </div>
-              </div>
-              <div class="row">
-                <div
-                  class="col-8 col-lg-10 col-xl-8 offset-lg-0 offset-xl-1"
-                  style="text-align: center; width: 190px"
-                >
-                  <h2 style="color: rgb(0, 0, 0); text-align: center">
-                    Piedras para molino
-                  </h2>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <p class="product-description" style="text-align: justify">
-                    Juego de piedras de 4 pulgadas fabricadas en piedra volcánica, ideales para moler maíz y otros granos.
-                    Su material garantiza un molido fino y homogéneo.
+      </div>
+    </section>
+  </main>
 
-                  </p>
-                  <div class="row">
-                    <div
-                      class="col-6 offset-lg-3 offset-xl-3"
-                      style="text-align: center"
-                    >
-                      <p class="product-price" style="text-align: center">
-                        $599.00
-                      </p>
+  <div class="container" style="background: #abba87; margin-top: 38px; padding-bottom: 30px;">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      <?php if ($resultProductos->num_rows > 0): ?>
+        <?php while ($producto = $resultProductos->fetch_assoc()): ?>
+          <?php
+          // Obtener la ruta de la imagen usando el método que te funciona
+          if (isset($producto['imagen_principal']) && !empty($producto['imagen_principal'])) {
+              $imagenPath = "../" . htmlspecialchars($producto['imagen_principal']);
+          } else {
+              $imagenPath = IMG_DEFAULT;
+          }
+          ?>
+
+          <div class="col">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px;">
+              <a class="text-decoration-none" href="producto_detalle.php?id=<?= $producto['id'] ?>">
+                <div class="p-3 h-100 d-flex flex-column">
+                  <div class="bg-light d-flex justify-content-center align-items-center"
+                    style="height: 200px; overflow: hidden; border-radius: 15px;">
+                    <img class="img-fluid mh-100" src="<?= $imagenPath ?>" 
+                      style="object-fit: contain; max-width: 100%;"
+                      alt="<?= htmlspecialchars($producto['nombre']) ?>"
+                      onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
+                  </div>
+                  <div class="mt-3 flex-grow-1 d-flex flex-column">
+                    <h3 class="h5 mb-2 text-dark"><?= htmlspecialchars($producto['nombre']) ?></h3>
+                    <p class="small text-muted mb-3 flex-grow-1">
+                      <?= mb_substr(htmlspecialchars($producto['descripcion']), 0, 100) ?>
+                      <?= (mb_strlen($producto['descripcion']) > 100) ? '...' : '' ?>
+                    </p>
+                    <div class="mt-auto text-center">
+                      <span class="fw-bold text-success">$<?= number_format($producto['precio'], 2) ?></span>
                     </div>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
-          </a>
+          </div>
+        <?php endwhile; ?>
+      <?php else: ?>
+        <div class="col-12">
+          <div class="alert alert-info text-center py-4">
+            <i class="fas fa-info-circle me-2"></i> No se encontraron productos en esta categoría.
+            <a href="catalogo.php" class="btn btn-sm btn-outline-success ms-3">
+              Ver pagina principal
+            </a>
+          </div>
         </div>
-        
-        
-          </a>
-        </div>
-      </div>
+      <?php endif; ?>
     </div>
-    <footer
-      class="text-center py-4"
-      style="background: #d9dcbd; margin-top: 38px"
-    >
-      <div class="container">
-        <div class="row row-cols-1 row-cols-lg-3">
-          <div class="col">
-            <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
-              <i
-                class="icon-location-pin"
-                style="font-weight: bold; font-size: 25px"
-              ></i
-              >&nbsp; AV. Álvaro obregón N.- 1796
-            </p>
-          </div>
-          <div class="col">
-            <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
-              <i
-                class="icon-screen-smartphone"
-                style="
+  </div>
+
+  <footer class="text-center py-4" style="background: #d9dcbd; margin-top: 38px">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-lg-3">
+        <div class="col">
+          <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
+            <i class="icon-location-pin" style="font-weight: bold; font-size: 25px"></i>&nbsp; AV. Álvaro obregón N.-
+            1796
+          </p>
+        </div>
+        <div class="col">
+          <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
+            <i class="icon-screen-smartphone" style="
                   color: rgb(88, 122, 46);
                   font-size: 25px;
                   font-weight: bold;
-                "
-              ></i
-              >&nbsp; 453-537-06-03
-            </p>
-          </div>
-          <div class="col">
-            <p class="my-2" style="color: rgb(88, 122, 46); font-size: 19px">
-              <i
-                class="icon-envelope"
-                style="
+                "></i>&nbsp; 453-537-06-03
+          </p>
+        </div>
+        <div class="col">
+          <p class="my-2" style="color: rgb(88, 122, 46); font-size: 19px">
+            <i class="icon-envelope" style="
                   color: rgb(88, 122, 46);
                   font-size: 25px;
                   font-weight: bold;
-                "
-              ></i
-              >&nbsp; yesid_amale@hotmail.com
-            </p>
-          </div>
+                "></i>&nbsp; yesid_amale@hotmail.com
+          </p>
         </div>
       </div>
       <div class="row">
         <div class="col">
           <p class="my-2" style="font-size: 19px; color: rgb(88, 122, 46)">
-            <strong
-              >TECNM Campus Coalcomán Ingeniería en Sistemas Computacionales 6º
-              Semestre-2025&nbsp;&nbsp;</strong
-            >
+            <strong>TECNM Campus Coalcomán Ingeniería en Sistemas Computacionales 6º Semestre-2025</strong>
           </p>
         </div>
       </div>
-    </footer>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="../assets/js/baguetteBox.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/multiple-item-carousel-slider-multiple-item-carousel-slider-bootstrap.min.js"></script>
-    <script src="../assets/js/vanilla-zoom.js"></script>
-    <script src="../assets/js/multiple-item-carousel-slider-multiple-item-carousel-slider-slider.js"></script>
-    <script src="../assets/js/Theme_Prin.js"></script>
-    <script src="../assets/js/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.js"></script>
-  </body>
+    </div>
+  </footer>
+
+  <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../assets/js/baguetteBox.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/Theme_Prin.js"></script>
+  <script>
+    // Depuración de imágenes
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("=== DEPURACIÓN DE IMÁGENES ===");
+      
+      document.querySelectorAll('img').forEach(img => {
+        console.group("Imagen: " + img.alt);
+        console.log("Ruta de la imagen:", img.src);
+        console.log("¿Se cargó correctamente?", img.complete && img.naturalHeight !== 0 ? "Sí" : "No");
+        console.groupEnd();
+      });
+    });
+  </script>
+</body>
 </html>
