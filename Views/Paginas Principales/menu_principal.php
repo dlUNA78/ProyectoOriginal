@@ -34,14 +34,14 @@
           ?>
           <div class="dropdown-menu" style="background: #d9dcbd">
             <!-- Agregar opción "Todos" primero -->
-            <a class="dropdown-item" href="/../Categorias/categoria_prod.php" style="color: #587a2e">
+            <a class="dropdown-item" href="/../Views/Categorias/categoria_prod.php" style="color: #587a2e">
               <strong>Todos los productos</strong>
             </a>
 
             <?php
             if ($result->num_rows > 0) {
               while ($row = $result->fetch_assoc()) {
-                echo '<a class="dropdown-item" href="/../Categorias/categoria_prod.php?categoria=' . urlencode($row['nombre']) . '" style="color: #587a2e"><strong>' . htmlspecialchars($row['nombre']) . '</strong></a>';
+                echo '<a class="dropdown-item" href="/../Views/Categorias/categoria_prod.php?categoria=' . urlencode($row['nombre']) . '" style="color: #587a2e"><strong>' . htmlspecialchars($row['nombre']) . '</strong></a>';
               }
             } else {
               echo '<a class="dropdown-item" href="#" style="color: #587a2e"><strong>No hay categorías disponibles</strong></a>';
