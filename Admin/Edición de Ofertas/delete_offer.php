@@ -9,16 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_oferta'])) {
     $stmt->bind_param("i", $id_oferta);
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Oferta eliminada correctamente."]);
+        header("Location: ../Ofertas/view_ofer_produc.php?success=1");
     } else {
-        echo json_encode(["success" => false, "message" => "Error al eliminar la oferta."]);
+        header("Location: ../Ofertas/view_ofer_produc.php?error=1");
     }
 
     $stmt->close();
     $conn->close();
-    exit;
-
-    header("Location: C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\Admin\Ofertas\view_ofer_produc.php");
     exit;
 }
 ?>

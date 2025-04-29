@@ -70,7 +70,7 @@ include '..\..\config\database.php';
 if (isset($_GET['id'])) {
     $id_oferta = $_GET['id'];
     
-    $stmt = $conn->prepare("SELECT * FROM ofertas WHERE id = ?");
+    $stmt = $conn->prepare("SELECT * FROM ofertas WHERE id_oferta = ?");
     $stmt->bind_param("i", $id_oferta);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -113,11 +113,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //    $nombre_imagen = $resultado['imagen'];
     //}
 
-    $stmt = $conn->prepare("UPDATE ofertas SET Nombre_oferta=?, precio=?, precio_oferta=?, Fecha_inicio=?, Fecha_expirada=? WHERE id=?");
-    $stmt->bind_param("sddsssi", $nombre, $precio, $precio_oferta, $fecha_inicio, $fecha_expirada, $nombre_imagen, $id);
+    $stmt = $conn->prepare("UPDATE ofertas SET Nombre_oferta=?, precio=?, precio_oferta=?, Fecha_inicio=?, Fecha_expirada=? WHERE id_oferta=?");
+    $stmt->bind_param("sddssi", $nombre, $precio, $precio_oferta, $fecha_inicio, $fecha_expirada, $id);
+
 
     if ($stmt->execute()) {
-        header("Location: ../Ofertas/listado_ofertas.php?actualizado=1");
+        header("Location: ../Ofertas/view_ofer_produc.php?success=1");
         exit;
     } else {
         echo "Error al actualizar la oferta";
@@ -339,91 +340,107 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             >
               Modificar Oferta
             </h2>
-            <form novalidate>
+            <form method="POST" novalidate>
+              <input type="hidden" name="id" value="<?php echo $oferta['id_oferta']; ?>" />
               <div class="mb-3">
-                <label
-                  class="form-label"
-                  for="nombre"
-                  style="color: rgb(0, 0, 0)"
-                  >Nombre del Producto:</label
-                >
-                <input
-                  class="form-control form-control"
-                  type="text"
-                  id="nombre"
-                  required=""
-                />
+              <label
+              class="form-label"
+              for="nombre"
+              style="color: rgb(0, 0, 0)"
+              >Nombre del Producto:</label
+              >
+              <input
+              class="form-control form-control"
+              type="text"
+              id="nombre"
+              name="Nombre_oferta"
+              value="<?php echo htmlspecialchars($oferta['Nombre_oferta']); ?>"
+              required=""
+              disabled
+              />
               </div>
               <div class="mb-3">
-                <label
-                  class="form-label"
-                  for="codigo-1"
-                  style="color: rgb(0, 0, 0)"
-                  >Precio:</label
-                >
-                <input id="precioBe" class="form-control" type="search" />
+              <label
+              class="form-label"
+              for="precio"
+              style="color: rgb(0, 0, 0)"
+              >Precio:</label
+              >
+              <input
+              id="precioBe"
+              class="form-control"
+              type="number"
+              name="precio"
+              value="<?php echo htmlspecialchars($oferta['precio']); ?>"
+              required=""
+              disabled
+              />
               </div>
               <div class="mb-3">
-                <label
-                  class="form-label"
-                  for="existencia"
-                  style="color: rgb(0, 0, 0)"
-                  >Precio con descuento:</label
-                >
-                <input
-                  id="precioNew"
-                  class="form-control form-control"
-                  type="number"
-                  required=""
-                />
-                <div id="errorPrecioNew" class="text-danger"></div>
-              </div>
-
-              <div class="mb-3">
-                <label
-                required=""
-                style="color: rgb(0, 0, 0)"
-                >Fecha de inicio:</label>
-              <input type="date" name="fecha_salida"><br><br>
+              <label
+              class="form-label"
+              for="precio_oferta"
+              style="color: rgb(0, 0, 0)"
+              >Precio con descuento:</label
+              >
+              <input
+              id="precioNew"
+              class="form-control form-control"
+              type="number"
+              name="precio_oferta"
+              value="<?php echo htmlspecialchars($oferta['precio_oferta']); ?>"
+              required=""
+              />
+              <div id="errorPrecioNew" class="text-danger"></div>
               </div>
 
               <div class="mb-3">
               <label
               style="color: rgb(0, 0, 0)"
+              >Fecha de inicio:</label>
+              <input
+              type="date"
+              name="Fecha_inicio"
+              value="<?php echo htmlspecialchars($oferta['Fecha_inicio']); ?>"
               required=""
-              >Fecha de expiracion:</label>
-              <input type="date" name="fecha_salida"><br>
+              />
+              </div>
+
+              <div class="mb-3">
+              <label
+              style="color: rgb(0, 0, 0)"
+              >Fecha de expiración:</label>
+              <input
+              type="date"
+              name="Fecha_expirada"
+              value="<?php echo htmlspecialchars($oferta['Fecha_expirada']); ?>"
+              required=""
+              />
               </div>
               
               <div class="mb-3"></div>
               <div class="d-flex justify-content-end gap-2">
-                <button
-                  id="btn_agregar"
-                  class="btn btn-primary"
-                  type="submit"
-                  style="
-                    background: var(--bs-info);
-                    font-weight: bold;
-                    margin-top: 10px;
-                  "
-                  href="../Ofertas/view_ofer_produc.php"
-                  >Agregar</button
-                ><a
-                  class="btn btn-secondary"
-                  role="button"
-                  style="
-                    background: var(--bs-success);
-                    font-weight: bold;
-                    margin-top: 10px;
-                  "
-                  href="../Ofertas/view_ofer_produc.php"
-                  >Cancelar</a>
+              <button
+              id="btn_agregar"
+              class="btn btn-primary"
+              type="submit"
+              style="
+              background: var(--bs-info);
+              font-weight: bold;
+              margin-top: 10px;
+              "
+              >Guardar</button>
+              <a
+              class="btn btn-secondary"
+              role="button"
+              style="
+              background: var(--bs-success);
+              font-weight: bold;
+              margin-top: 10px;
+              "
+              href="../Ofertas/view_ofer_produc.php"
+              >Cancelar</a>
               </div>
-
-
-
-
-              
             </form>
           </div>
         </div>

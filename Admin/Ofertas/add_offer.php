@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Manejo de la imagen
     $ruta_imagen = '';
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $directorio_destino = '../../uploads/ofertas/';
+        $directorio_destino = 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\uploads\ofertas';
         if (!is_dir($directorio_destino)) {
             mkdir($directorio_destino, 0777, true); // Crear el directorio si no existe
         }
@@ -428,7 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <!-- Botones -->
     <div class="d-flex justify-content-end gap-2">
-      <button type="submit" class="btn btn-primary" style="font-weight: bold; margin-top: 10px;" id="btn_agregar">Agregar Oferta</button>
+      <button type="submit" class="btn btn-primary" style="  background: var(--bs-info);font-weight: bold; margin-top: 10px;" id="btn_agregar">Agregar Oferta</button>
       <a class="btn btn-secondary" role="button" style="background: var(--bs-success); font-weight: bold; margin-top: 10px;" href="../Ofertas/view_ofer_produc.php">Cancelar</a>
     </div>
   </form>

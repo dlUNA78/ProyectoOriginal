@@ -12,7 +12,7 @@
         <hr class="sidebar-divider my-0" />
         <ul class="navbar-nav text-light" id="accordionSidebar">
             <li class="nav-item">
-                <a class="nav-link" href="../Menú/index.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+                <a class="nav-link" href="/Admin/Menú/index.php"><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                         height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                         stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-dashboard"
                         style="color: rgb(0, 0, 0); font-size: 22.6px">
