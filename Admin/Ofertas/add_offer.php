@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Manejo de la imagen
   $ruta_imagen = '';
   if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-    $directorio_destino = 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\uploads\ofertas';
+    $directorio_destino = dirname(__DIR__).'/assets/img/ofertas/';
     if (!is_dir($directorio_destino)) {
       mkdir($directorio_destino, 0777, true); // Crear el directorio si no existe
     }
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Guardar solo la ruta relativa para la base de datos
-    $ruta_imagen = 'uploads/ofertas/' . $nombre_imagen;
+    $ruta_imagen = '/Admin/assets/img/ofertas/' . $nombre_imagen;
   }
 
   // Insertar en la base de datos

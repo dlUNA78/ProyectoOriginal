@@ -340,7 +340,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             >
               Modificar Oferta
             </h2>
-            <form method="POST" novalidate>
+            <form method="POST" >
               <input type="hidden" name="id" value="<?php echo $oferta['id_oferta']; ?>" />
               <div class="mb-3">
               <label
@@ -356,7 +356,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               name="Nombre_oferta"
               value="<?php echo htmlspecialchars($oferta['Nombre_oferta']); ?>"
               required=""
-              disabled
+              readonly
               />
               </div>
               <div class="mb-3">
@@ -373,7 +373,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               name="precio"
               value="<?php echo htmlspecialchars($oferta['precio']); ?>"
               required=""
-              disabled
+              readonly
               />
               </div>
               <div class="mb-3">
