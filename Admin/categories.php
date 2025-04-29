@@ -1,34 +1,18 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 <!-- Incluir conexion PHP -->
-
 <?php
 include("../config/database.php");
-
-
-
-
-
 session_start();
 
 if (!isset($_SESSION['user'])) {
   header("Location:login.php");
   die();
 }
-
-
-
-
-
-
-
-
-
 ?>
 
 <!-- Fin de la conexión -->
-
-<head>
+ <head>
   <meta charset="utf-8" />
   <meta
     name="viewport"
@@ -256,7 +240,7 @@ if (!isset($_SESSION['user'])) {
       </div>
     </div>
   </div>
-
+<!-- Scripts -->
   <script>
     // Función para buscar categorías en la tabla
     function searchCategories() {

@@ -269,7 +269,7 @@ if ($conn->query($sql) === TRUE) {
                 <thead>
                   <tr style="background: var(--bs-info)" width="100%">
                     <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre de la Oferta</th>
+                    <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre </th>
                     <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
                     <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
                     <th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>

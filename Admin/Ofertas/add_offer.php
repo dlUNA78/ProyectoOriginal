@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <hr class="sidebar-divider my-0" />
           <ul class="navbar-nav text-light" id="accordionSidebar">
             <li class="nav-item">
-              <a class="nav-link" href="../Menú/index.pphp"
+              <a class="nav-link" href="../Menú/index.php"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
