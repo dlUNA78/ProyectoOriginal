@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
@@ -29,6 +30,7 @@
 <body>
   <?php
   include './menu_principal.php';
+ 
   ?>
   <main class="page" style="background: rgb(255, 242, 205)">
     <section class="clean-block clean-hero" style="
@@ -251,7 +253,7 @@
             <div id="carouselExampleControls" class="carousel" data-bs-ride="carousel">
               <div class="carousel-inner">
                 <?php
-                $conn = new mysqli("localhost:3308", "root", "1234", "proyecto1");
+                $conn = new mysqli("localhost", "root", "586226", "proyecto1");
                 if ($conn->connect_error)
                   die("Error de conexión: " . $conn->connect_error);
 
@@ -261,7 +263,7 @@
                 if ($result->num_rows > 0) {
                   while ($row = $result->fetch_assoc()) {
                     // Ruta absoluta del servidor para las imágenes
-                    $absolute_image_path = "C:\\Users\\PC\\Documents\\GitHub\\ProyectoOriginal\\uploads\\ofertas\\" . $row['imagen'];
+                    $absolute_image_path = "/uploads/ofertas/" . $row['imagen'];
                     // Ruta relativa para el navegador
                     $web_image_path = "../uploads/ofertas/" . $row['imagen'];
                     $descuento = round(($row['precio'] - $row['precio_oferta']) / $row['precio'] * 100);
@@ -296,10 +298,10 @@
                           <h5 class="card-title" style="font-family: 'ADLaM Display', serif; color: #587a2e;">
                             <?= htmlspecialchars($row['Nombre_oferta']) ?>
                           </h5>
-                          <p class="card-text"
+                            <p class="card-text"
                             style="font-family: 'AR One Sans', sans-serif; text-align: justify; color: #6c757d;">
-                            Oferta especial por tiempo limitado. Aprovecha ahora este increíble descuento.
-                          </p>
+                            <?= htmlspecialchars($row['descrpcion']) ?>
+                            </p>
                           <div class="d-flex align-items-center">
                             <span class="text-muted text-decoration-line-through me-3">
                               $<?= number_format($row['precio'], 2) ?>

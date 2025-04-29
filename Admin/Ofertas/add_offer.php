@@ -34,46 +34,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_productob = $_POST['Nombre_b'];
-    $precio_normal = $_POST['precio_normal'];
-    $precio_oferta = $_POST['precio_oferta'];
-    $fecha_inicio = $_POST['Fecha_inicio'];
-    $fecha_expirada = $_POST['Fecha_expirada'];
+  $id_productob = $_POST['Nombre_b'];
+  $precio_normal = $_POST['precio_normal'];
+  $precio_oferta = $_POST['precio_oferta'];
+  $fecha_inicio = $_POST['Fecha_inicio'];
+  $fecha_expirada = $_POST['Fecha_expirada'];
+  $descripcion = $_POST['descripcion']; // Nuevo campo para la descripción
 
-    // Manejo de la imagen
-    $ruta_imagen = '';
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $directorio_destino = 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\uploads\ofertas';
-        if (!is_dir($directorio_destino)) {
-            mkdir($directorio_destino, 0777, true); // Crear el directorio si no existe
-        }
-
-        $nombre_imagen = uniqid() . '_' . basename($_FILES['imagen']['name']);
-        $ruta_imagen = $directorio_destino . $nombre_imagen;
-
-        if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta_imagen)) {
-            $_SESSION['error'] = "Error al subir la imagen.";
-            header("Location: add_offer.php");
-            exit();
-        }
-
-        // Guardar solo la ruta relativa para la base de datos
-        $ruta_imagen = 'uploads/ofertas/' . $nombre_imagen;
+  // Manejo de la imagen
+  $ruta_imagen = '';
+  if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+    $directorio_destino = 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\uploads\ofertas';
+    if (!is_dir($directorio_destino)) {
+      mkdir($directorio_destino, 0777, true); // Crear el directorio si no existe
     }
 
-    // Insertar en la base de datos
-    $sql = "INSERT INTO ofertas (Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada, imagen) 
-            VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada', '$ruta_imagen')";
+    $nombre_imagen = uniqid() . '_' . basename($_FILES['imagen']['name']);
+    $ruta_imagen = $directorio_destino . $nombre_imagen;
 
-    if (mysqli_query($conn, $sql)) {
-        $_SESSION['success'] = "¡Oferta agregada correctamente!";
-    } else {
-        $_SESSION['error'] = "Error al agregar la oferta: " . mysqli_error($conn);
+    if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta_imagen)) {
+      $_SESSION['error'] = "Error al subir la imagen.";
+      header("Location: add_offer.php");
+      exit();
     }
 
-    mysqli_close($conn);
-    header("Location: view_ofer_produc.php");
-    exit();
+    // Guardar solo la ruta relativa para la base de datos
+    $ruta_imagen = 'uploads/ofertas/' . $nombre_imagen;
+  }
+
+  // Insertar en la base de datos
+  $sql = "INSERT INTO ofertas (Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada, imagen, descrpcion) 
+      VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada', '$ruta_imagen', '$descripcion')";
+
+  if (mysqli_query($conn, $sql)) {
+    $_SESSION['success'] = "¡Oferta agregada correctamente!";
+  } else {
+    $_SESSION['error'] = "Error al agregar la oferta: " . mysqli_error($conn);
+  }
+
+  mysqli_close($conn);
+  header("Location: view_ofer_produc.php");
+  exit();
 }
 
 
@@ -424,6 +425,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <label style="color: rgb(0, 0, 0)">Imagen:</label>
       <input type="file" name="imagen" class="form-control" />
       <div id="errorImagen" class="text-danger"></div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3">
+      <label style="color: rgb(0, 0, 0)">Descripción:</label>
+      <textarea name="descripcion" class="form-control" rows="3" required></textarea>
     </div>
 
     <!-- Botones -->

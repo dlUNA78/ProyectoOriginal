@@ -265,16 +265,17 @@ if ($conn->query($sql) === TRUE) {
             <div class="table-responsive text-center d-flex" style="margin-left: 50px; margin-right: 50px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;">
 
               <!-- Tabla de Ofertas -->
-              <table class="table table-hover">
+                <table class="table table-hover">
                 <thead>
                   <tr style="background: var(--bs-info)" width="100%">
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre de la Oferta</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de inicio</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de expiracion</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre de la Oferta</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de inicio</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de expiracion</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
                   </tr>
                 </thead>
 
@@ -285,65 +286,66 @@ if ($conn->query($sql) === TRUE) {
 
                 <tbody id="offerTable">
                   <?php if ($resultado->num_rows > 0): ?>
-                    <?php while ($fila = $resultado->fetch_assoc()): ?>
-                      <tr> 
-                        <td>
-                            <?php if (!empty($fila['imagen'])): ?>
-                            <img src="data:image/jpeg;base64,<?php echo base64_encode($fila['imagen']); ?>" alt="Imagen de la oferta" style="width: 100px; height: auto;">
-                            <?php else: ?>
-                            <span>No disponible</span>
-                            <?php endif; ?>
-                        </td>
-                        <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
-                        <td>$<?php echo number_format($fila['precio'], 2); ?></td>
-                        <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
-                        <td><?php echo $fila['Fecha_inicio'] !== null ? htmlspecialchars($fila['Fecha_inicio']) : 'N/A'; ?></td>
-                        <td><?php echo $fila['Fecha_expirada'] !== null ? htmlspecialchars($fila['Fecha_expirada']) : 'N/A'; ?></td>
-                        <td style="text-align: center">
-                          <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                             href="..\Edición de Productos\modify_offer.php?id=<?php echo urlencode($fila['id_oferta']); ?>">
-                             <i class="fa fa-edit" style="color: var(--bs-black)"></i>
-                          </a>
-                          <button class="btn btn-danger" style="margin-left: 5px" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $fila['id_oferta']; ?>">
-                            <i class="fa fa-trash" style="font-size: 15px"></i>
-                          </button>
-                        </td>
-                      </tr>
-
-                      <!-- Modal de confirmación -->
-                      <div class="modal fade" id="deleteModal<?php echo $fila['id_oferta']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo $fila['id_oferta']; ?>" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="deleteModalLabel<?php echo $fila['id_oferta']; ?>">Confirmar Eliminación</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              ¿Estás seguro de que deseas eliminar esta oferta? Esta acción no se puede deshacer.
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                              <form action="../Edición de Ofertas/delete_offer.php" method="post" style="display:inline;">
-                                <input type="hidden" name="id_oferta" value="<?php echo $fila['id_oferta']; ?>">
-                                <button class="btn btn-danger" type="submit">Eliminar</button>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    <?php endwhile; ?>
-                  <?php else: ?>
-                    <tr>
-                      <td colspan="7" style="text-align: center; font-weight: bold;">
-                        <p>No hay ofertas disponibles actualmente</p>
-                      </td>
+                  <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <tr> 
+                    <td>
+                      <?php if (!empty($fila['imagen'])): ?>
+                      <img src="data:image/jpeg;base64,<?php echo base64_encode($fila['imagen']); ?>" alt="Imagen de la oferta" style="width: 100px; height: auto;">
+                      <?php else: ?>
+                      <span>No disponible</span>
+                      <?php endif; ?>
+                    </td>
+                    <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
+                    <td>$<?php echo number_format($fila['precio'], 2); ?></td>
+                    <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
+                    <td><?php echo htmlspecialchars($fila['descrpcion']); ?></td>
+                    <td><?php echo $fila['Fecha_inicio'] !== null ? htmlspecialchars($fila['Fecha_inicio']) : 'N/A'; ?></td>
+                    <td><?php echo $fila['Fecha_expirada'] !== null ? htmlspecialchars($fila['Fecha_expirada']) : 'N/A'; ?></td>
+                    <td style="text-align: center">
+                      <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
+                       href="..\Edición de Productos\modify_offer.php?id=<?php echo urlencode($fila['id_oferta']); ?>">
+                       <i class="fa fa-edit" style="color: var(--bs-black)"></i>
+                      </a>
+                      <button class="btn btn-danger" style="margin-left: 5px" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $fila['id_oferta']; ?>">
+                      <i class="fa fa-trash" style="font-size: 15px"></i>
+                      </button>
+                    </td>
                     </tr>
+
+                    <!-- Modal de confirmación -->
+                    <div class="modal fade" id="deleteModal<?php echo $fila['id_oferta']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo $fila['id_oferta']; ?>" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel<?php echo $fila['id_oferta']; ?>">Confirmar Eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        ¿Estás seguro de que deseas eliminar esta oferta? Esta acción no se puede deshacer.
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="../Edición de Ofertas/delete_offer.php" method="post" style="display:inline;">
+                        <input type="hidden" name="id_oferta" value="<?php echo $fila['id_oferta']; ?>">
+                        <button class="btn btn-danger" type="submit">Eliminar</button>
+                        </form>
+                      </div>
+                      </div>
+                    </div>
+                    </div>
+                  <?php endwhile; ?>
+                  <?php else: ?>
+                  <tr>
+                    <td colspan="8" style="text-align: center; font-weight: bold;">
+                    <p>No hay ofertas disponibles actualmente</p>
+                    </td>
+                  </tr>
                   <?php endif; ?>
                 </tbody>
 
                 <?php $conn->close(); ?>
 
-              </table>
+                </table>
               <!-- Fin de la tabla de ofertas -->
             </div>
             <div class="d-grid float-end">

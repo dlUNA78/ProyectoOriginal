@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg fixed-top d-flex clean-navbar"
   style="border-color: rgb(37, 113, 188); background: rgb(217, 220, 189)">
   <div class="container">
-    <a class="navbar-brand text-start d-flex logo" href="index_prin.php" style="
+    <a class="navbar-brand text-start d-flex logo" href="/Views/Paginas Principales/index_prin.php" style="
             color: #587a2e;
             text-align: left;
             padding-top: 0px;
@@ -34,7 +34,7 @@
           ?>
           <div class="dropdown-menu" style="background: #d9dcbd">
             <!-- Agregar opción "Todos" primero -->
-            <a class="dropdown-item" href="/../Views/Categorias/categoria_prod.php" style="color: #587a2e">
+            <a class="dropdown-item" href="/Views/Categorias/categoria_prod.php" style="color: #587a2e">
               <strong>Todos los productos</strong>
             </a>
 
