@@ -47,7 +47,7 @@ if ($result->num_rows > 0) {
     </html>";
 } else {
     // Inserta los datos en la tabla si no existe
-    $sql = "INSERT INTO categorias (nombre) VALUES ('$nombre')";
+    $sql = "UPDATE categorias SET nombre = '$nombre' WHERE id = $id";
     if ($conn->query($sql) === TRUE) {
         // Si los datos se insertaron correctamente, muestra un modal de confirmación
         echo "<!DOCTYPE html>
@@ -67,7 +67,7 @@ if ($result->num_rows > 0) {
                             <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
                         </div>
                         <div class='modal-body'>
-                            Los valores se ingresaron correctamente.
+                            Los valores se actualizaron  correctamente.
                         </div>
                         <div class='modal-footer'>
                             <button type='button' class='btn btn-secondary' onclick=\"window.location.href='../../categories.php'\">Aceptar</button>
