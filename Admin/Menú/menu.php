@@ -78,11 +78,39 @@
                 <ul class="navbar-nav flex-nowrap ms-auto">
                     <li class="nav-item dropdown no-arrow">
                         <div class="nav-item dropdown no-arrow">
-                            <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown"
-                                href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small"><?php
-                                echo isset($_SESSION['user']) ? $_SESSION['user'] : 'Guest'; ?></span><img
-                                    class="border rounded-circle img-profile"
-                                    src="<?php echo isset($_SESSION['imagen']) ? $_SESSION['imagen'] : '../assets/img/avatars/perfil_default.avif'; ?>"/></a>
+                            <?php
+                            // Nombre del archivo guardado en la sesión (solo el nombre, sin ruta)
+                            $imagen_nombre = isset($_SESSION['imagen']) ? basename($_SESSION['imagen']) : '';
+
+                            // Extensiones permitidas
+                            $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'];
+
+                            // Extraer la extensión del archivo
+                            $extension = strtolower(pathinfo($imagen_nombre, PATHINFO_EXTENSION));
+
+                            // Ruta relativa desde el navegador y absoluta en el servidor
+                            $ruta_relativa = 'Admin/assets/img/avatars/';
+                            $ruta_absoluta = $_SERVER['DOCUMENT_ROOT'] . '/' . $ruta_relativa . $imagen_nombre;
+
+                            // Validar existencia y extensión
+                            if (
+                                empty($imagen_nombre) ||
+                                !in_array($extension, $extensiones_permitidas) ||
+                                !file_exists($ruta_absoluta)
+                            ) {
+                                $web_image_path = '/' . $ruta_relativa . 'perfil_default.avif';
+                            } else {
+                                $web_image_path = '/' . $ruta_relativa . $imagen_nombre;
+                            }
+                            ?>
+                            <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+                                <span class="d-none d-lg-inline me-2 text-gray-600 small">
+                                    <?php echo isset($_SESSION['user']) ? $_SESSION['user'] : 'Guest'; ?>
+                                </span>
+                                <img class="border rounded-circle img-profile" src="<?php echo htmlspecialchars($web_image_path); ?>" />
+                            </a>
+
+
 
                             <!-- esto se reeemplazara por los datos del login, queda pendiente -->
 
