@@ -1,123 +1,207 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Definir patrones regex (sin números para nombre y descripción)
-  const REGEX_NOMBRE = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.\,\/]+$/;
-  const REGEX_DESCRIPCION = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.\,\/\(\)]+$/;
-  const REGEX_PRECIO = /^\d+(\.\d{1,2})?$/;
-  const REGEX_IMAGEN = /\.(jpe?g|png|gif|webp)$/i;
+document.addEventListener('DOMContentLoaded', function () {
+    // Definir patrones regex
+    const REGEX_NOMBRE = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/; // Solo letras y espacios
+    const REGEX_DESCRIPCION = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-/()]+$/; // Solo permite .,-/ ()
+    const REGEX_PRECIO = /^\d+(\.\d{1,2})?$/;
+    const REGEX_IMAGEN = /\.(jpe?g|png|gif|webp)$/i;
+    const SIMBOLOS_NO_PERMITIDOS_DESCRIPCION = /[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-/()]/;
 
-  // Validación en tiempo real para nombre (no permitir números)
-  document.getElementById('nombre')?.addEventListener('input', function(e) {
-      const input = e.target.value;
-      if (/[0-9]/.test(input)) {
-          e.target.value = input.replace(/[0-9]/g, '');
-          document.getElementById('errorNombre').innerText = "No se permiten números en este campo";
-      } else {
-          document.getElementById('errorNombre').innerText = "";
-      }
-  });
+    // Elementos del formulario
+    const form = document.getElementById('formModificarProducto');
+    const nombreInput = document.getElementById('nombre');
+    const descripcionInput = document.getElementById('descripcion');
+    const precioInput = document.getElementById('precio');
+    const categoriaInput = document.getElementById('categoria');
+    const imagenesInput = document.querySelector('input[type="file"]');
 
-  // Validación en tiempo real para descripción (no permitir números)
-  document.getElementById('descripcion')?.addEventListener('input', function(e) {
-      const input = e.target.value;
-      if (/[0-9]/.test(input)) {
-          e.target.value = input.replace(/[0-9]/g, '');
-          document.getElementById('errorDescripcion').innerText = "No se permiten números en este campo";
-      } else {
-          document.getElementById('errorDescripcion').innerText = "";
-      }
-  });
+    // Validación en tiempo real para nombre (solo letras)
+    if (nombreInput) {
+        nombreInput.addEventListener('input', function (e) {
+            const input = e.target.value;
+            const errorElement = document.getElementById('errorNombre');
 
-  // Validación de precio mientras se escribe
-  document.getElementById("precio")?.addEventListener("keypress", function(event) {
-      const input = event.target.value;
-      const dotCount = (input.match(/\./g) || []).length;
+            // Eliminar cualquier carácter que no sea letra o espacio
+            e.target.value = input.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
 
-      if (!/[0-9.]/.test(event.key) || (event.key === '.' && dotCount >= 1)) {
-          event.preventDefault();
-      }
-  });
+            if (input !== e.target.value) {
+                errorElement.innerText = "Solo se permiten letras y espacios";
+            } else {
+                errorElement.innerText = "";
+            }
 
-  // Validación del formulario al enviar
-  document.getElementById('formModificarProducto')?.addEventListener('submit', function(e) {
-      // Obtén los valores de los campos
-      const nombre = document.getElementById('nombre').value.trim();
-      const descripcion = document.getElementById('descripcion').value.trim();
-      const precio = document.getElementById('precio').value.trim();
-      const categoria = document.getElementById('categoria').value;
-      const imagenes = document.querySelector('input[type="file"]').files;
+            // Validar longitud
+            if (e.target.value.length > 50) {
+                errorElement.innerText = "Máximo 50 caracteres";
+                e.target.value = e.target.value.substring(0, 50);
+            }
+        });
+    }
 
-      // Limpia los mensajes de error previos
-      document.getElementById('errorNombre').innerText = "";
-      document.getElementById('errorDescripcion').innerText = "";
-      document.getElementById('errorPrecio').innerText = "";
-      document.getElementById('errorCategoria').innerText = "";
-      document.getElementById('errorImagenes').innerText = "";
+    // Validación en tiempo real para descripción (solo símbolos permitidos)
+    if (descripcionInput) {
+        descripcionInput.addEventListener('input', function (e) {
+            const input = e.target.value;
+            const errorElement = document.getElementById('errorDescripcion');
 
-      // Validación de campos
-      let isValid = true;
+            // Eliminar símbolos no permitidos
+            e.target.value = input.replace(SIMBOLOS_NO_PERMITIDOS_DESCRIPCION, '');
 
-      // Validar nombre (sin números)
-      if (nombre === "") {
-          document.getElementById('errorNombre').innerText = "El nombre es obligatorio";
-          isValid = false;
-      } else if (!REGEX_NOMBRE.test(nombre)) {
-          document.getElementById('errorNombre').innerText = "El nombre solo debe contener letras y algunos símbolos (no números)";
-          isValid = false;
-      } else if (nombre.length < 3 || nombre.length > 50) {
-          document.getElementById('errorNombre').innerText = "El nombre debe tener entre 3 y 50 caracteres";
-          isValid = false;
-      }
+            if (input !== e.target.value) {
+                errorElement.innerText = "Solo se permiten letras, números, espacios y los símbolos .,-/()";
+            } else {
+                errorElement.innerText = "";
+            }
 
-      // Validar descripción (sin números)
-      if (descripcion === "") {
-          document.getElementById('errorDescripcion').innerText = "La descripción es obligatoria";
-          isValid = false;
-      } else if (!REGEX_DESCRIPCION.test(descripcion)) {
-          document.getElementById('errorDescripcion').innerText = "La descripción solo debe contener letras y algunos símbolos (no números)";
-          isValid = false;
-      } else if (descripcion.length < 10 || descripcion.length > 500) {
-          document.getElementById('errorDescripcion').innerText = "La descripción debe tener entre 10 y 500 caracteres";
-          isValid = false;
-      }
+            // Validar longitud
+            if (e.target.value.length > 500) {
+                errorElement.innerText = "Máximo 500 caracteres";
+                e.target.value = e.target.value.substring(0, 500);
+            }
+        });
+    }
 
-      // Validar precio
-      if (precio === "" || !REGEX_PRECIO.test(precio) || parseFloat(precio) <= 0) {
-          document.getElementById('errorPrecio').innerText = "El precio debe ser un número positivo con hasta 2 decimales";
-          isValid = false;
-      }
 
-      // Validar categoría
-      if (categoria === "" || isNaN(categoria)) {
-          document.getElementById('errorCategoria').innerText = "Seleccione una categoría válida";
-          isValid = false;
-      }
+    // Validación de precio mientras se escribe
+    if (precioInput) {
+        precioInput.addEventListener('input', function (e) {
+            const input = e.target.value;
+            const errorElement = document.getElementById('errorPrecio');
 
-      // Validar imágenes (si se subieron)
-      if (imagenes.length > 0) {
-          for (let i = 0; i < imagenes.length; i++) {
-              if (!REGEX_IMAGEN.test(imagenes[i].name)) {
-                  document.getElementById('errorImagenes').innerText = "Solo se permiten imágenes JPG, PNG, GIF o WEBP";
-                  isValid = false;
-                  break;
-              }
-              
-              if (imagenes[i].size > 5242880) {
-                  document.getElementById('errorImagenes').innerText = "Las imágenes no deben exceder 5MB";
-                  isValid = false;
-                  break;
-              }
-          }
-      }
+            // Solo permite números y un punto decimal
+            e.target.value = input.replace(/[^0-9.]/g, '');
 
-      if (!isValid) {
-          e.preventDefault();
-      } else {
-          // Si todo es válido, mostrar el modal de confirmación
-          const modal = new bootstrap.Modal(document.getElementById('modal_confirm'));
-          modal.show();
-          
-          // Opcional: enviar el formulario después de mostrar el modal
-          // this.submit();
-      }
-  });
-});
+            // Elimina puntos adicionales
+            const dotCount = (e.target.value.match(/\./g) || []).length;
+            if (dotCount > 1) {
+                e.target.value = e.target.value.substring(0, e.target.value.lastIndexOf('.'));
+            }
+
+            // Limita a 2 decimales
+            if (dotCount === 1) {
+                const parts = e.target.value.split('.');
+                if (parts[1] && parts[1].length > 2) {
+                    e.target.value = parts[0] + '.' + parts[1].substring(0, 2);
+                }
+            }
+
+            // Limita la longitud total
+            if (e.target.value.length > 10) {
+                e.target.value = e.target.value.substring(0, 10);
+                errorElement.innerText = "Máximo 10 caracteres";
+            } else {
+                errorElement.innerText = "";
+            }
+        });
+    }
+
+    // Validación del formulario al enviar
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            // Obtén los valores de los campos
+            const nombre = nombreInput ? nombreInput.value.trim() : '';
+            const descripcion = descripcionInput ? descripcionInput.value.trim() : '';
+            const precio = precioInput ? precioInput.value.trim() : '';
+            const categoria = categoriaInput ? categoriaInput.value : '';
+            const imagenes = imagenesInput ? imagenesInput.files : [];
+
+            // Limpia los mensajes de error previos
+            document.getElementById('errorNombre').innerText = "";
+            document.getElementById('errorDescripcion').innerText = "";
+            document.getElementById('errorPrecio').innerText = "";
+            document.getElementById('errorCategoria').innerText = "";
+            document.getElementById('errorImagenes').innerText = "";
+
+            // Validación de campos
+            let isValid = true;
+
+            // Validar nombre (sin números)
+            if (!nombre) {
+                document.getElementById('errorNombre').innerText = "El nombre es obligatorio";
+                isValid = false;
+            } else if (nombre.length < 3 || nombre.length > 50) {
+                document.getElementById('errorNombre').innerText = "El nombre debe tener entre 3 y 50 caracteres";
+                isValid = false;
+            } else if (!REGEX_NOMBRE.test(nombre)) {
+                document.getElementById('errorNombre').innerText = "El nombre solo debe contener letras y algunos símbolos básicos (.,-/), no números";
+                isValid = false;
+            } else if (SIMBOLOS_NO_PERMITIDOS.test(nombre)) {
+                document.getElementById('errorNombre').innerText = "El nombre contiene símbolos no permitidos";
+                isValid = false;
+            }
+
+            // Validar descripción (permite números pero no símbolos especiales)
+            if (!descripcion) {
+                document.getElementById('errorDescripcion').innerText = "La descripción es obligatoria";
+                isValid = false;
+            } else if (descripcion.length < 10 || descripcion.length > 500) {
+                document.getElementById('errorDescripcion').innerText = "La descripción debe tener entre 10 y 500 caracteres";
+                isValid = false;
+            } else if (SIMBOLOS_NO_PERMITIDOS.test(descripcion)) {
+                document.getElementById('errorDescripcion').innerText = "La descripción contiene símbolos no permitidos";
+                isValid = false;
+            } else if (!REGEX_DESCRIPCION.test(descripcion)) {
+                document.getElementById('errorDescripcion').innerText = "La descripción solo puede contener letras, números y algunos símbolos básicos (.,-/())";
+                isValid = false;
+            }
+
+            // Validar precio
+            if (!precio) {
+                document.getElementById('errorPrecio').innerText = "El precio es obligatorio";
+                isValid = false;
+            } else if (!REGEX_PRECIO.test(precio)) {
+                document.getElementById('errorPrecio').innerText = "El precio debe ser un número positivo con hasta 2 decimales";
+                isValid = false;
+            } else if (parseFloat(precio) <= 0) {
+                document.getElementById('errorPrecio').innerText = "El precio debe ser mayor que 0";
+                isValid = false;
+            } else if (precio.length > 10) {
+                document.getElementById('errorPrecio').innerText = "El precio no puede exceder 10 caracteres";
+                isValid = false;
+            }
+
+            // Validar categoría
+            if (!categoria || isNaN(categoria)) {
+                document.getElementById('errorCategoria').innerText = "Seleccione una categoría válida";
+                isValid = false;
+            }
+
+            // Validar imágenes (si se subieron)
+            if (imagenes.length > 0) {
+                if (imagenes.length > 5) {
+                    document.getElementById('errorImagenes').innerText = "No se pueden subir más de 5 imágenes";
+                    isValid = false;
+                } else {
+                    for (let i = 0; i < imagenes.length; i++) {
+                        if (!REGEX_IMAGEN.test(imagenes[i].name)) {
+                            document.getElementById('errorImagenes').innerText = "Solo se permiten imágenes JPG, PNG, GIF o WEBP";
+                            isValid = false;
+                            break;
+                        }
+
+                        if (imagenes[i].size > 5242880) { // 5MB
+                            document.getElementById('errorImagenes').innerText = "Las imágenes no deben exceder 5MB";
+                            isValid = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            } else {
+                // Si todo es válido, mostrar el modal de confirmación
+                const modal = new bootstrap.Modal(document.getElementById('modal_confirm'));
+                modal.show();
+
+                // Prevenir el envío del formulario hasta que se confirme en el modal
+                e.preventDefault();
+
+                // Configurar el botón de confirmación del modal para enviar el formulario
+                document.getElementById('confirmarModificacion').addEventListener('click', function () {
+                    form.submit();
+                });
+            }
+        });
+    }
+});   

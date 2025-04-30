@@ -4,8 +4,8 @@
 session_start();
 
 if (!isset($_SESSION['user'])) {
-  header("Location:login.php");
-  die();
+    header("Location:login.php");
+    die();
 }
 
 
@@ -170,7 +170,7 @@ try {
         <!-- incluir menu -->
         <?php include '..\..\Admin\Menú\menu.php'; ?>
         <!-- incluir menu -->
-          
+
         <div id="content">
             <div class="container d-flex justify-content-center align-items-center"
                 style="width: 500px; height: auto; margin-bottom: 40px">
@@ -244,14 +244,11 @@ try {
             </div>
         </div>
 
-        <footer class="bg-white sticky-footer">
-            <div class="container my-auto">
-                <div class="text-center my-auto copyright">
-                    <span><br />TECNM Campus Coalcomán Ingeniería en Sistemas
-                        Computacionales 6°Semestre -2025<br /><br /></span>
-                </div>
-            </div>
-        </footer>
+
+        <!-- inicia footer -->
+        <?php include '..\..\Admin\Menú\footer.php'; ?>
+        <!-- termina footer -->
+
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>

@@ -22,10 +22,9 @@ $stmt_img->bind_param("i", $id_producto);
 $stmt_img->execute();
 $imagenes = $stmt_img->get_result()->fetch_all(MYSQLI_ASSOC);
 
-// Configuración de rutas
-define('BASE_DIR', realpath(__DIR__ . '/../../'));
-define('BASE_URL', '../');
-define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
+// Configuración de rutas MODIFICADA para Admin
+define('IMG_BASE_URL', '../../Admin/assets/img/productos/');
+define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
 ?>
 
 <head>
@@ -112,7 +111,10 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
                         <!-- Imagen principal -->
                         <div class="text-center mb-3">
                             <?php if (!empty($imagenes)): ?>
-                                <img id="mainImage" src="../<?= htmlspecialchars($imagenes[0]['ruta_imagen']) ?>"
+                                <?php 
+                                    $imagenPrincipal = IMG_BASE_URL . basename($imagenes[0]['ruta_imagen']);
+                                ?>
+                                <img id="mainImage" src="<?= $imagenPrincipal ?>"
                                     class="img-fluid main-image" alt="<?= htmlspecialchars($producto['nombre']) ?>"
                                     onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
                             <?php else: ?>
@@ -124,9 +126,12 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
                         <!-- Miniaturas -->
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <?php foreach ($imagenes as $index => $imagen): ?>
-                                <img src="../<?= htmlspecialchars($imagen['ruta_imagen']) ?>"
+                                <?php 
+                                    $imagenThumb = IMG_BASE_URL . basename($imagen['ruta_imagen']);
+                                ?>
+                                <img src="<?= $imagenThumb ?>"
                                     class="thumbnail <?= $index === 0 ? 'active' : '' ?>"
-                                    onclick="changeImage(this, '../<?= htmlspecialchars($imagen['ruta_imagen']) ?>')"
+                                    onclick="changeImage(this, '<?= $imagenThumb ?>')"
                                     alt="Miniatura <?= $index + 1 ?>"
                                     onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
                             <?php endforeach; ?>
@@ -156,19 +161,6 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
                                 <p><?= nl2br(htmlspecialchars($producto['especificaciones'])) ?></p>
                             </div>
                         <?php endif; ?>
-
-                        <div class="d-flex gap-2">
-                            <div class="input-group" style="width: 120px;">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    onclick="updateQuantity(-1)">-</button>
-                                <input type="number" id="quantity" class="form-control text-center" value="1" min="1">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    onclick="updateQuantity(1)">+</button>
-                            </div>
-                            <a href="carrito.php?action=add&id=<?= $producto['id'] ?>&quantity=1" class="btn btn-success">
-                                <i class="fa fa-cart-plus"></i> Añadir al carrito
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -181,11 +173,9 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
         <?php endif; ?>
     </div>
 
-    
-  <!-- inicia footer -->
-  <?php include '../../Views\Paginas Principales\footer_principal.php';?>
-  <!-- termina footer -->
-   
+    <!-- inicia footer -->
+    <?php include '../../Views/Paginas Principales/footer_principal.php'; ?>
+    <!-- termina footer -->
 
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -219,5 +209,4 @@ define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
         baguetteBox.run('.product-gallery');
     </script>
 </body>
-
 </html>

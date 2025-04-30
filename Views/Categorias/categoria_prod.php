@@ -1,47 +1,6 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="es" style="background: #abba87">
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-  <title>Catálogo de Productos</title>
-
-  <meta name="description" content="Catálogo de productos por categoría" />
-  <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=AR+One+Sans&amp;display=swap" />
-  <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css" />
-  <link rel="stylesheet" href="../assets/fonts/simple-line-icons.min.css" />
-  <link rel="stylesheet" href="../assets/css/bs-theme-overrides.css" />
-  <link rel="stylesheet" href="../assets/css/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.css" />
-  <link rel="stylesheet" href="../assets/css/baguetteBox.min.css" />
-  <link rel="stylesheet" href="../assets/css/Banner-Heading-Image-images.css" />
-  <link rel="stylesheet" href="../assets/css/dark_navbar.css" />
-  <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Button.css" />
-  <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Search.css" />
-  <link rel="stylesheet" href="../assets/css/Footer---4-Columns---No-Social-Networks.css" />
-  <link rel="stylesheet" href="../assets/css/Footer-Clean-icons.css" />
-  <link rel="stylesheet" href="../assets/css/multiple-item-carousel-slider.css" />
-  <link rel="stylesheet" href="../assets/css/vanilla-zoom.min.css" />
-
-  <style>
-    .product-container {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .product-container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .product-price {
-      font-size: 1.2rem;
-    }
-  </style>
-</head>
-
 <body style="background: #abba87">
 
   <?php
@@ -49,10 +8,9 @@
   include '../../Views/Paginas Principales/menu_principal.php';
   include '../../config/database.php';
 
-  // Configuración de rutas
-  define('BASE_DIR', realpath(__DIR__ . '/../../'));
-  define('BASE_URL', '../');
-  define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
+  // Configuración de rutas - MODIFICADO para apuntar a Admin
+  define('IMG_BASE_URL', '../../Admin/assets/img/productos/');
+  define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
 
   $nombre_categoria = isset($_GET['categoria']) ? htmlspecialchars($_GET['categoria']) : 'Todos los productos';
 
@@ -77,6 +35,33 @@
   $stmt->execute();
   $resultProductos = $stmt->get_result();
   ?>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Catálogo de Productos</title>
+    <meta name="description" content="Catálogo de productos por categoría" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=AR+One+Sans&amp;display=swap" />
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" href="../assets/fonts/simple-line-icons.min.css" />
+    <link rel="stylesheet" href="../assets/css/bs-theme-overrides.css" />
+    <link rel="stylesheet" href="../assets/css/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.css" />
+    <link rel="stylesheet" href="../assets/css/baguetteBox.min.css" />
+    <link rel="stylesheet" href="../assets/css/Banner-Heading-Image-images.css" />
+    <link rel="stylesheet" href="../assets/css/dark_navbar.css" />
+    <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Button.css" />
+    <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Search.css" />
+    <link rel="stylesheet" href="../assets/css/Footer---4-Columns---No-Social-Networks.css" />
+    <link rel="stylesheet" href="../assets/css/Footer-Clean-icons.css" />
+    <link rel="stylesheet" href="../assets/css/multiple-item-carousel-slider.css" />
+    <link rel="stylesheet" href="../assets/css/vanilla-zoom.min.css" />
+  </head>
 
   <main class="page">
     <section class="clean-block" style="background: #d9dcbd; height: 181.15px">
@@ -103,9 +88,12 @@
       <?php if ($resultProductos->num_rows > 0): ?>
         <?php while ($producto = $resultProductos->fetch_assoc()): ?>
           <?php
-          // Obtener la ruta de la imagen usando el método que te funciona
+          // Construir la ruta de la imagen correctamente
           if (isset($producto['imagen_principal']) && !empty($producto['imagen_principal'])) {
-            $imagenPath = "../" . htmlspecialchars($producto['imagen_principal']);
+            // Extraer solo el nombre del archivo de la ruta almacenada
+            $nombre_archivo = basename($producto['imagen_principal']);
+            // Construir la nueva ruta usando la ubicación en Admin
+            $imagenPath = IMG_BASE_URL . $nombre_archivo;
           } else {
             $imagenPath = IMG_DEFAULT;
           }
@@ -140,7 +128,7 @@
         <div class="col-12">
           <div class="alert alert-info text-center py-4">
             <i class="fas fa-info-circle me-2"></i> No se encontraron productos en esta categoría.
-            <a href="index_prin.php" class="btn btn-sm btn-outline-success ms-3">
+            <a href="/Views/Paginas%20Principales/index_prin.php" class="btn btn-sm btn-outline-success ms-3">
               Ver pagina principal
             </a>
           </div>
@@ -150,14 +138,12 @@
   </div>
 
   <!-- inicia footer -->
-  <?php include '../../Views\Paginas Principales\footer_principal.php';?>
+  <?php include '../../Views/Paginas Principales/footer_principal.php'; ?>
   <!-- termina footer -->
 
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../assets/js/baguetteBox.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/Theme_Prin.js"></script>
   <script>
     // Depuración de imágenes
     document.addEventListener('DOMContentLoaded', function () {
@@ -172,5 +158,4 @@
     });
   </script>
 </body>
-
 </html>

@@ -4,12 +4,11 @@
 session_start();
 
 if (!isset($_SESSION['user'])) {
-  header("Location:login.php");
+  header("Location: login.php");
   die();
 }
 
-// Conexión a la base de datos
-include '..\..\config\database.php';
+include '../../config/database.php';
 
 // Obtener categorías
 $sqlCategorias = "SELECT id, nombre FROM categorias";
@@ -28,7 +27,6 @@ $imagenes = [];
 if (isset($_GET['producto'])) {
   $productoId = $_GET['producto'];
   
-  // Consulta para obtener el producto
   $sqlProducto = "SELECT p.id, p.nombre, p.precio, p.descripcion, p.id_categoria, c.nombre as categoria_nombre 
                   FROM productos p 
                   LEFT JOIN categorias c ON p.id_categoria = c.id 
@@ -41,17 +39,18 @@ if (isset($_GET['producto'])) {
   if ($result->num_rows > 0) {
     $producto = $result->fetch_assoc();
     
-    // Consulta para obtener las imágenes del producto
     $sqlImagenes = "SELECT id, ruta_imagen FROM imagenes_producto WHERE id_producto = ?";
     $stmtImagenes = $conn->prepare($sqlImagenes);
     $stmtImagenes->bind_param("i", $productoId);
     $stmtImagenes->execute();
     $resultImagenes = $stmtImagenes->get_result();
     
+    $imagenes = [];
     if ($resultImagenes->num_rows > 0) {
-      while ($fila = $resultImagenes->fetch_assoc()) {
-        $imagenes[] = $fila;
-      }
+        while ($fila = $resultImagenes->fetch_assoc()) {
+            $fila['ruta_imagen'] = str_replace('\\', '/', $fila['ruta_imagen']);
+            $imagenes[] = $fila;
+        }
     }
   }
   $stmt->close();
@@ -73,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
   
   // Manejo de nuevas imágenes
   if (!empty($_FILES['imagen']['name'][0])) {
-    $carpetaDestino = realpath(__DIR__ . '/../../Admin/assets/img/productos') . DIRECTORY_SEPARATOR;
+    $carpetaDestino = realpath(__DIR__ . '../../assets/img/productos') . DIRECTORY_SEPARATOR;
     
     foreach ($_FILES['imagen']['name'] as $key => $name) {
       if ($_FILES['imagen']['error'][$key] === UPLOAD_ERR_OK) {
@@ -96,7 +95,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
   // Eliminar imágenes seleccionadas
   if (!empty($_POST['eliminar_imagenes'])) {
     foreach ($_POST['eliminar_imagenes'] as $imagenId) {
-      // Primero obtenemos la ruta para eliminar el archivo físico
       $sqlGetImg = "SELECT ruta_imagen FROM imagenes_producto WHERE id = ?";
       $stmtGetImg = $conn->prepare($sqlGetImg);
       $stmtGetImg->bind_param("i", $imagenId);
@@ -105,13 +103,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
       
       if ($resultGetImg->num_rows > 0) {
         $imgData = $resultGetImg->fetch_assoc();
-        $rutaImagen = realpath(__DIR__ . '/../../Admin/' . $imgData['ruta_imagen']);
+        $rutaImagen = realpath(__DIR__ . '/../../' . $imgData['ruta_imagen']);
         if (file_exists($rutaImagen)) {
           unlink($rutaImagen);
         }
       }
       
-      // Luego eliminamos el registro de la base de datos
       $sqlDelImg = "DELETE FROM imagenes_producto WHERE id = ?";
       $stmtDelImg = $conn->prepare($sqlDelImg);
       $stmtDelImg->bind_param("i", $imagenId);
@@ -197,12 +194,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
               <input class="form-control form-control" type="text" id="nombre" name="nombre" required="" 
                      value="<?php echo htmlspecialchars($producto['nombre']); ?>" />
             </div>
+            
+            <div class="mb-3">
+              <label class="form-label" for="descripcion" style="color: rgb(0, 0, 0)">Descripción:</label>
+              <div id="errorDescripcion" class="text-danger"></div>
+              <textarea class="form-control form-control" id="descripcion" name="descripcion" rows="3" required=""><?php echo htmlspecialchars($producto['descripcion']); ?></textarea>
+            
+            </div>
             <div class="mb-3">
               <label class="form-label" for="precio" style="color: rgb(0, 0, 0)">Precio:</label>
               <div id="errorPrecio" class="text-danger"></div>
               <input class="form-control form-control" type="number" id="precio" name="precio" min="0" step="0.01" required="" 
                      value="<?php echo htmlspecialchars($producto['precio']); ?>" />
             </div>
+            
             <div class="mb-3">
               <label class="form-label" for="categoria" style="color: rgb(0, 0, 0)">Categoría:</label>
               <select class="form-select form-select" id="categoria" name="categoria" required="">
@@ -216,35 +221,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
               </select>
               <div id="errorCategoria" class="text-danger"></div>
             </div>
-            <div class="mb-3">
-              <label class="form-label" for="descripcion" style="color: rgb(0, 0, 0)">Descripción:</label>
-              <div id="errorDescripcion" class="text-danger"></div>
-              <textarea class="form-control form-control" id="descripcion" name="descripcion" rows="3" required=""><?php echo htmlspecialchars($producto['descripcion']); ?></textarea>
-            </div>
-            
-            <!-- Mostrar imágenes existentes -->
+
+            <!-- imagenes -->
+
             <?php if (!empty($imagenes)): ?>
-              <div class="mb-3">
-                <label class="form-label" style="color: rgb(0, 0, 0)">Imágenes actuales:</label>
-                <div class="d-flex flex-wrap gap-2">
-                  <?php foreach ($imagenes as $imagen): ?>
-                    <div class="position-relative" style="width: 100px;">
-                      <img src="../<?php echo htmlspecialchars($imagen['ruta_imagen']); ?>" 
-                           class="img-thumbnail" 
-                           style="width: 100px; height: 100px; object-fit: cover;"
-                           onerror="this.onerror=null; this.src='../assets/img/productos/default.jpg';">
-                      <div class="form-check position-absolute top-0 start-0">
+    <div class="mb-3">
+        <label class="form-label" style="color: rgb(0, 0, 0)">Imágenes actuales:</label>
+        <div class="d-flex flex-wrap gap-2">
+            <?php foreach ($imagenes as $imagen): ?>
+                <div class="position-relative" style="width: 100px;">
+                    <img src="../<?php echo ltrim(htmlspecialchars($imagen['ruta_imagen']), '/'); ?>" 
+                         class="img-thumbnail" 
+                         style="width: 100px; height: 100px; object-fit: cover;"
+                         onerror="this.onerror=null; this.src='/assets/img/productos/default.jpg';">
+                    <div class="form-check position-absolute top-0 start-0">
                         <input class="form-check-input" type="checkbox" name="eliminar_imagenes[]" 
                                value="<?php echo $imagen['id']; ?>" id="eliminar_<?php echo $imagen['id']; ?>">
                         <label class="form-check-label" for="eliminar_<?php echo $imagen['id']; ?>"></label>
-                      </div>
                     </div>
-                  <?php endforeach; ?>
                 </div>
-                <small class="text-muted">Marque las imágenes que desea eliminar</small>
-              </div>
-            <?php endif; ?>
-            
+            <?php endforeach; ?>
+        </div>
+        <small class="text-muted">Marque las imágenes que desea eliminar</small>
+    </div>
+<?php endif; ?>
+
+            <!-- termina imagenes -->
             <div class="mb-3">
               <label class="form-label" for="imagenes" style="color: rgb(0, 0, 0)">Agregar nuevas imágenes:</label>
               <input class="form-control" type="file" id="imagenes" name="imagen[]" multiple="" accept="image/*" />
@@ -274,14 +276,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
           <?php endif; ?>
         </div>
       </div>
-      <footer class="bg-white sticky-footer">
-        <div class="container my-auto">
-          <div class="text-center my-auto copyright">
-            <span><br />TECNM Campus Coalcomán Ingeniería en Sistemas
-              Computacionales 6°Semestre -2025<br /><br /></span>
-          </div>
-        </div>
-      </footer>
+
+  <!-- inicia footer -->
+  <?php include '..\..\Admin\Menú\footer.php'; ?>
+  <!-- termina footer -->
+
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
   </div>

@@ -54,19 +54,23 @@ if (!isset($_SESSION['user'])) {
           <input id="searchInput" class="bg-light form-control border-0 small" type="text"
             placeholder="Buscar usuario o nombre..." style="background: var(--bs-light); color: rgb(0, 0, 0)"
             onkeyup="searchUsers()" id="searchInput" />
-        </div>
+          <button class="btn btn-primary py-0" style="color: var(--bs-light); background: var(--bs-info)">
+            <i class="fas fa-search"></i>
+          </button>
       </form>
     </div>
-    <div>
-      <h1 style="
+    </form>
+  </div>
+  <div>
+    <h1 style="
                 padding-bottom: 15px;
                 color: rgb(0, 0, 0);
                 font-family: Alef, sans-serif;
                 margin-left: 15px;
               ">
-        Usuarios
-      </h1>
-      <div class="table-responsive text-center d-flex" style="
+      Usuarios
+    </h1>
+    <div class="table-responsive text-center d-flex" style="
                 margin-left: 50px;
                 margin-right: 50px;
                 border-top-left-radius: 2px;
@@ -75,100 +79,98 @@ if (!isset($_SESSION['user'])) {
                 border-bottom-left-radius: 2px;
               ">
 
-        <!-- Tabla completa de usuarios -->
-        <table class="table table-hover">
-          <thead>
-            <tr style="background: var(--bs-info)" width="100%">
-              <th style="background: var(--bs-table-accent-bg)" width="30%">
-                Usuario
-              </th>
-              <th style="background: var(--bs-table-accent-bg)" width="30%">
-                Nombre
-              </th>
-              <th style="background: var(--bs-table-accent-bg)" width="30%">
-                Imagen
-              </th>
-              <th style="background: var(--bs-table-accent-bg)" width="10%">
-                Acción
-              </th>
-            </tr>
-          </thead>
+      <!-- Tabla completa de usuarios -->
+      <table class="table table-hover">
+        <thead>
+          <tr style="background: var(--bs-info)" width="100%">
+            <th style="background: var(--bs-table-accent-bg)" width="30%">
+              Usuario
+            </th>
+            <th style="background: var(--bs-table-accent-bg)" width="30%">
+              Nombre
+            </th>
+            <th style="background: var(--bs-table-accent-bg)" width="30%">
+              Imagen
+            </th>
+            <th style="background: var(--bs-table-accent-bg)" width="10%">
+              Acciones
+            </th>
+          </tr>
+        </thead>
 
-          <!-- Se conecta a la base de datos y se obtienen los datos de la tabla Usuarios -->
-          <?php
-          include '..\..\config\database.php';
+        <!-- Se conecta a la base de datos y se obtienen los datos de la tabla Usuarios -->
+        <?php
+        include '..\..\config\database.php';
 
-          $resultado = $conn->query("SELECT * FROM Usuarios");
+        $resultado = $conn->query("SELECT * FROM Usuarios");
 
-          ?>
-          <tbody id="userTable">
+        ?>
+        <tbody id="userTable">
 
-            <!-- Inicia datos ingresados a la tabla de usuarios -->
-            <?php if ($resultado->num_rows > 0): ?>
-              <?php while ($fila = $resultado->fetch_assoc()): ?>
-                <tr>
-                  <td><?php echo htmlspecialchars($fila['usuario']); ?></td>
-                  <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
-                  <td style="text-align: center">
-                    <?php
-                    $imagenArchivo = !empty($fila['imagen']) ? $fila['imagen'] : 'default.jpg';
-                    $imagenPath = "/Admin/assets/img/avatars/" . htmlspecialchars($imagenArchivo);
-                    ?>
-                    <img src="<?php echo $imagenPath; ?>" alt="Imagen de <?php echo htmlspecialchars($fila['usuario']); ?>"
-                      style="width: 50px; height: 50px;"
-                      onerror="this.onerror=null; this.src='/Admin/assets/img/avatars/default.jpg';">
-                  </td>
-                  <td style="text-align: center">
-                    <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                      href="../Edición%20de%20Usuarios/modify_user.php?usuario=<?php echo urlencode($fila['usuario']); ?>">
-                      <i class="fa fa-edit" style="color: var(--bs-black)"></i>
-                    </a>
-                    <form method="POST" action="../Edición%20de%20Usuarios/delete_user.php" style="display:inline;">
-                      <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($fila['usuario']); ?>">
-                      <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
-                        <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-              <?php endwhile; ?>
-            <?php else: ?>
+          <!-- Inicia datos ingresados a la tabla de usuarios -->
+          <?php if ($resultado->num_rows > 0): ?>
+            <?php while ($fila = $resultado->fetch_assoc()): ?>
               <tr>
-                <td colspan="4" style="text-align: center; font-weight: bold;">
-                  <p>No hay usuarios registrados actualmente</p>
-
+                <td><?php echo htmlspecialchars($fila['usuario']); ?></td>
+                <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
+                <td style="text-align: center">
+                  <?php
+                  $imagenArchivo = !empty($fila['imagen']) ? $fila['imagen'] : 'default.jpg';
+                  $imagenPath = "/Admin/assets/img/avatars/" . htmlspecialchars($imagenArchivo);
+                  ?>
+                  <img src="<?php echo $imagenPath; ?>" alt="Imagen de <?php echo htmlspecialchars($fila['usuario']); ?>"
+                    style="width: 50px; height: 50px;"
+                    onerror="this.onerror=null; this.src='/Admin/assets/img/avatars/default.jpg';">
+                </td>
+                <td style="text-align: center">
+                  <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
+                    href="../Edición%20de%20Usuarios/modify_user.php?usuario=<?php echo urlencode($fila['usuario']); ?>">
+                    <i class="fa fa-edit" style="color: var(--bs-black)"></i>
+                  </a>
+                  <form method="POST" action="../Edición%20de%20Usuarios/delete_user.php" style="display:inline;">
+                    <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($fila['usuario']); ?>">
+                    <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
+                      <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
+                    </button>
+                  </form>
                 </td>
               </tr>
-            <?php endif; ?>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="4" style="text-align: center; font-weight: bold;">
+                <p>No hay usuarios registrados actualmente</p>
+
+              </td>
+            </tr>
+          <?php endif; ?>
 
 
 
-            <!-- Termina los datos ingresados a la tabla de usuarios -->
+          <!-- Termina los datos ingresados a la tabla de usuarios -->
 
-          </tbody>
+        </tbody>
 
-          <?php $conn->close(); ?>
+        <?php $conn->close(); ?>
 
-        </table>
-        <!-- Termina la tabla de usuarios -->
-      </div>
-      <div class="d-grid float-end">
-        <a class="btn btn-primary" role="button" style="
+      </table>
+      <!-- Termina la tabla de usuarios -->
+    </div>
+    <div class="d-grid float-end">
+      <a class="btn btn-primary" role="button" style="
                   background: var(--bs-info);
                   font-weight: bold;
                   margin-right: 50px;
                 " href="../Edición%20de%20Usuarios/add_user.php">Agregar un Nuevo Usuario</a>
-      </div>
     </div>
   </div>
-  <footer class="bg-white sticky-footer">
-    <div class="container my-auto">
-      <div class="text-center my-auto copyright">
-        <span><br />TECNM Campus Coalcomán Ingeniería en Sistemas
-          Computacionales 6°Semestre -2025<br /><br /></span>
-      </div>
-    </div>
-  </footer>
+  </div>
+
+
+  <!-- inicia footer -->
+  <?php include '..\..\Admin\Menú\footer.php'; ?>
+  <!-- termina footer -->
+
   </div>
   <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
   <div class="modal" role="dialog" tabindex="-1" id="miModal">
