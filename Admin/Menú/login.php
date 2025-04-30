@@ -6,6 +6,17 @@ if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
     $usuario = $_POST['usuario'];
     $pass = $_POST['contraseña'];
 
+    // Credenciales predeterminadas del administrador
+    $admin_user = "admin@gmail.com";
+    $admin_pass = "admin";
+
+    // Verificar si son las credenciales del admin
+    if ($usuario === $admin_user && $pass === $admin_pass) {
+        $_SESSION['user'] = "Administrador";
+        header("Location: index.php");
+        exit();
+    }
+
     try {
         // Preparar la consulta con MySQLi
         $sql = "SELECT * FROM usuarios WHERE usuario = ?";
