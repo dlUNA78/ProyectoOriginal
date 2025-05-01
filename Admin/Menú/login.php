@@ -2,9 +2,26 @@
 session_start();
 include_once '../../config/database.php'; // Asegúrate de que crea una conexión MySQLi ($conn)
 
+// Limitar intentos de inicio de sesión
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+}
+
+if ($_SESSION['login_attempts'] >= 5) {
+    echo '<div class="alert alert-danger">Demasiados intentos fallidos. Intenta nuevamente más tarde.</div>';
+    exit();
+}
+
 if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
-    $usuario = $_POST['usuario'];
-    $pass = $_POST['contraseña'];
+    // Validar que los campos no estén vacíos
+    if (empty($_POST['usuario']) || empty($_POST['contraseña'])) {
+        echo '<div class="alert alert-danger">Por favor, completa todos los campos.</div>';
+        exit();
+    }
+
+    // Sanitizar entrada
+    $usuario = htmlspecialchars($_POST['usuario'], ENT_QUOTES, 'UTF-8');
+    $pass = htmlspecialchars($_POST['contraseña'], ENT_QUOTES, 'UTF-8');
 
     // Credenciales predeterminadas del administrador
     $admin_user = "admin@gmail.com";
@@ -32,17 +49,20 @@ if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
             // Verificar la contraseña
             if (password_verify($pass, $usuarioData['contraseña'])) {
                 $_SESSION['user'] = $usuarioData['nombre'];
+                $_SESSION['login_attempts'] = 0; // Reiniciar intentos fallidos
                 header("Location: index.php");
                 exit();
             } else {
-                echo '<div class="alert alert-danger">Credenciales incorrectas</div>';
+                $_SESSION['login_attempts']++;
+                echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
             }
         } else {
-            echo '<div class="alert alert-danger">Credenciales incorrectas</div>';
+            $_SESSION['login_attempts']++;
+            echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
         }
     } catch (Exception $e) {
         error_log("Error de login: " . $e->getMessage());
-        echo '<div class="alert alert-danger">Error en el sistema</div>';
+        echo '<div class="alert alert-danger">Error en el sistema. Intenta nuevamente más tarde.</div>';
     }
 }
 ?>
@@ -58,21 +78,22 @@ if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
   <link rel="stylesheet" href="../assets/css/Features-Cards-icons.css" />
   <link rel="stylesheet" href="../assets/css/Table-with-Search--Sort-Filters-v20.css" />
   <link rel="stylesheet" href="../assets/css/untitled.css" />
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 </head>
 <body>
   <div class="container d-flex justify-content-center align-items-center" style="width: 700px; height: 500px">
     <div class="card shadow p-4" style="width: 300px">
       <i class="icon ion-person" style="width: 23.4px"></i>
-      <h3 class="text-center" style="font-family: 'ADLaM Display', serif; color: rgb(0, 0, 0)">Iniciar Sesión</h3>
+      <h3 class="text-center" style="font-family: 'Arial', sans-serif; color: rgb(0, 0, 0)">Iniciar Sesión</h3>
       <form id="loginForm" method="post">
         <div class="mb-3">
           <label class="form-label">Usuario</label>
-          <input class="form-control" name="usuario" type="text" />
+          <input class="form-control" name="usuario" type="text" required />
           <div id="errorUsuario" class="text-danger"></div>
         </div>
         <div class="mb-3">
           <label class="form-label">Contraseña</label>
-          <input class="form-control" name="contraseña" type="password" />
+          <input class="form-control" name="contraseña" type="password" required />
           <div id="errorContraseña" class="text-danger"></div>
         </div>
         <div class="mb-3 form-check">
@@ -82,9 +103,9 @@ if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
         <button class="btn btn-primary w-100" type="submit" id="loginButton" style="background: var(--bs-info); font-weight: bold;">
           Ingresar
         </button>
-        <div class="d-flex justify-content-start mt-2" style="height: 20px;" >
+        <div class="d-flex justify-content-start mt-2" style="height: auto;" >
           <a class="btn btn-primary" style="background: var(--bs-info); font-weight: bold" href="../../Views/Paginas Principales/index_prin.php">
-            <i class="icon ion-android-arrow-back" style="color: black;"></i>
+            <i class="icon ion-android-arrow-back" style="color: white;"></i>
           </a>
         </div>
       </form>
