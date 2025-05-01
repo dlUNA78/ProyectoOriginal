@@ -42,7 +42,7 @@ if (!isset($_SESSION['user'])) {
 
     <!-- inicia menu -->
     <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
-     <!-- termina menu -->
+    <!-- termina menu -->
 
     <div class="d-grid float-end" style="margin-right: 50px">
       <form class="d-none d-sm-inline-block ms-md-3 my-2 my-md-0 mw-100 navbar-search" style="
@@ -127,12 +127,22 @@ if (!isset($_SESSION['user'])) {
                     href="../Edición%20de%20Usuarios/modify_user.php?usuario=<?php echo urlencode($fila['usuario']); ?>">
                     <i class="fa fa-edit" style="color: var(--bs-black)"></i>
                   </a>
-                  <form method="POST" action="../Edición%20de%20Usuarios/delete_user.php" style="display:inline;">
-                    <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($fila['usuario']); ?>">
-                    <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
-                      <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
-                    </button>
-                  </form>
+                  
+                  <!-- inicia boton eliminar -->
+                  <!-- verificar si el que se logeo es admin o empleado -->
+                  <!-- para mostrar o no el borrar empleados -->
+                  <?php
+                  $esAdmin = (isset($_SESSION['user']) && $_SESSION['user'] === "Administrador");
+                  if ($esAdmin): ?>
+                    <form method="POST" action="../Edición%20de%20Usuarios/delete_user.php" style="display:inline;">
+                      <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($fila['usuario']); ?>">
+                      <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
+                        <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
+                      </button>
+                    </form>
+                  <?php endif; ?>
+                  <!-- termina boton eliminar -->
+
                 </td>
               </tr>
             <?php endwhile; ?>
