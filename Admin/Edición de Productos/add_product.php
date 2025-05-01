@@ -125,9 +125,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <div id="wrapper">
 
-        <!-- incluir menu -->
-        <?php include '..\..\Admin\Menú\menu.php'; ?>
-        <!-- incluir menu -->
+    <!-- inicia menu -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
+     <!-- termina menu -->
 
       <div class="d-flex justify-content-center align-items-center" id="content">
         <div class="container d-flex flex-row justify-content-center" style="
@@ -184,7 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
 
   <!-- inicia footer -->
-  <?php include '..\..\Admin\Menú\footer.php'; ?>
+  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
   <!-- termina footer -->
 
     </div>

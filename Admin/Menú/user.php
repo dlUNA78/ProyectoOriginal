@@ -40,9 +40,9 @@ if (!isset($_SESSION['user'])) {
 <body id="page-top">
   <div id="wrapper">
 
-    <!-- incluir menu -->
-    <?php include '..\..\Admin\Menú\menu.php'; ?>
-    <!-- incluir menu -->
+    <!-- inicia menu -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
+     <!-- termina menu -->
 
     <div class="d-grid float-end" style="margin-right: 50px">
       <form class="d-none d-sm-inline-block ms-md-3 my-2 my-md-0 mw-100 navbar-search" style="
@@ -168,7 +168,7 @@ if (!isset($_SESSION['user'])) {
 
 
   <!-- inicia footer -->
-  <?php include '..\..\Admin\Menú\footer.php'; ?>
+  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
   <!-- termina footer -->
 
   </div>

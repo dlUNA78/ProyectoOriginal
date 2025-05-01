@@ -120,9 +120,9 @@ try {
 <body>
   <div id="wrapper">
 
-    <!-- incluir menu -->
-    <?php include '..\..\Admin\Menú\menu.php'; ?>
-    <!-- incluir menu -->
+    <!-- inicia menu -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
+     <!-- termina menu -->
 
     <div id="content">
       <div class="container d-flex justify-content-center align-items-center"
@@ -208,9 +208,9 @@ try {
       <script src="..\JS\validar_user.js" defer></script>
     </div>
 
-    <!-- inicia footer -->
-    <?php include '..\..\Admin\Menú\footer.php'; ?>
-    <!-- termina footer -->
+  <!-- inicia footer -->
+  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
+  <!-- termina footer -->
 
   </div>
   <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>

@@ -32,40 +32,24 @@ if ($conn->query($sql) === TRUE) {
 
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
   <title>Administrador</title>
   <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
-  <link
-    rel="stylesheet"
+  <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap" />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Acme&amp;display=swap" />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap" />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Alef&amp;display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme&amp;display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alef&amp;display=swap" />
   <link rel="stylesheet" href="../assets/fonts/fontawesome-all.min.css" />
   <link rel="stylesheet" href="../assets/fonts/typicons.min.css" />
   <link rel="stylesheet" href="../assets/css/bs-theme-overrides.css" />
   <link rel="stylesheet" href="../assets/css/Checkbox-Input.css" />
   <link rel="stylesheet" href="../assets/css/Features-Cards-icons.css" />
-  <link
-    rel="stylesheet"
+  <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
-  <link
-    rel="stylesheet"
-    href="../assets/css/Table-with-Search--Sort-Filters-v20.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+  <link rel="stylesheet" href="../assets/css/Table-with-Search--Sort-Filters-v20.css" />
   <link rel="stylesheet" href="../assets/css/untitled.css" />
 </head>
 
@@ -74,185 +58,177 @@ if ($conn->query($sql) === TRUE) {
   <div id="wrapper">
 
     <!-- inicia menu -->
-    <?php include '../../Admin/Menú/menu.php';
-      ?>
-     <!-- termina menu -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
+    <!-- termina menu -->
 
-      <div id="content">
-        <div class="d-grid float-end" id="form" style="margin-right: 50px">
-          <form
-            class="d-none d-sm-inline-block ms-md-3 my-2 my-md-0 mw-100 navbar-search"
-            style="
+    <div id="content">
+      <div class="d-grid float-end" id="form" style="margin-right: 50px">
+        <form class="d-none d-sm-inline-block ms-md-3 my-2 my-md-0 mw-100 navbar-search" style="
                 background: var(--bs-white);
                 color: rgb(255, 255, 255);
                 margin-right: 0px;
               ">
-            <div class="input-group" style="background: var(--bs-light)">
-              <input
-                class="bg-light form-control border-0 small"
-                onkeyup="searchOfertas()"
-                id="searchInput"
-                type="text"
-                placeholder="Buscar...Producto..."
-                style="background: var(--bs-light); color: rgb(0, 0, 0)" /><button
-                class="btn btn-primary py-0"
-                type="button"
-                style="color: var(--bs-light); background: var(--bs-info)">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </form>
-        </div>
-        <div
-          class="col search-table-col"
-          style="
+          <div class="input-group" style="background: var(--bs-light)">
+            <input class="bg-light form-control border-0 small" onkeyup="searchOfertas()" id="searchInput" type="text"
+              placeholder="Buscar...Producto..." style="background: var(--bs-light); color: rgb(0, 0, 0)" /><button
+              class="btn btn-primary py-0" type="button" style="color: var(--bs-light); background: var(--bs-info)">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col search-table-col" style="
               margin: 9px 0px 0px;
               margin-top: 50px;
               margin-left: 50px;
               margin-right: 50px;
               margin-bottom: 50px;
             ">
-          <h1
-            style="
+        <h1 style="
                 color: rgb(0, 0, 0);
                 font-family: Nunito, sans-serif;
                 margin-left: 15px;
               ">
-            <div style="margin: 10px 15px;">
-
-            </div>
-            Productos en Oferta
-          </h1>
-
-
-          <!-- no borara por que se me descuadra -->
-          <div class="d-grid float-end" style="margin-right: 50px">
+          <div style="margin: 10px 15px;">
 
           </div>
+          Productos en Oferta
+        </h1>
 
-          <div>
 
-            <div class="table-responsive text-center d-flex" style="margin-left: 50px; margin-right: 50px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;">
+        <!-- no borara por que se me descuadra -->
+        <div class="d-grid float-end" style="margin-right: 50px">
 
-              <!-- Tabla de Ofertas -->
-              <table class="table table-hover">
-                <thead>
-                  <tr style="background: var(--bs-info)" width="100%">
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre </th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de inicio</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de expiracion</th>
-                    <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
-                  </tr>
-                </thead>
+        </div>
 
-                <?php
-                include '..\..\config\database.php';
-                $resultado = $conn->query("SELECT * FROM ofertas");
-                ?>
+        <div>
 
-                <tbody id="offerTable">
-                  <?php if ($resultado->num_rows > 0): ?>
-                    <?php while ($fila = $resultado->fetch_assoc()): ?>
-                      <tr>
-                        <td>
-                          <?php
-                          // Suponiendo que $row['imagen'] contiene una ruta como: /Admin/assets/img/ofertas/archivo.jpg
-                          $imagen_relativa = ltrim($fila['imagen'], '/'); // quita la barra inicial
-                          $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
+          <div class="table-responsive text-center d-flex"
+            style="margin-left: 50px; margin-right: 50px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;">
 
-                          // Verificamos si la imagen existe
-                          if (!file_exists($absolute_image_path)) {
-                            // Imagen de respaldo si no existe
-                            $web_image_path = "../assets/img/cahuam.jpg";
-                          } else {
-                            // Usamos la ruta original guardada en la base de datos
-                            $web_image_path = $fila['imagen'];
-                          }
-                          ?>
+            <!-- Tabla de Ofertas -->
+            <table class="table table-hover">
+              <thead>
+                <tr style="background: var(--bs-info)" width="100%">
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre </th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de inicio</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de expiracion</th>
+                  <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
+                </tr>
+              </thead>
 
-                          <img src="<?php echo $web_image_path; ?>" alt="Imagen de la oferta" style="width: 100px; height: auto;">
+              <?php
+              include '..\..\config\database.php';
+              $resultado = $conn->query("SELECT * FROM ofertas");
+              ?>
 
-                        </td>
-                        <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
-                        <td>$<?php echo number_format($fila['precio'], 2); ?></td>
-                        <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
-                        <td><?php echo htmlspecialchars($fila['descrpcion']); ?></td>
-                        <td><?php echo $fila['Fecha_inicio'] !== null ? htmlspecialchars($fila['Fecha_inicio']) : 'N/A'; ?></td>
-                        <td><?php echo $fila['Fecha_expirada'] !== null ? htmlspecialchars($fila['Fecha_expirada']) : 'N/A'; ?></td>
-                        <td style="text-align: center">
-                          <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                            href="..\Edición de Productos\modify_offer.php?id=<?php echo urlencode($fila['id_oferta']); ?>">
-                            <i class="fa fa-edit" style="color: var(--bs-black)"></i>
-                          </a>
-                          <button class="btn btn-danger" style="margin-left: 5px" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $fila['id_oferta']; ?>">
-                            <i class="fa fa-trash" style="font-size: 15px"></i>
-                          </button>
-                        </td>
-                      </tr>
+              <tbody id="offerTable">
+                <?php if ($resultado->num_rows > 0): ?>
+                  <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <tr>
+                      <td>
+                        <?php
+                        // Suponiendo que $row['imagen'] contiene una ruta como: /Admin/assets/img/ofertas/archivo.jpg
+                        $imagen_relativa = ltrim($fila['imagen'], '/'); // quita la barra inicial
+                        $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
 
-                      <!-- Modal de confirmación -->
-                      <div class="modal fade" id="deleteModal<?php echo $fila['id_oferta']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo $fila['id_oferta']; ?>" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="deleteModalLabel<?php echo $fila['id_oferta']; ?>">Confirmar Eliminación</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              ¿Estás seguro de que deseas eliminar esta oferta? Esta acción no se puede deshacer.
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                              <form action="../Edición de Ofertas/delete_offer.php" method="post" style="display:inline;">
-                                <input type="hidden" name="id_oferta" value="<?php echo $fila['id_oferta']; ?>">
-                                <button class="btn btn-danger" type="submit">Eliminar</button>
-                              </form>
-                            </div>
+                        // Verificamos si la imagen existe
+                        if (!file_exists($absolute_image_path)) {
+                          // Imagen de respaldo si no existe
+                          $web_image_path = "../assets/img/cahuam.jpg";
+                        } else {
+                          // Usamos la ruta original guardada en la base de datos
+                          $web_image_path = $fila['imagen'];
+                        }
+                        ?>
+
+                        <img src="<?php echo $web_image_path; ?>" alt="Imagen de la oferta"
+                          style="width: 100px; height: auto;">
+
+                      </td>
+                      <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
+                      <td>$<?php echo number_format($fila['precio'], 2); ?></td>
+                      <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
+                      <td><?php echo htmlspecialchars($fila['descrpcion']); ?></td>
+                      <td><?php echo $fila['Fecha_inicio'] !== null ? htmlspecialchars($fila['Fecha_inicio']) : 'N/A'; ?>
+                      </td>
+                      <td>
+                        <?php echo $fila['Fecha_expirada'] !== null ? htmlspecialchars($fila['Fecha_expirada']) : 'N/A'; ?>
+                      </td>
+                      <td style="text-align: center">
+                        <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
+                          href="..\Edición de Productos\modify_offer.php?id=<?php echo urlencode($fila['id_oferta']); ?>">
+                          <i class="fa fa-edit" style="color: var(--bs-black)"></i>
+                        </a>
+                        <button class="btn btn-danger" style="margin-left: 5px" type="button" data-bs-toggle="modal"
+                          data-bs-target="#deleteModal<?php echo $fila['id_oferta']; ?>">
+                          <i class="fa fa-trash" style="font-size: 15px"></i>
+                        </button>
+                      </td>
+                    </tr>
+
+                    <!-- Modal de confirmación -->
+                    <div class="modal fade" id="deleteModal<?php echo $fila['id_oferta']; ?>" tabindex="-1"
+                      aria-labelledby="deleteModalLabel<?php echo $fila['id_oferta']; ?>" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel<?php echo $fila['id_oferta']; ?>">Confirmar
+                              Eliminación</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            ¿Estás seguro de que deseas eliminar esta oferta? Esta acción no se puede deshacer.
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <form action="../Edición de Ofertas/delete_offer.php" method="post" style="display:inline;">
+                              <input type="hidden" name="id_oferta" value="<?php echo $fila['id_oferta']; ?>">
+                              <button class="btn btn-danger" type="submit">Eliminar</button>
+                            </form>
                           </div>
                         </div>
                       </div>
-                    <?php endwhile; ?>
-                  <?php else: ?>
-                    <tr>
-                      <td colspan="8" style="text-align: center; font-weight: bold;">
-                        <p>No hay ofertas disponibles actualmente</p>
-                      </td>
-                    </tr>
-                  <?php endif; ?>
-                </tbody>
+                    </div>
+                  <?php endwhile; ?>
+                <?php else: ?>
+                  <tr>
+                    <td colspan="8" style="text-align: center; font-weight: bold;">
+                      <p>No hay ofertas disponibles actualmente</p>
+                    </td>
+                  </tr>
+                <?php endif; ?>
+              </tbody>
 
-                <?php $conn->close(); ?>
+              <?php $conn->close(); ?>
 
-              </table>
-              <!-- Fin de la tabla de ofertas -->
-            </div>
-            <div class="d-grid float-end">
-              <a class="btn btn-primary" role="button" style="
+            </table>
+            <!-- Fin de la tabla de ofertas -->
+          </div>
+          <div class="d-grid float-end">
+            <a class="btn btn-primary" role="button" style="
                   background: var(--bs-info);
                   font-weight: bold;
                   margin-right: 50px;
                 " href="../Ofertas/add_offer.php">Agregar nueva oferta</a>
-            </div>
-
           </div>
+
         </div>
       </div>
-      <footer class="bg-white sticky-footer">
-        <div class="container my-auto">
-          <div class="text-center my-auto copyright">
-            <span>TECNM Campus Coalcomán Ingeniería en Sistemas Computacionales 6°Semestre -2025</span>
-          </div>
-        </div>
-      </footer>
     </div>
-    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    <!-- inicia footer -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
+    <!-- termina footer -->
+  </div>
+  <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
   </div>
   <!-- Modal de confirmación -->
-  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -349,17 +325,17 @@ if ($conn->query($sql) === TRUE) {
   <!-- Termina la función de búsqueda por usuarios o nombres en la tabla de usuarios principal -->
 
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
       let ofertaId = null;
 
       // Abrir el modal al hacer clic en el botón de eliminar
-      $(".btn-delete").on("click", function() {
+      $(".btn-delete").on("click", function () {
         ofertaId = $(this).data("id"); // Obtener el ID de la oferta
         $("#confirmDeleteModal").modal("show"); // Mostrar el modal
       });
 
       // Confirmar la eliminación
-      $("#confirmDeleteButton").on("click", function() {
+      $("#confirmDeleteButton").on("click", function () {
         if (ofertaId) {
           // Enviar la solicitud POST al archivo delete_offer.php
           $.ajax({
@@ -368,11 +344,11 @@ if ($conn->query($sql) === TRUE) {
             data: {
               id_oferta: ofertaId
             },
-            success: function(response) {
+            success: function (response) {
               // Recargar la página o eliminar la fila de la tabla
               location.reload(); // Recargar la página para reflejar los cambios
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
               console.error("Error al eliminar la oferta:", error);
             }
           });
@@ -386,8 +362,10 @@ if ($conn->query($sql) === TRUE) {
 
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-storage.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-storage.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <script src="../assets/js/TableZoomSorter.js"></script>
   <script src="../assets/js/Tema_Admin.js"></script>

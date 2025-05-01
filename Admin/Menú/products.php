@@ -51,9 +51,9 @@ $result = $conn->query($sql);
 <body id="page-top">
 
   <div id="wrapper">
-    <?php
-    include '..\..\Admin\Menú\menu.php';
-    ?>
+    <!-- inicia menu -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
+     <!-- termina menu -->
     <!-- Barra lateral de navegación -->
 
     <div class="d-grid float-end" style="margin-right: 50px">
@@ -164,7 +164,7 @@ $result = $conn->query($sql);
   </div>
 
   <!-- inicia footer -->
-  <?php include '..\..\Admin\Menú\footer.php'; ?>
+  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
   <!-- termina footer -->
 
   </tr>

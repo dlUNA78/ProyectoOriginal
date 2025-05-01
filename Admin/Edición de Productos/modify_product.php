@@ -167,9 +167,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
   </div>
   <div id="wrapper">
 
-        <!-- incluir menu -->
-        <?php include '..\..\Admin\Menú\menu.php'; ?>
-        <!-- incluir menu -->
+    <!-- inicia menu -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
+     <!-- termina menu -->
 
       <div class="d-flex justify-content-center align-items-center" id="content"></div>
 
@@ -278,7 +278,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
       </div>
 
   <!-- inicia footer -->
-  <?php include '..\..\Admin\Menú\footer.php'; ?>
+  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
   <!-- termina footer -->
 
     </div>
