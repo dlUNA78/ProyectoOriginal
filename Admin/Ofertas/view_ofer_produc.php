@@ -220,13 +220,16 @@ if ($conn->query($sql) === TRUE) {
         </div>
       </div>
     </div>
-    <!-- inicia footer -->
-    <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
-    <!-- termina footer -->
+   
   </div>
   <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+
+  <!-- inicia footer -->
+  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
+    <!-- termina footer --><!-- inicia footer -->
+    
   </div>
-  <!-- Modal de confirmación -->
+  
   <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
