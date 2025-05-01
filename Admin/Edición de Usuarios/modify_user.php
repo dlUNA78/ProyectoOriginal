@@ -1,6 +1,4 @@
 <?php
-
-
 session_start();
 
 if (!isset($_SESSION['user'])) {
@@ -8,11 +6,8 @@ if (!isset($_SESSION['user'])) {
     die();
 }
 
-
-
 // Configuración de la conexión PDO
 include '..\..\config\database.php';
-
 
 try {
     // Crear conexión PDO
@@ -27,6 +22,11 @@ try {
         $stmt = $conn->prepare("SELECT usuario, nombre, contraseña, imagen FROM Usuarios WHERE usuario = ?");
         $stmt->execute([$usuario]);
         $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Construir la ruta completa de la imagen si existe
+        if ($datos && !empty($datos['imagen'])) {
+            $datos['imagen_completa'] = "../assets/img/avatars/" . $datos['imagen'];
+        }
     }
 
     // Verificar si el usuario existe
@@ -36,7 +36,7 @@ try {
         $contraseñaActual = $_POST['contraseñaAct'];
         $nuevaContraseña = $_POST['contraseña'];
 
-        // Verificar contraseña actual (comparación directa en texto plano)
+        // Verificar contraseña actual
         $stmt = $conn->prepare("SELECT contraseña FROM Usuarios WHERE usuario = ?");
         $stmt->execute([$usuario]);
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -69,6 +69,10 @@ try {
 
             if (in_array(strtolower($fileExt), $allowedTypes) && $_FILES['imagen']['size'] < 2097152) {
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFilePath)) {
+                    // Eliminar la imagen anterior si existe
+                    if (!empty($datos['imagen']) && file_exists($targetDir . $datos['imagen'])) {
+                        unlink($targetDir . $datos['imagen']);
+                    }
                     $imagen = $newFileName;
                 }
             }
@@ -126,9 +130,10 @@ try {
                 document.getElementById('nombre').value = datos.nombre;
 
                 // Precargar la imagen si existe
-                if (datos.imagen) {
-                    const imgProfile = document.querySelector('.img-profile');
-                    imgProfile.src = datos.imagen;
+                if (datos.imagen_completa) {
+                    const imgPreview = document.getElementById('imagen-preview');
+                    imgPreview.src = datos.imagen_completa;
+                    imgPreview.style.display = 'block';
                 }
             }
         });
@@ -139,6 +144,18 @@ try {
             document.getElementById('contraseñaAct').type = type;
             document.getElementById('contraseña').type = type;
             document.getElementById('contraseñaConf').type = type;
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('imagen-preview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
     </script>
 
@@ -166,7 +183,6 @@ try {
     </div>
 
     <div id="wrapper">
-
         <!-- incluir menu -->
         <?php include '..\..\Admin\Menú\menu.php'; ?>
         <!-- incluir menu -->
@@ -216,7 +232,9 @@ try {
                         <div class="mb-3">
                             <label class="form-label" for="imagen" style="color: rgb(0, 0, 0)">
                                 Imagen de perfil:</label>
-                            <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" />
+                            <!-- Elemento para mostrar la imagen precargada -->
+                            <img id="imagen-preview" src="#" alt="Previsualización de imagen" style="max-width: 100px; max-height: 100px; display: none; margin-bottom: 10px;" class="img-thumbnail"/>
+                            <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" onchange="previewImage(this)"/>
                             <div id="errorImagen" class="text-danger"></div>
                             <small class="text-muted">Formatos permitidos: JPG, PNG, WEBP. Máximo 2MB.</small>
                         </div>
@@ -244,14 +262,11 @@ try {
             </div>
         </div>
 
-
         <!-- inicia footer -->
         <?php include '..\..\Admin\Menú\footer.php'; ?>
         <!-- termina footer -->
-
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
-    </div>
 
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
@@ -265,5 +280,4 @@ try {
     <script src="../assets/js/WaveClickFX.js"></script>
     <script src="../JS/validar_mod_user.js"></script>
 </body>
-
 </html>
