@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('errorUsuario').textContent = '';
       document.getElementById('errorContraseña').textContent = '';
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(usuarioInput.value.trim())) {
-      document.getElementById('errorUsuario').textContent = 'Ingrese un correo válido.';
+    const usernameRegex = /^(?=[a-zA-Z0-9_.]{4,20}$)(?!.*\.\.)(?!\.)(?!.*\.$).*$/;
+    if (!usernameRegex.test(usuarioInput.value.trim())) {
+      document.getElementById('errorUsuario').textContent = 'Ingrese un usuario válido.';
       valid = false;
     }
   

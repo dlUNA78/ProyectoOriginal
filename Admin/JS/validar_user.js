@@ -136,15 +136,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function validateEmail() {
         const value = document.getElementById('usuario').value.trim();
         const errorElement = document.getElementById('errorUsuario');
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const usernameRegex = /^(?=[a-zA-Z0-9_.]{4,20}$)(?!.*\.\.)(?!\.)(?!.*\.$).*$/;
+
 
         if (!value) {
-            showError(errorElement, 'El email es obligatorio');
+            showError(errorElement, 'El usuario es obligatorio');
             return false;
         }
 
-        if (!emailRegex.test(value)) {
-            showError(errorElement, 'Email no válido');
+        if (!usernameRegex.test(value)) {
+            showError(errorElement, 'Usuario no válido');
             return false;
         }
 

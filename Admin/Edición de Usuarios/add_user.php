@@ -144,9 +144,9 @@ try {
 
             <!-- Campo Usuario/Email -->
             <div class="mb-3">
-              <label class="form-label" for="usuario" style="color: #000">Usuario (Email):</label>
-              <input class="form-control" type="email" required id="usuario" name="usuario"
-                placeholder="ejemplo@dominio.com"
+              <label class="form-label" for="usuario" style="color: #000">Usuario:</label>
+              <input class="form-control" type="text" required id="usuario" name="usuario"
+                placeholder="usuario123"
                 value="<?php echo isset($_GET['usuario']) ? htmlspecialchars($_GET['usuario']) : ''; ?>">
 
               <div id="errorUsuario" class="text-danger small mt-1">
@@ -172,19 +172,17 @@ try {
                 placeholder="Repita la contraseña">
               <div id="errorContraseñaConf" class="text-danger small mt-1"></div>
             </div>
-
+            <!-- Checkbox Mostrar Contraseñas -->
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="showPasswords">
+              <label class="form-check-label" for="showPasswords" style="color: #000">Mostrar Contraseñas</label>
+            </div>
             <!-- Campo Imagen -->
             <div class="mb-3">
               <label class="form-label" for="imagen" style="color: #000">Imagen de Perfil:</label>
               <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*">
               <div class="form-text">Formatos aceptados: JPG, PNG, WEBP (Max. 2MB)</div>
               <div id="errorImagen" class="text-danger small mt-1"></div>
-            </div>
-
-            <!-- Checkbox Mostrar Contraseñas -->
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="showPasswords">
-              <label class="form-check-label" for="showPasswords" style="color: #000">Mostrar Contraseñas</label>
             </div>
 
             <!-- Botones -->
