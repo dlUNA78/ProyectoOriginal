@@ -3,7 +3,7 @@
     style="background: var(--bs-primary)">
     <div class="container-fluid d-flex flex-column p-0">
         <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="/Admin/Menú/index.php"><img
-                src="../assets/img/Logo Yesid.svg" style="width: 50px; height: 50px; margin-right: -11px" />
+                src= " <?php dirname(__DIR__,2)?>/Admin/assets/img/Logo Yesid.svg" style="width: 50px; height: 50px; margin-right: -11px" />
             <div class="sidebar-brand-icon rotate-n-15"></div>
             <div class="sidebar-brand-text mx-3">
                 <span style="color: var(--bs-black)">Administrador</span>

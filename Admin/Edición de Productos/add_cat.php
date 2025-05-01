@@ -2,25 +2,14 @@
 <html data-bs-theme="light" lang="en">
 <?php
 
-
-
 session_start();
 
 if (!isset($_SESSION['user'])) {
   header("Location:login.php");
   die();
 }
-
-
-
-include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\config\database.php';
-
-
-
-
-
-
 ?>
+
 <head>
   <meta charset="utf-8" />
   <meta
@@ -91,10 +80,10 @@ include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\Proyec
     </div>
   </div>
   <div id="wrapper">
-  <?php include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\ProyectoOriginal\Admin\Menú\menu.php';
-      ?>
-    <div class="d-flex flex-column" id="content-wrapper">
+    <?php include dirname(__DIR__,2) . '/Admin/Menú/menu.php'; ?>
     
+    <div class="d-flex flex-column" id="content-wrapper">
+
       <div id="content">
         <div
           class="container d-flex justify-content-center align-items-center"
@@ -111,7 +100,7 @@ include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\Proyec
                   class="form-label"
                   for="nombre"
                   style="color: rgb(0, 0, 0)">Nombre:</label>
-                  <input
+                <input
                   class="form-control form-control"
                   name="nombre"
                   type="text"
@@ -130,7 +119,7 @@ include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\Proyec
                       margin-top: 10px;
                     ">
                   Agregar</button>
-                  <a
+                <a
                   class="btn btn-secondary"
                   role="button"
                   style="
@@ -144,17 +133,12 @@ include 'C:\Git\GitHub\ProyectoOriginal\ProyectoWeb-main\ProyectoWeb-main\Proyec
           </div>
         </div>
       </div>
-      <footer class="bg-white sticky-footer">
-        <div class="container my-auto">
-          <div class="text-center my-auto copyright">
-            <span><br />TECNM Campus Coalcomán Ingeniería en Sistemas
-              Computacionales 6°Semestre -2025<br /><br /></span>
-          </div>
-        </div>
-      </footer>
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
   </div>
+  <footer>
+    <?php include dirname(__DIR__,2) . '/Admin/Menú/footer.php'; ?>
+  </footer>
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
