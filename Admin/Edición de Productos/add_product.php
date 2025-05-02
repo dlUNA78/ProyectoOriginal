@@ -150,7 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </div>
               <div class="mb-3">
                 <label class="form-label" for="descripcion" style="color: rgb(0, 0, 0)">Descripción:</label>
-                <input class="form-control" type="text" id="descripcion" name="Descripción">
+                <textarea class="form-control form-control" id="descripcion" name="Descripción" rows="3" required=""></textarea>
                 <small id="errorDescripcion" class="text-danger"></small>
               </div>
               <div class="mb-3">

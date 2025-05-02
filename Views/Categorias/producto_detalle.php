@@ -47,13 +47,27 @@ define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
     <style>
         .product-gallery {
             margin-bottom: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-image-container {
+            height: 400px;
+            width: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
         }
 
         .main-image {
-            height: 400px;
+            max-height: 100%;
+            max-width: 100%;
             object-fit: contain;
-            background: #f8f9fa;
-            border-radius: 10px;
         }
 
         .thumbnail {
@@ -63,21 +77,30 @@ define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
             cursor: pointer;
             border: 2px solid transparent;
             border-radius: 5px;
+            transition: all 0.3s ease;
         }
 
         .thumbnail:hover,
         .thumbnail.active {
             border-color: #587a2e;
+            transform: scale(1.05);
         }
 
         .product-info {
             background: #f8f9fa;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
+            height: 400px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .back-button {
             margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
         }
     </style>
 </head>
@@ -104,35 +127,32 @@ define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
 
     <div class="container py-5" style="background: #abba87;">
         <?php if ($producto): ?>
-            <div class="row">
+            <div class="row align-items-stretch">
                 <!-- Galería de imágenes -->
-                <div class="col-md-6">
+                <div class="col-md-6 mb-4 mb-md-0">
                     <div class="product-gallery">
                         <!-- Imagen principal -->
-                        <div class="text-center mb-3">
+                        <div class="main-image-container">
                             <?php if (!empty($imagenes)): ?>
-                                <?php 
-                                    $imagenPrincipal = IMG_BASE_URL . basename($imagenes[0]['ruta_imagen']);
+                                <?php
+                                $imagenPrincipal = IMG_BASE_URL . basename($imagenes[0]['ruta_imagen']);
                                 ?>
-                                <img id="mainImage" src="<?= $imagenPrincipal ?>"
-                                    class="img-fluid main-image" alt="<?= htmlspecialchars($producto['nombre']) ?>"
+                                <img id="mainImage" src="<?= $imagenPrincipal ?>" class="main-image"
+                                    alt="<?= htmlspecialchars($producto['nombre']) ?>"
                                     onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
                             <?php else: ?>
-                                <img id="mainImage" src="<?= IMG_DEFAULT ?>" class="img-fluid main-image"
-                                    alt="Imagen no disponible">
+                                <img id="mainImage" src="<?= IMG_DEFAULT ?>" class="main-image" alt="Imagen no disponible">
                             <?php endif; ?>
                         </div>
 
                         <!-- Miniaturas -->
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <?php foreach ($imagenes as $index => $imagen): ?>
-                                <?php 
-                                    $imagenThumb = IMG_BASE_URL . basename($imagen['ruta_imagen']);
+                                <?php
+                                $imagenThumb = IMG_BASE_URL . basename($imagen['ruta_imagen']);
                                 ?>
-                                <img src="<?= $imagenThumb ?>"
-                                    class="thumbnail <?= $index === 0 ? 'active' : '' ?>"
-                                    onclick="changeImage(this, '<?= $imagenThumb ?>')"
-                                    alt="Miniatura <?= $index + 1 ?>"
+                                <img src="<?= $imagenThumb ?>" class="thumbnail <?= $index === 0 ? 'active' : '' ?>"
+                                    onclick="changeImage(this, '<?= $imagenThumb ?>')" alt="Miniatura <?= $index + 1 ?>"
                                     onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
                             <?php endforeach; ?>
                         </div>
@@ -152,13 +172,13 @@ define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
 
                         <div class="mb-4">
                             <h5>Descripción:</h5>
-                            <p><?= nl2br(htmlspecialchars($producto['descripcion'])) ?></p>
+                            <p class="text-muted"><?= nl2br(htmlspecialchars($producto['descripcion'])) ?></p>
                         </div>
 
                         <?php if (!empty($producto['especificaciones'])): ?>
                             <div class="mb-4">
                                 <h5>Especificaciones</h5>
-                                <p><?= nl2br(htmlspecialchars($producto['especificaciones'])) ?></p>
+                                <p class="text-muted"><?= nl2br(htmlspecialchars($producto['especificaciones'])) ?></p>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -172,6 +192,7 @@ define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
             </div>
         <?php endif; ?>
     </div>
+
 
     <!-- inicia footer -->
     <?php include '../../Views/Paginas Principales/footer_principal.php'; ?>
@@ -209,4 +230,5 @@ define('IMG_DEFAULT', '../../Admin/assets/img/productos/default.jpg');
         baguetteBox.run('.product-gallery');
     </script>
 </body>
+
 </html>

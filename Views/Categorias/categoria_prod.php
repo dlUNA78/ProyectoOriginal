@@ -101,8 +101,8 @@
 
           <div class="col">
             <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px;">
-              <a class="text-decoration-none" href="producto_detalle.php?id=<?= $producto['id'] ?>">
-                <div class="p-3 h-100 d-flex flex-column">
+              <a class="text-decoration-none h-100 d-flex flex-column" href="producto_detalle.php?id=<?= $producto['id'] ?>">
+                <div class="p-3 flex-grow-1 d-flex flex-column">
                   <div class="bg-light d-flex justify-content-center align-items-center"
                     style="height: 200px; overflow: hidden; border-radius: 15px;">
                     <img class="img-fluid mh-100" src="<?= $imagenPath ?>" style="object-fit: contain; max-width: 100%;"
@@ -111,14 +111,14 @@
                   </div>
                   <div class="mt-3 flex-grow-1 d-flex flex-column">
                     <h3 class="h5 mb-2 text-dark"><?= htmlspecialchars($producto['nombre']) ?></h3>
-                    <p class="small text-muted mb-3 flex-grow-1">
+                    <div class="text-muted small mb-3 flex-grow-1" style="overflow: hidden;">
                       <?= mb_substr(htmlspecialchars($producto['descripcion']), 0, 100) ?>
                       <?= (mb_strlen($producto['descripcion']) > 100) ? '...' : '' ?>
-                    </p>
-                    <div class="mt-auto text-center">
-                      <span class="fw-bold text-success">$<?= number_format($producto['precio'], 2) ?></span>
                     </div>
                   </div>
+                </div>
+                <div class="p-3 pt-0 mt-auto text-center">
+                  <span class="fw-bold text-success">$<?= number_format($producto['precio'], 2) ?></span>
                 </div>
               </a>
             </div>
