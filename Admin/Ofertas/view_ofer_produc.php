@@ -114,7 +114,7 @@ if ($conn->query($sql) === TRUE) {
                   <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre </th>
                   <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
                   <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
-                  <th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>
+                  <!--<th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>-->
                   <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de inicio</th>
                   <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de expiracion</th>
                   <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
@@ -153,7 +153,7 @@ if ($conn->query($sql) === TRUE) {
                       <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
                       <td>$<?php echo number_format($fila['precio'], 2); ?></td>
                       <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
-                      <td><?php echo htmlspecialchars($fila['descrpcion']); ?></td>
+                      <!--<td><?php echo htmlspecialchars($fila['descripcion']); ?></td>-->
                       <td><?php echo $fila['Fecha_inicio'] !== null ? htmlspecialchars($fila['Fecha_inicio']) : 'N/A'; ?>
                       </td>
                       <td>

@@ -3,7 +3,11 @@ include '..\..\config\database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
     $busqueda = $_POST['query'];
-    $stmt = $conn->prepare("SELECT id AS id_producto, nombre, precio FROM productos WHERE nombre LIKE ?");
+    $stmt = $conn->prepare(" SELECT productos.id AS id_producto, productos.nombre, productos.precio, imagenes_producto.ruta_imagen AS imagen FROM productos
+        LEFT JOIN imagenes_producto ON productos.id = imagenes_producto.id_producto
+        WHERE productos.nombre LIKE ?
+    ");
+    //$stmt = $conn->prepare("SELECT id AS id_producto, nombre, precio, imagen FROM productos WHERE nombre LIKE ?");
     $like = "%$busqueda%";
     $stmt->bind_param("s", $like);
     $stmt->execute();
@@ -39,7 +43,8 @@ $(document).ready(function () {
               sugerencias += `<button type="button" class="list-group-item list-group-item-action sugerencia-item"
                             data-id="${producto.id_producto}"
                             data-nombre="${producto.nombre}"
-                            data-precio="${producto.precio}">
+                            data-precio="${producto.precio}"
+                            data-imagen="${imagenes_producto.ruta_imagen }">
                             ${producto.nombre}
                           </button>`;
             });
@@ -62,10 +67,13 @@ $(document).ready(function () {
     let id = $(this).data("id");
     let nombre = $(this).data("nombre");
     let precio = $(this).data("precio");
+    let imagen = $(this).data("ruta_imagen ");
+   // let descripcion = $(this).data("descripcion");
 
     $("#search").val(nombre); // Rellenar el campo de búsqueda con el nombre seleccionado
     $("#precio").val(precio); // Rellenar el precio del producto
     $("#sugerencias").hide(); // Ocultar las sugerencias
+    
   });
 });
 </script>

@@ -18,7 +18,7 @@ include '..\..\config\database.php';
 // Lógica AJAX para búsqueda
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
   $busqueda = $_POST['query'];
-  $stmt = $conn->prepare("SELECT id AS id_producto, nombre, precio FROM productos WHERE nombre LIKE ?");
+  $stmt = $conn->prepare("SELECT id AS id_producto, nombre, precio des FROM productos WHERE nombre LIKE ?");
   $like = "%$busqueda%";
   $stmt->bind_param("s", $like);
   $stmt->execute();
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $precio_oferta = $_POST['precio_oferta'];
   $fecha_inicio = $_POST['Fecha_inicio'];
   $fecha_expirada = $_POST['Fecha_expirada'];
-  $descripcion = $_POST['descripcion']; // Nuevo campo para la descripción
+ // $descripcion = $_POST['descripcion']; // Nuevo campo para la descripción
 
   // Manejo de la imagen
   $ruta_imagen = '';
@@ -63,8 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 
   // Insertar en la base de datos
-  $sql = "INSERT INTO ofertas (Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada, imagen, descrpcion) 
-      VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada', '$ruta_imagen', '$descripcion')";
+  $sql = "INSERT INTO ofertas (Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada, imagen) 
+      VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada', '$ruta_imagen')";
 
   if (mysqli_query($conn, $sql)) {
     $_SESSION['success'] = "¡Oferta agregada correctamente!";
@@ -409,8 +409,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Fecha inicio -->
     <div class="mb-3">
       <label style="color: rgb(0, 0, 0)">Fecha de inicio:</label>
-      <input type="date" name="Fecha_inicio" class="form-control" required />
-      <div id="errorFechaInicio" class="text-danger"></div>
+      <input type="date" name="Fecha_inicio" class="form-control" value="<?php echo date('Y-m-d'); ?>" required />
+      <div id="errorFechaInicio" class="text-danger" ></div>
     </div>
 
     <!-- Fecha expiración -->
@@ -421,17 +421,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <!-- Imagen -->
+
     <div class="mb-3">
       <label style="color: rgb(0, 0, 0)">Imagen:</label>
       <input type="file" name="imagen" class="form-control" />
       <div id="errorImagen" class="text-danger"></div>
     </div>
-
     <!-- Descripción -->
+    <!--
     <div class="mb-3">
       <label style="color: rgb(0, 0, 0)">Descripción:</label>
       <textarea name="descripcion" class="form-control" rows="3" required></textarea>
     </div>
+    -->
 
     <!-- Botones -->
     <div class="d-flex justify-content-end gap-2">
@@ -480,11 +482,14 @@ $(document).ready(function () {
     let id = $(this).data("id");
     let nombre = $(this).data("nombre");
     let precio = $(this).data("precio");
+    let descripcion = $(this).data("descripcion");
 
     $("#search").val(nombre);
     $("#id").val(id);
     $("#precio").val(precio);
+    $("#descripcion").val(descripcion);
     $("#sugerencias").hide();
+    
   });
 });
 </script>
