@@ -3,11 +3,13 @@ include '..\..\config\database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
     $busqueda = $_POST['query'];
-    $stmt = $conn->prepare(" SELECT productos.id AS id_producto, productos.nombre, productos.precio, imagenes_producto.ruta_imagen AS imagen FROM productos
+   $stmt = $conn->prepare("SELECT productos.id AS id_producto, productos.nombre, productos.precio, 
+        MIN(imagenes_producto.ruta_imagen) AS ruta_imagen FROM productos
         LEFT JOIN imagenes_producto ON productos.id = imagenes_producto.id_producto
-        WHERE productos.nombre LIKE ?
-    ");
-    //$stmt = $conn->prepare("SELECT id AS id_producto, nombre, precio, imagen FROM productos WHERE nombre LIKE ?");
+  WHERE productos.nombre LIKE ? GROUP BY productos.id, productos.nombre, productos.precio
+");
+
+    //$stmt = $conn->prepare("SELECT  id AS id_producto, nombre, precio, imagen FROM productos WHERE nombre LIKE ?");
     $like = "%$busqueda%";
     $stmt->bind_param("s", $like);
     $stmt->execute();
