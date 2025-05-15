@@ -188,26 +188,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
             <input type="hidden" name="id" value="<?php echo $producto['id']; ?>">
             <input type="hidden" name="modificar" value="1">
             
+            <!-- Nombre -->
             <div class="mb-3">
               <label id="producto" class="form-label" for="nombre" style="color: rgb(0, 0, 0)">Nombre del producto:</label>
-              <div id="errorNombre" class="text-danger"></div>
               <input class="form-control form-control" type="text" id="nombre" name="nombre" required="" 
                      value="<?php echo htmlspecialchars($producto['nombre']); ?>" />
+                                   <div id="errorNombre" class="text-danger"></div>
             </div>
             
+            <!-- Descripcion -->
             <div class="mb-3">
               <label class="form-label" for="descripcion" style="color: rgb(0, 0, 0)">Descripción:</label>
-              <div id="errorDescripcion" class="text-danger"></div>
               <textarea class="form-control form-control" id="descripcion" name="descripcion" rows="3" required=""><?php echo htmlspecialchars($producto['descripcion']); ?></textarea>
-            
+                            <div id="errorDescripcion" class="text-danger"></div>
             </div>
+
+            <!-- Precio -->
             <div class="mb-3">
               <label class="form-label" for="precio" style="color: rgb(0, 0, 0)">Precio:</label>
-              <div id="errorPrecio" class="text-danger"></div>
               <input class="form-control form-control" type="number" id="precio" name="precio" min="0" step="0.01" required="" 
                      value="<?php echo htmlspecialchars($producto['precio']); ?>" />
+                                   <div id="errorPrecio" class="text-danger"></div>
             </div>
             
+            <!-- Categoria -->
             <div class="mb-3">
               <label class="form-label" for="categoria" style="color: rgb(0, 0, 0)">Categoría:</label>
               <select class="form-select form-select" id="categoria" name="categoria" required="">
@@ -223,7 +227,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modificar'])) {
             </div>
 
             <!-- imagenes -->
-
             <?php if (!empty($imagenes)): ?>
     <div class="mb-3">
         <label class="form-label" style="color: rgb(0, 0, 0)">Imágenes actuales:</label>
