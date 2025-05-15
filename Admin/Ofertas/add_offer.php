@@ -18,19 +18,7 @@ include '..\..\config\database.php';
 // Lógica AJAX para búsqueda
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
   $busqueda = $_POST['query'];
-  
-  //$stmt = $conn->prepare("SELECT  id AS id_producto, nombre, precio, ruta_imagen des FROM productos WHERE nombre LIKE ?");
-
-  $stmt = $conn->prepare("
-  SELECT productos.id AS id_producto, productos.nombre, productos.precio, 
-         MIN(imagenes_producto.ruta_imagen) AS ruta_imagen
-  FROM productos
-  LEFT JOIN imagenes_producto ON productos.id = imagenes_producto.id_producto
-  WHERE productos.nombre LIKE ?
-  GROUP BY productos.id, productos.nombre, productos.precio
-");
-
-
+  $stmt = $conn->prepare("SELECT id AS id_producto, nombre, precio des FROM productos WHERE nombre LIKE ?");
   $like = "%$busqueda%";
   $stmt->bind_param("s", $like);
   $stmt->execute();
@@ -53,26 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $fecha_expirada = $_POST['Fecha_expirada'];
  // $descripcion = $_POST['descripcion']; // Nuevo campo para la descripción
 
-
-// Validar si ya existe una oferta con ese producto
-  $verifica = $conn->prepare("SELECT COUNT(*) FROM ofertas WHERE Nombre_oferta = ?");
-  $verifica->bind_param("s", $id_productob);
-  $verifica->execute();
-  $verifica->bind_result($existe);
-  $verifica->fetch();
-  $verifica->close();
-
-  if ($existe > 0) {
-  
-    $error_msg = "Este producto ya tiene una oferta activa. No se puede duplicar.";
-    $_SESSION['error'] = "Este producto ya tiene una oferta activa. No se puede duplicar.";
-    
-    header("Location: add_offer.php");
-    exit();
-  }
-
-
-  ///////////////////////////////////////////////////
   // Manejo de la imagen
   $ruta_imagen = '';
   if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
@@ -94,8 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $ruta_imagen = '/Admin/assets/img/ofertas/' . $nombre_imagen;
   }
 
-
-
   // Insertar en la base de datos
   $sql = "INSERT INTO ofertas (Nombre_oferta, Precio, Precio_oferta, Fecha_inicio, Fecha_expirada, imagen) 
       VALUES ('$id_productob', '$precio_normal', '$precio_oferta', '$fecha_inicio', '$fecha_expirada', '$ruta_imagen')";
@@ -105,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   } else {
     $_SESSION['error'] = "Error al agregar la oferta: " . mysqli_error($conn);
   }
-  $_SESSION['error'] = "Este producto ya tiene una oferta activa. No se puede duplicar.";
+
   mysqli_close($conn);
   header("Location: view_ofer_produc.php");
   exit();
@@ -116,7 +82,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
- <html data-bs-theme="light" lang="en">
+
+
+
+
+
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -408,26 +379,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               margin-bottom: 40px;
             "
           >
-          
 <div class="card shadow-sm p-4">
   <h2 class="text-center mb-4" style="color: rgb(0, 0, 0); font-weight: bold">
     Agregar Oferta
   </h2>
-
-  <?php if (isset($_SESSION['error'])): ?>
-  <div class="alert alert-danger">
-    <?= $_SESSION['error'] ?>
-  </div>
-  <?php unset($_SESSION['error']); ?>
-<?php endif; ?>
-
-<?php if (isset($_SESSION['success'])): ?>
-  <div class="alert alert-success">
-    <?= $_SESSION['success'] ?>
-  </div>
-  <?php unset($_SESSION['success']); ?>
-<?php endif; ?>
-
   <form id="form_oferta" method="POST" action="add_offer.php" enctype="multipart/form-data" novalidate>
     <!-- Buscador de producto -->
     <div class="mb-3 position-relative">
@@ -465,19 +420,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div id="errorFechaExpiracion" class="text-danger"></div>
     </div>
 
-    <!-- Imagen del producto (cambia dinámicamente) -->
-<div class="mb-3">
-  <label style="color: rgb(0, 0, 0)">Vista previa del producto:</label><br>
-  <img id="imagen-producto" src="" alt="Imagen del producto" style="max-width: 150px; height: auto; display: none; border: 1px solid #ccc; padding: 5px;" />
-</div>
-
     <!-- Imagen -->
-     <!--
+
     <div class="mb-3">
       <label style="color: rgb(0, 0, 0)">Imagen:</label>
       <input type="file" name="imagen" class="form-control" />
       <div id="errorImagen" class="text-danger"></div>
-    </div> -->
+    </div>
     <!-- Descripción -->
     <!--
     <div class="mb-3">
