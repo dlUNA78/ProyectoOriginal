@@ -7,25 +7,23 @@ include '../../config/database.php';
 // Obtener el ID de la oferta desde la URL
 $id_oferta = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Consulta para obtener los detalles de la oferta
-$stmt = $conn->prepare("SELECT * FROM ofertas WHERE id_oferta = ?");
+// Consulta para obtener detalles de la oferta con información del producto asociado
+$stmt = $conn->prepare("
+    SELECT o.*, p.nombre AS nombre_producto, p.precio AS precio_producto, c.nombre AS categoria
+    FROM ofertas o
+    JOIN productos p ON o.id_producto = p.id
+    JOIN categorias c ON p.id_categoria = c.id
+    WHERE o.id_oferta = ?
+");
 $stmt->bind_param("i", $id_oferta);
 $stmt->execute();
 $oferta = $stmt->get_result()->fetch_assoc();
 
-// Configuración de rutas
-define('BASE_DIR', realpath(__DIR__ . '/../../'));
-define('BASE_URL', '../');
-define('IMG_DEFAULT', '../admin/assets/img/productos/default.jpg');
-
-// Ruta de la imagen
-$absolute_image_path = "C:\\Users\\PC\\Documents\\GitHub\\ProyectoOriginal\\uploads\\ofertas\\" . $oferta['imagen'];
-$web_image_path = "../uploads/ofertas/" . $oferta['imagen'];
-if (!file_exists($absolute_image_path)) {
-    $web_image_path = IMG_DEFAULT;
+if (!$oferta) {
+    // Si no existe la oferta, mostrar mensaje
+    $mensaje_error = "Oferta no encontrada o no disponible.";
 }
 
-$descuento = round(($oferta['precio'] - $oferta['precio_oferta']) / $oferta['precio'] * 100);
 ?>
 
 <head>
@@ -46,44 +44,20 @@ $descuento = round(($oferta['precio'] - $oferta['precio_oferta']) / $oferta['pre
     <link rel="stylesheet" href="../assets/css/dark_navbar.css" />
 
     <style>
-        .product-gallery {
-            margin-bottom: 20px;
-        }
-
-        .main-image {
-            height: 400px;
+        .offer-image {
+            max-height: 400px;
+            width: 100%;
             object-fit: contain;
             background: #f8f9fa;
             border-radius: 10px;
         }
-
-        .thumbnail {
-            height: 80px;
-            width: 80px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 5px;
-        }
-
-        .thumbnail:hover,
-        .thumbnail.active {
-            border-color: #587a2e;
-        }
-
-        .product-info {
+        .offer-info {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 10px;
         }
-
         .back-button {
             margin-bottom: 20px;
-        }
-
-        .discount-badge {
-            font-size: 1.5rem;
-            padding: 0.5rem 1rem;
         }
     </style>
 </head>
@@ -94,7 +68,7 @@ $descuento = round(($oferta['precio'] - $oferta['precio_oferta']) / $oferta['pre
         <section class="clean-block" style="background: #d9dcbd; padding: 20px 0;">
             <div class="container">
                 <a href="javascript:history.back()" class="btn btn-outline-success back-button">
-                    <i class="fa fa-arrow-left"></i> Volver a ofertas
+                    <i class="fa fa-arrow-left"></i> Volver al catálogo
                 </a>
 
                 <?php if ($oferta): ?>
@@ -102,6 +76,11 @@ $descuento = round(($oferta['precio'] - $oferta['precio_oferta']) / $oferta['pre
                         <h2 style="color: #587a2e; font-family: 'ADLaM Display', serif;">
                             <?= htmlspecialchars($oferta['Nombre_oferta']) ?>
                         </h2>
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-danger text-center">
+                        <h4><?= $mensaje_error ?></h4>
+                        <a href="/Views/Categorias/categoria_prod.php" class="btn btn-outline-success">Volver al catálogo</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -112,93 +91,54 @@ $descuento = round(($oferta['precio'] - $oferta['precio_oferta']) / $oferta['pre
         <?php if ($oferta): ?>
             <div class="row">
                 <!-- Imagen de la oferta -->
-                <div class="col-md-6">
-                    <div class="product-gallery">
-                        <div class="text-center mb-3">
-                            <img id="mainImage" src="<?= $web_image_path ?>" class="img-fluid main-image"
-                                alt="<?= htmlspecialchars($oferta['Nombre_oferta']) ?>"
-                                onerror="this.onerror=null; this.src='<?= IMG_DEFAULT ?>';">
-                        </div>
-                    </div>
+                 
+                <?php
+                    // Obtener la ruta relativa de la imagen desde la base de datos
+                    $imagen_relativa = isset($oferta['imagen']) ? ltrim($oferta['imagen'], '/') : '';
+                    $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
+                    $web_image_path = '/' . $imagen_relativa;
+
+                    // Si la imagen no existe o está vacía, usar la imagen por defecto
+                    if (!file_exists($absolute_image_path) || empty($oferta['imagen'])) {
+                        $web_image_path = '/assets/img/default-product.jpg';
+                    }
+                ?>
+                <div class="col-md-6 text-center">
+                    <img src="<?= htmlspecialchars($web_image_path) ?>" alt="<?= htmlspecialchars($oferta['Nombre_oferta']) ?>" class="offer-image" onerror="this.onerror=null;this.src='/assets/img/default-product.jpg'">
                 </div>
 
                 <!-- Información de la oferta -->
                 <div class="col-md-6">
-                    <div class="product-info">
+                    <div class="offer-info">
                         <h3 class="mb-3"><?= htmlspecialchars($oferta['Nombre_oferta']) ?></h3>
 
-                        <div class="mb-4">
-                            <span class="badge bg-danger discount-badge">-<?= $descuento ?>%</span>
-                        </div>
+                        <div class="mb-3">
+                            <span class="badge bg-success"><?= htmlspecialchars($oferta['categoria']) ?></span>
+                           </div>
+
+                        <h4>
+                            <del class="text-muted">$<?= number_format($oferta['precio_producto'], 2) ?></del>
+                            <span class="text-danger">$<?= number_format($oferta['precio_oferta'], 2) ?></span>
+                        </h4>
 
                         <div class="mb-3">
-                            <span class="text-muted text-decoration-line-through me-3 fs-5">
-                                $<?= number_format($oferta['precio'], 2) ?>
-                            </span>
-                            <span class="text-success fw-bold fs-2">
-                                $<?= number_format($oferta['precio_oferta'], 2) ?>
-                            </span>
+                            <strong>Vigencia:</strong> <?= date('d/m/Y', strtotime($oferta['Fecha_inicio'])) ?> - <?= date('d/m/Y', strtotime($oferta['Fecha_expirada'])) ?>
                         </div>
 
                         <div class="mb-4">
-                            <h5>Descripción:</h5>
-                            <p><?= nl2br(htmlspecialchars($oferta['descripcion'] ?? 'Oferta especial por tiempo limitado')) ?>
-                            </p>
-                        </div>
-
-                        <div class="mb-4">
-                            <h5>Válido hasta:</h5>
-                            <p><?= date('d/m/Y', strtotime($oferta['Fecha_expirada'])) ?></p>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <div class="input-group" style="width: 120px;">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    onclick="updateQuantity(-1)">-</button>
-                                <input type="number" id="quantity" class="form-control text-center" value="1" min="1">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    onclick="updateQuantity(1)">+</button>
-                            </div>
-                            <button class="btn btn-success">
-                                <i class="fa fa-cart-plus"></i> Añadir al carrito
-                            </button>
+                            <h5>Descripción de la oferta:</h5>
+                            <p><?= nl2br(htmlspecialchars($oferta['descripcion'])) ?></p>
                         </div>
                     </div>
                 </div>
             </div>
-        <?php else: ?>
-            <div class="alert alert-danger text-center">
-                <h4>Oferta no encontrada</h4>
-                <p>La oferta que buscas no está disponible o no existe.</p>
-                <a href="ofertas.php" class="btn btn-outline-success">Volver a ofertas</a>
-            </div>
         <?php endif; ?>
     </div>
 
-
     <!-- inicia footer -->
-    <?php include './footer_principal.php'; ?>
+    <?php include '../../Views/Paginas Principales/footer_principal.php'; ?>
     <!-- termina footer -->
 
-
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="../assets/js/baguetteBox.min.js"></script>
-
-    <script>
-        // Actualizar cantidad
-        function updateQuantity(change) {
-            const quantityInput = document.getElementById('quantity');
-            let newValue = parseInt(quantityInput.value) + change;
-
-            if (newValue < 1) newValue = 1;
-
-            quantityInput.value = newValue;
-        }
-
-        // Inicializar lightbox para la imagen
-        baguetteBox.run('.product-gallery');
-    </script>
 </body>
-
 </html>

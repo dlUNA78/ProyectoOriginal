@@ -228,130 +228,104 @@
       </div>
     </section>
     <section class="justify-content-center align-items-center clean-block" style="
-          background: #fff2cdb3;
-          padding: 0px 0px 0px;
-          padding-top: 0px;
-          padding-bottom: 0px;
-        ">
-      <div class="container" id="ofertas-container" style="
-        border-color: rgb(19, 30, 41);
-        margin-top: 93px;
-        padding-top: 0px;
-        padding-right: 0px;
-          ">
-        <div class="text-center d-flex justify-content-center align-items-center block-heading"
-          style="padding-top: 0px">
-          <h2 class="text-center justify-content-center align-items-center"
-        style="color: #587a2e; font-family: 'ADLaM Display', serif">
-        OFERTAS
-          </h2>
-        </div>
-
-        <!-- inicia tabla de ofertas -->
-        <div class="row justify-content-center">
-          <div class="col">
-        <div id="carouselExampleControls" class="carousel" data-bs-ride="carousel">
+      background: #fff2cdb3;
+      padding: 0px 0px 0px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+    ">
+      <!-- inicia tabla de ofertas -->
+      <div id="ofertas-container" class="row justify-content-center my-5">
+        <div class="col">
+          <h3 class="text-center mb-4" style="color: #587a2e; font-family: 'ADLaM Display', serif;">Ofertas</h3>
+          <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-            <?php
-            $conn = new mysqli("localhost", "root", "586226", "proyecto1");
+              <?php
+              $conn = new mysqli("localhost:3308", "root", "1234", "proyecto1");
+              if ($conn->connect_error) {
+                die("Error de conexión: " . $conn->connect_error);
+              }
 
-            if ($conn->connect_error)
-              die("Error de conexión: " . $conn->connect_error);
+              $result = $conn->query("SELECT * FROM ofertas WHERE CURDATE() BETWEEN Fecha_inicio AND Fecha_expirada");
 
-            $result = $conn->query("SELECT * FROM ofertas WHERE CURDATE() BETWEEN Fecha_inicio AND Fecha_expirada");
-            $active = true;
-            $hasOffers = false;
+              if ($result && $result->num_rows > 0) {
+                $active = true;
+                while ($row = $result->fetch_assoc()) {
+                  $imagen_relativa = ltrim($row['imagen'], '/');
+                  $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
+                  $web_image_path = '/' . $imagen_relativa;
 
-            if ($result->num_rows > 0) {
-          $hasOffers = true;
-          while ($row = $result->fetch_assoc()) {
-            $imagen_relativa = ltrim($row['imagen'], '/');
+                  if (!file_exists($absolute_image_path) || empty($row['imagen'])) {
+                    $web_image_path = '/assets/img/default-product.jpg';
+                  }
 
-            // Ruta absoluta en el servidor para verificar si el archivo existe
-            $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
-
-            // Ruta web que se usará en el <img src="">
-            $web_image_path = $row['imagen']; // ya contiene algo como /Admin/assets/img/ofertas/archivo.jpg
-
-            $descuento = round(($row['precio'] - $row['precio_oferta']) / $row['precio'] * 100);
-
-            // Verificar si la imagen existe en la ruta absoluta
-            // Si no existe físicamente en el servidor, usar una imagen por defecto
-            if (!file_exists($absolute_image_path)) {
-              $web_image_path = '/assets/img/default-product.jpg';
-            }
-
-            ?>
-            <div class="carousel-item <?= $active ? 'active' : ''; ?>">
-              <div class="card position-relative" style="border-radius: 20px; cursor: pointer;"
-            onclick="window.location.href='detalle_oferta.php?id=<?= $row['id_oferta'] ?>'">
-            <!-- Badge de descuento -->
-            <div class="position-absolute bg-danger text-white px-3 py-1" style="
-                border-bottom-right-radius: 15px; 
-                font-weight: bold; 
-                z-index: 1;
-                top: 0;
-                left: 0;
-                ">
-              -<?= $descuento ?>%
+                  $descuento = 0;
+                  if ($row['precio'] > 0) {
+                    $descuento = round((($row['precio'] - $row['precio_oferta']) / $row['precio']) * 100);
+                  }
+                  ?>
+                  <div class="carousel-item <?= $active ? 'active' : '' ?>">
+                    <div class="card mx-auto" style="width: 350px; border-radius: 20px; cursor: pointer;"
+                      onclick="window.location.href='detalle_oferta.php?id=<?= (int) $row['id_oferta'] ?>'">
+                      <div class="position-absolute bg-danger text-white px-3 py-1"
+                        style="border-bottom-right-radius: 15px; font-weight: bold; z-index: 1; top: 0; left: 0;">
+                        -<?= $descuento ?>%
+                      </div>
+                      <div class="img-wrapper">
+                        <img src="<?= htmlspecialchars($web_image_path) ?>"
+                          alt="<?= htmlspecialchars($row['Nombre_oferta']) ?>"
+                          style="width: 100%; height: 200px; object-fit: contain; border-radius: 20px 20px 0 0;"
+                          onerror="this.onerror=null;this.src='/assets/img/default-product.jpg';">
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title" style="font-family: 'ADLaM Display', serif; color: #587a2e;">
+                          <?= htmlspecialchars($row['Nombre_oferta']) ?>
+                        </h5>
+                        <p class="card-text"
+                          style="font-family: 'AR One Sans', sans-serif; text-align: justify; color: #6c757d;">
+                          <?= htmlspecialchars($row['descripcion']) ?>
+                        </p>
+                        <div class="d-flex align-items-center">
+                          <span class="text-muted text-decoration-line-through me-3">
+                            $<?= number_format($row['precio'], 2) ?>
+                          </span>
+                          <span class="text-success fw-bold fs-4">
+                            $<?= number_format($row['precio_oferta'], 2) ?>
+                          </span>
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                          Válido hasta: <?= date('d/m/Y', strtotime($row['Fecha_expirada'])) ?>
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                  <?php
+                  $active = false;
+                }
+              } else {
+                echo "<script>document.getElementById('ofertas-container').style.display = 'none';</script>";
+              }
+              $conn->close();
+              ?>
             </div>
 
-            <!-- Imagen con manejo de errores -->
-            <div class="img-wrapper">
-              <img src="<?= $web_image_path ?>" alt="<?= htmlspecialchars($row['Nombre_oferta']) ?>"
-                style="width: 350px; height: 200px; object-fit: contain; border-radius: 20px 20px 0 0;"
-                onerror="this.src='../assets/img/default-product.jpg'; this.alt='Imagen no disponible'">
-            </div>
-
-            <div class="card-body">
-              <h5 class="card-title" style="font-family: 'ADLaM Display', serif; color: #587a2e;">
-                <?= htmlspecialchars($row['Nombre_oferta']) ?>
-              </h5>
-              <p class="card-text"
-                style="font-family: 'AR One Sans', sans-serif; text-align: justify; color: #6c757d;">
-                <?= htmlspecialchars($row['descrpcion']) ?>
-              </p>
-              <div class="d-flex align-items-center">
-                <span class="text-muted text-decoration-line-through me-3">
-              $<?= number_format($row['precio'], 2) ?>
-                </span>
-                <span class="text-success fw-bold fs-4">
-              $<?= number_format($row['precio_oferta'], 2) ?>
-                </span>
-              </div>
-              <small class="text-muted d-block mt-2">
-                Válido hasta: <?= date('d/m/Y', strtotime($row['Fecha_expirada'])) ?>
-              </small>
-            </div>
-              </div>
-            </div>
-            <?php
-            $active = false;
-          }
-            } else {
-          echo '<script>document.getElementById("ofertas-container").style.display = "none";</script>';
-            }
-            $conn->close();
-            ?>
-          </div>
-          <!-- Controles del carrusel -->
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
+            <!-- Controles del carrusel -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+              data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+              data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
           </div>
         </div>
-        <!-- termina tabla de ofertas -->
-
       </div>
+
+      <!-- termina tabla de ofertas -->
     </section>
+
     <br>
     <br>
 

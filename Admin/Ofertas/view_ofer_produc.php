@@ -108,60 +108,56 @@ if ($conn->query($sql) === TRUE) {
 
             <!-- Tabla de Ofertas -->
             <table class="table table-hover">
-              <thead>
-                <tr style="background: var(--bs-info)" width="100%">
-                  <th style="background: var(--bs-table-accent-bg)" width="10%">Imagen</th>
-                  <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre </th>
-                  <th style="background: var(--bs-table-accent-bg)" width="10%">Precio</th>
-                  <th style="background: var(--bs-table-accent-bg)" width="10%">Precio de Oferta</th>
-                  <!--<th style="background: var(--bs-table-accent-bg)" width="20%">Descripción</th>-->
-                  <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de inicio</th>
-                  <th style="background: var(--bs-table-accent-bg)" width="10%">Fecha de expiracion</th>
-                  <th style="background: var(--bs-table-accent-bg)" width="10%">Acción</th>
-                </tr>
-              </thead>
+
 
               <?php
-              include '..\..\config\database.php';
+              // Consulta para obtener todas las ofertas
               $resultado = $conn->query("SELECT * FROM ofertas");
+
+              // Obtener los nombres de columnas (campos)
+              $columnas = $resultado->fetch_fields();
               ?>
+
+              <thead>
+                <tr style="background: var(--bs-info)" width="100%">
+                  <?php foreach ($columnas as $col): ?>
+                    <th style="background: var(--bs-table-accent-bg)"><?php echo htmlspecialchars($col->name); ?></th>
+                  <?php endforeach; ?>
+                  <th style="background: var(--bs-table-accent-bg) " width="15%">Acción</th>
+                </tr>
+              </thead>
 
               <tbody id="offerTable">
                 <?php if ($resultado->num_rows > 0): ?>
                   <?php while ($fila = $resultado->fetch_assoc()): ?>
                     <tr>
-                      <td>
-                        <?php
-                        // Suponiendo que $row['imagen'] contiene una ruta como: /Admin/assets/img/ofertas/archivo.jpg
-                        $imagen_relativa = ltrim($fila['imagen'], '/'); // quita la barra inicial
-                        $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
+                      <?php foreach ($columnas as $col): ?>
+                        <td>
+                          <?php
+                          $campo = $col->name;
 
-                        // Verificamos si la imagen existe
-                        if (!file_exists($absolute_image_path)) {
-                          // Imagen de respaldo si no existe
-                          $web_image_path = "../assets/img/cahuam.jpg";
-                        } else {
-                          // Usamos la ruta original guardada en la base de datos
-                          $web_image_path = $fila['imagen'];
-                        }
-                        ?>
+                          if ($campo === 'imagen') {
+                            $imagen_relativa = ltrim($fila[$campo], '/');
+                            $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
+                            $web_image_path = (file_exists($absolute_image_path) && !empty($fila[$campo]))
+                              ? '/' . $imagen_relativa
+                              : '/assets/img/default-product.jpg';
 
-                        <img src="<?php echo $web_image_path; ?>" alt="Imagen de la oferta"
-                          style="width: 100px; height: auto;">
+                            $alt_text = isset($fila['Nombre_oferta']) ? htmlspecialchars($fila['Nombre_oferta']) : 'Imagen de la oferta';
 
-                      </td>
-                      <td><?php echo htmlspecialchars($fila['Nombre_oferta']); ?></td>
-                      <td>$<?php echo number_format($fila['precio'], 2); ?></td>
-                      <td>$<?php echo number_format($fila['precio_oferta'], 2); ?></td>
-                      <!--<td><?php echo htmlspecialchars($fila['descripcion']); ?></td>-->
-                      <td><?php echo $fila['Fecha_inicio'] !== null ? htmlspecialchars($fila['Fecha_inicio']) : 'N/A'; ?>
-                      </td>
-                      <td>
-                        <?php echo $fila['Fecha_expirada'] !== null ? htmlspecialchars($fila['Fecha_expirada']) : 'N/A'; ?>
-                      </td>
+                            echo '<img src="' . htmlspecialchars($web_image_path) . '" alt="' . $alt_text . '" 
+                        style="width: 100px; height: 100px; object-fit: contain; border-radius: 20px 20px 0 0;" 
+                        onerror="this.onerror=null;this.src=\'/assets/img/default-product.jpg\'; this.alt=\'Imagen no disponible\';">';
+                          } else {
+                            echo htmlspecialchars($fila[$campo]);
+                          }
+                          ?>
+                        </td>
+                      <?php endforeach; ?>
+
                       <td style="text-align: center">
                         <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-                          href="..\Edición de Productos\modify_offer.php?id=<?php echo urlencode($fila['id_oferta']); ?>">
+                          href="../Edición de Productos/modify_offer.php?id=<?php echo urlencode($fila['id_oferta']); ?>">
                           <i class="fa fa-edit" style="color: var(--bs-black)"></i>
                         </a>
                         <button class="btn btn-danger" style="margin-left: 5px" type="button" data-bs-toggle="modal"
@@ -171,7 +167,7 @@ if ($conn->query($sql) === TRUE) {
                       </td>
                     </tr>
 
-                    <!-- Modal de confirmación -->
+                    <!-- Modal de eliminación -->
                     <div class="modal fade" id="deleteModal<?php echo $fila['id_oferta']; ?>" tabindex="-1"
                       aria-labelledby="deleteModalLabel<?php echo $fila['id_oferta']; ?>" aria-hidden="true">
                       <div class="modal-dialog">
@@ -197,12 +193,14 @@ if ($conn->query($sql) === TRUE) {
                   <?php endwhile; ?>
                 <?php else: ?>
                   <tr>
-                    <td colspan="8" style="text-align: center; font-weight: bold;">
+                    <td colspan="<?php echo count($columnas) + 1; ?>" style="text-align: center; font-weight: bold;">
                       <p>No hay ofertas disponibles actualmente</p>
                     </td>
                   </tr>
                 <?php endif; ?>
               </tbody>
+
+
 
               <?php $conn->close(); ?>
 
@@ -220,16 +218,16 @@ if ($conn->query($sql) === TRUE) {
         </div>
       </div>
     </div>
-   
+
   </div>
   <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 
   <!-- inicia footer -->
   <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
-    <!-- termina footer --><!-- inicia footer -->
-    
+  <!-- termina footer --><!-- inicia footer -->
+
   </div>
-  
+
   <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">

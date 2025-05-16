@@ -101,7 +101,8 @@
 
           <div class="col">
             <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px;">
-              <a class="text-decoration-none h-100 d-flex flex-column" href="producto_detalle.php?id=<?= $producto['id'] ?>">
+              <a class="text-decoration-none h-100 d-flex flex-column"
+                href="producto_detalle.php?id=<?= $producto['id'] ?>">
                 <div class="p-3 flex-grow-1 d-flex flex-column">
                   <div class="bg-light d-flex justify-content-center align-items-center"
                     style="height: 200px; overflow: hidden; border-radius: 15px;">
@@ -127,7 +128,7 @@
       <?php else: ?>
         <div class="col-12">
           <div class="alert alert-info text-center py-4">
-            <i class="fas fa-info-circle me-2"></i> No se encontraron productos en esta categoría.
+            <i></i> No se encontraron productos en esta categoría.
             <a href="/Views/Paginas%20Principales/index_prin.php" class="btn btn-sm btn-outline-success ms-3">
               Ver pagina principal
             </a>
@@ -136,10 +137,10 @@
       <?php endif; ?>
     </div>
   </div>
-
   <!-- inicia footer -->
   <?php include '../../Views/Paginas Principales/footer_principal.php'; ?>
   <!-- termina footer -->
+
 
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -158,4 +159,5 @@
     });
   </script>
 </body>
+
 </html>
