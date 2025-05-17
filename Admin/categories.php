@@ -144,40 +144,44 @@ if (!isset($_SESSION['user'])) {
                   if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                       echo "<tr>
-            <td style='padding: 10px; border: 1px solid #ddd;'>" . htmlspecialchars($row['nombre']) . "</td>
-            <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>
-                <a class='btn btn-success' role='button' 
-                   style='margin-left: 5px; background: var(--bs-warning); color: var(--bs-yellow);'
-                   href='\Admin\Edición de Productos\modify_cat.php?id=" . $row['id'] . "'>
-                    <i class='far fa-edit' style='font-size: 15px; color: rgb(7, 7, 7)'></i>
-                </a>
-                <button class='btn btn-danger' style='margin-left: 5px' type='button' data-bs-toggle='modal' data-bs-target='#deleteModal" . $row['id'] . "'>
-                  <i class='fa fa-trash' style='font-size: 15px'></i>
-                </button>
-
-                <!-- Modal -->
-                <div class='modal fade' id='deleteModal" . $row['id'] . "' tabindex='-1' aria-labelledby='deleteModalLabel" . $row['id'] . "' aria-hidden='true'>
-                  <div class='modal-dialog'>
-                    <div class='modal-content'>
-                      <div class='modal-header'>
-                        <h5 class='modal-title' id='deleteModalLabel" . $row['id'] . "'>Confirmar Eliminación</h5>
-                        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                      </div>
-                      <div class='modal-body'>
-                        ¿Estás seguro de que deseas eliminar esta categoría?
-                      </div>
-                      <div class='modal-footer'>
-                        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancelar</button>
-                        <form action='./Edición de Productos/php/eliminar_cat.php' method='post' style='display:inline;'>
-                          <input type='hidden' name='id' value='" . $row['id'] . "'>
-                          <button class='btn btn-danger' type='submit'>Eliminar</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            </td>
-          </tr>";
+    <td style='padding: 10px; border: 1px solid #ddd;'>" . htmlspecialchars($row['nombre']) . "</td>
+    <td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>";
+  if ($row['nombre'] !== 'default' && $row['id'] != 1) {
+    echo "
+      <a class='btn btn-success' role='button' 
+         style='margin-left: 5px; background: var(--bs-warning); color: var(--bs-yellow);'
+         href='\\Admin\\Edición de Productos\\modify_cat.php?id=" . $row['id'] . "'>
+          <i class='far fa-edit' style='font-size: 15px; color: rgb(7, 7, 7)'></i>
+      </a>
+      <button class='btn btn-danger' style='margin-left: 5px' type='button' data-bs-toggle='modal' data-bs-target='#deleteModal" . $row['id'] . "'>
+        <i class='fa fa-trash' style='font-size: 15px'></i>
+      </button>
+      <!-- Modal -->
+      <div class='modal fade' id='deleteModal" . $row['id'] . "' tabindex='-1' aria-labelledby='deleteModalLabel" . $row['id'] . "' aria-hidden='true'>
+        <div class='modal-dialog'>
+          <div class='modal-content'>
+            <div class='modal-header'>
+              <h5 class='modal-title' id='deleteModalLabel" . $row['id'] . "'>Confirmar Eliminación</h5>
+              <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+            </div>
+            <div class='modal-body'>
+              ¿Estás seguro de que deseas eliminar esta categoría?
+            </div>
+            <div class='modal-footer'>
+              <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancelar</button>
+              <form action='./Edición de Productos/php/eliminar_cat.php' method='post' style='display:inline;'>
+                <input type='hidden' name='id' value='" . $row['id'] . "'>
+                <button class='btn btn-danger' type='submit'>Eliminar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    ";
+  } else {
+    echo "<span class='text-muted'>No disponible</span>";
+  }
+  echo "</td></tr>";
                     }
                   } else {
                     echo "<tr><td colspan='2' style='padding: 10px; border: 1px solid #ddd; text-align: center;'>No se encontraron categorías</td></tr>";
