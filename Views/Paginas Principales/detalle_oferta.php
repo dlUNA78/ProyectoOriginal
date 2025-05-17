@@ -45,17 +45,21 @@ if (!$oferta) {
 
     <style>
         .offer-image {
-            max-height: 400px;
-            width: 100%;
+            width: 400px;
+            height: 400px;
             object-fit: contain;
             background: #f8f9fa;
             border-radius: 10px;
         }
+
         .offer-info {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 10px;
+            height: 400px;
+
         }
+
         .back-button {
             margin-bottom: 20px;
         }
@@ -80,7 +84,8 @@ if (!$oferta) {
                 <?php else: ?>
                     <div class="alert alert-danger text-center">
                         <h4><?= $mensaje_error ?></h4>
-                        <a href="/Views/Categorias/categoria_prod.php" class="btn btn-outline-success">Volver al catálogo</a>
+                        <a href="/Views/Categorias/categoria_prod.php" class="btn btn-outline-success">Volver al
+                            catálogo</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -91,20 +96,22 @@ if (!$oferta) {
         <?php if ($oferta): ?>
             <div class="row">
                 <!-- Imagen de la oferta -->
-                 
-                <?php
-                    // Obtener la ruta relativa de la imagen desde la base de datos
-                    $imagen_relativa = isset($oferta['imagen']) ? ltrim($oferta['imagen'], '/') : '';
-                    $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
-                    $web_image_path = '/' . $imagen_relativa;
 
-                    // Si la imagen no existe o está vacía, usar la imagen por defecto
-                    if (!file_exists($absolute_image_path) || empty($oferta['imagen'])) {
-                        $web_image_path = '/assets/img/default-product.jpg';
-                    }
+                <?php
+                // Obtener la ruta relativa de la imagen desde la base de datos
+                $imagen_relativa = isset($oferta['imagen']) ? ltrim($oferta['imagen'], '/') : '';
+                $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
+                $web_image_path = '/' . $imagen_relativa;
+
+                // Si la imagen no existe o está vacía, usar la imagen por defecto
+                if (!file_exists($absolute_image_path) || empty($oferta['imagen'])) {
+                    $web_image_path = '/assets/img/default-product.jpg';
+                }
                 ?>
                 <div class="col-md-6 text-center">
-                    <img src="<?= htmlspecialchars($web_image_path) ?>" alt="<?= htmlspecialchars($oferta['Nombre_oferta']) ?>" class="offer-image" onerror="this.onerror=null;this.src='/assets/img/default-product.jpg'">
+                    <img src="<?= htmlspecialchars($web_image_path) ?>"
+                        alt="<?= htmlspecialchars($oferta['Nombre_oferta']) ?>" class="offer-image"
+                        onerror="this.onerror=null;this.src='/assets/img/default-product.jpg'">
                 </div>
 
                 <!-- Información de la oferta -->
@@ -114,7 +121,7 @@ if (!$oferta) {
 
                         <div class="mb-3">
                             <span class="badge bg-success"><?= htmlspecialchars($oferta['categoria']) ?></span>
-                           </div>
+                        </div>
 
                         <h4>
                             <del class="text-muted">$<?= number_format($oferta['precio_producto'], 2) ?></del>
@@ -122,13 +129,15 @@ if (!$oferta) {
                         </h4>
 
                         <div class="mb-3">
-                            <strong>Vigencia:</strong> <?= date('d/m/Y', strtotime($oferta['Fecha_inicio'])) ?> - <?= date('d/m/Y', strtotime($oferta['Fecha_expirada'])) ?>
+                            <strong>Vigencia:</strong> <?= date('d/m/Y', strtotime($oferta['Fecha_inicio'])) ?> -
+                            <?= date('d/m/Y', strtotime($oferta['Fecha_expirada'])) ?>
                         </div>
 
                         <div class="mb-4">
                             <h5>Descripción de la oferta:</h5>
                             <p><?= nl2br(htmlspecialchars($oferta['descripcion'])) ?></p>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -141,4 +150,5 @@ if (!$oferta) {
 
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
+
 </html>

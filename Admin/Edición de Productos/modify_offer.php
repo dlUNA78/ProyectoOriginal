@@ -5,7 +5,94 @@ session_start();
 if (!isset($_SESSION['user'])) {
   header("Location:/Admin/Menú/login.php");
   die();
-} ?>
+}
+
+// Conexión a la base de datos
+include '..\..\config\database.php';
+
+if (isset($_GET['id'])) {
+  $id_oferta = $_GET['id'];
+
+  // Obtener la oferta
+  $stmt = $conn->prepare("SELECT * FROM ofertas WHERE id_oferta = ?");
+  $stmt->bind_param("i", $id_oferta);
+  $stmt->execute();
+  $resultado = $stmt->get_result();
+
+  if ($resultado->num_rows === 1) {
+    $oferta = $resultado->fetch_assoc();
+
+    // Obtener imágenes asociadas al producto de esta oferta
+    $id_producto = $oferta['id_producto'] ?? null;
+
+    if ($id_producto !== null) {
+      $stmt_img = $conn->prepare("SELECT ruta_imagen FROM imagenes_producto WHERE id_producto = ?");
+      $stmt_img->bind_param("i", $id_producto);
+      $stmt_img->execute();
+      $resultado_img = $stmt_img->get_result();
+      $imagenes = $resultado_img->fetch_all(MYSQLI_ASSOC);
+    } else {
+      $imagenes = [];
+    }
+  } else {
+    echo "No se encontró la oferta";
+    exit;
+  }
+} else {
+  echo "ID de oferta no proporcionado";
+  exit;
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  $id = $_POST['id'];
+  $nombre = $_POST['Nombre_oferta'];
+  $precio = $_POST['precio'];
+  $precio_oferta = $_POST['precio_oferta'];
+  $fecha_inicio = $_POST['Fecha_inicio'];
+  $fecha_expirada = $_POST['Fecha_expirada'];
+
+  // Aquí el cambio importante:
+  // Si descripción viene vacía, mantenemos la que había antes
+  if (isset($_POST['descripcion']) && trim($_POST['descripcion']) !== '') {
+    $descripcion = $_POST['descripcion'];
+  } else {
+    $descripcion = $oferta['descripcion'];
+  }
+
+  // Verificar si se subió una nueva imagen
+  if (isset($_FILES['nueva_imagen']) && $_FILES['nueva_imagen']['error'] === UPLOAD_ERR_OK) {
+    $imagen_tmp = $_FILES['nueva_imagen']['tmp_name'];
+    $imagen_nombre = basename($_FILES['nueva_imagen']['name']);
+    $ruta_destino = "../assets/img/ofertas/" . $imagen_nombre;
+
+    if (move_uploaded_file($imagen_tmp, $ruta_destino)) {
+      if (!empty($oferta['imagen']) && file_exists("../assets/img/ofertas/" . basename($oferta['imagen']))) {
+        unlink("../assets/img/ofertas/" . basename($oferta['imagen']));
+      }
+      $imagen_final = '/Admin/assets/img/ofertas/' . $imagen_nombre;
+    } else {
+      echo "Error al subir la nueva imagen.";
+      exit;
+    }
+  } elseif (!empty($_POST['imagen_existente'])) {
+    $imagen_final = $_POST['imagen_existente'];
+  } else {
+    $imagen_final = $oferta['imagen'];
+  }
+
+  // Actualizar la base de datos
+  $stmt = $conn->prepare("UPDATE ofertas SET Nombre_oferta=?, precio=?, precio_oferta=?, Fecha_inicio=?, Fecha_expirada=?, imagen=?, descripcion=? WHERE id_oferta=?");
+  $stmt->bind_param("sddssssi", $nombre, $precio, $precio_oferta, $fecha_inicio, $fecha_expirada, $imagen_final, $descripcion, $id);
+
+  if ($stmt->execute()) {
+    header("Location: ../Ofertas/view_ofer_produc.php?success=1");
+    exit;
+  } else {
+    echo "Error al actualizar la oferta";
+  }
+}
+?>
+
 
 <head>
   <meta charset="utf-8" />
@@ -31,71 +118,7 @@ if (!isset($_SESSION['user'])) {
 </head>
 
 <body>
-  <?php
-  // Configuración de la conexión PDO
-  include '..\..\config\database.php';
-  if (isset($_GET['id'])) {
-    $id_oferta = $_GET['id'];
 
-    $stmt = $conn->prepare("SELECT * FROM ofertas WHERE id_oferta = ?");
-    $stmt->bind_param("i", $id_oferta);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-    if ($resultado->num_rows === 1) {
-      $oferta = $resultado->fetch_assoc();
-    } else {
-      echo "No se encontró la oferta";
-      exit;
-    }
-  } else {
-    echo "ID de oferta no proporcionado";
-    exit;
-  }
-  ?>
-  <?php
-  if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $id = $_POST['id'];
-    $nombre = $_POST['Nombre_oferta'];
-    $precio = $_POST['precio'];
-    $precio_oferta = $_POST['precio_oferta'];
-    $fecha_inicio = $_POST['Fecha_inicio'];
-    $fecha_expirada = $_POST['Fecha_expirada'];
-    $descripcion = $_POST['descripcion'] ?? '';
-
-    // Verificar si se subió una nueva imagen
-    if (isset($_FILES['nueva_imagen']) && $_FILES['nueva_imagen']['error'] === UPLOAD_ERR_OK) {
-      $imagen_tmp = $_FILES['nueva_imagen']['tmp_name'];
-      $imagen_nombre = basename($_FILES['nueva_imagen']['name']);
-      $ruta_destino = "../assets/img/ofertas/" . $imagen_nombre;
-
-      if (move_uploaded_file($imagen_tmp, $ruta_destino)) {
-        if (!empty($oferta['imagen']) && file_exists("../assets/img/ofertas/" . basename($oferta['imagen']))) {
-          unlink("../assets/img/ofertas/" . basename($oferta['imagen']));
-        }
-        $imagen_final = '/Admin/assets/img/ofertas/' . $imagen_nombre;
-      } else {
-        echo "Error al subir la nueva imagen.";
-        exit;
-      }
-    } elseif (!empty($_POST['imagen_existente'])) {
-      $imagen_final = $_POST['imagen_existente'];
-    } else {
-      $imagen_final = $oferta['imagen'];
-    }
-
-    // Actualizar la base de datos
-    $stmt = $conn->prepare("UPDATE ofertas SET Nombre_oferta=?, precio=?, precio_oferta=?, Fecha_inicio=?, Fecha_expirada=?, imagen=?, descripcion=? WHERE id_oferta=?");
-    $stmt->bind_param("sddsssii", $nombre, $precio, $precio_oferta, $fecha_inicio, $fecha_expirada, $imagen_final, $descripcion, $id);
-
-    if ($stmt->execute()) {
-      header("Location: ../Ofertas/view_ofer_produc.php?success=1");
-      exit;
-    } else {
-      echo "Error al actualizar la oferta";
-    }
-  }
-  ?>
   <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -119,11 +142,14 @@ if (!isset($_SESSION['user'])) {
     <!-- inicia menu -->
     <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
     <!-- termina menu -->
-    <div class="d-flex justify-content-center align-items-center" id="content">
-      <div class="card shadow-sm p-4">
+    <div class="d-flex justify-content-center align-items-center" id="content" style="min-height: 80vh;">
+      <div class="card shadow-sm p-4" style="max-width: 480px; width: 100%;">
         <h2 class="text-center mb-4" style="color: rgb(0, 0, 0); font-weight: bold">
           Modificar Oferta
         </h2>
+
+
+        <!-- inicia formulario -->
         <form method="POST" enctype="multipart/form-data">
           <input type="hidden" name="id" value="<?php echo $oferta['id_oferta']; ?>" />
           <div class="mb-3">
@@ -134,8 +160,10 @@ if (!isset($_SESSION['user'])) {
 
           <div class="mb-3">
             <label class="form-label" for="descripcion" style="color: rgb(0, 0, 0)">Descripción del Producto:</label>
-            <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required readonly><?php echo htmlspecialchars($oferta['descripcion']); ?></textarea>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required
+              readonly><?php echo htmlspecialchars($oferta['descripcion']); ?></textarea>
           </div>
+
 
           <div class="mb-3">
             <label class="form-label" for="precio" style="color: rgb(0, 0, 0)">Precio:</label>
@@ -162,32 +190,38 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <div class="mb-3">
-            <?php if (!empty($imagenes)) : ?>
+            <?php if (!empty($imagenes)): ?>
               <div class="mb-3">
                 <label class="form-label" style="color: rgb(0, 0, 0)">Seleccionar una imagen existente:</label>
                 <div class="row">
-                  <?php foreach ($imagenes as $img) : ?>
+                  <?php foreach ($imagenes as $img): ?>
+                    <?php
+                    // Construimos la ruta pública completa correcta, agregando '/Admin/' solo una vez
+                    $ruta_completa = '/Admin/' . ltrim($img['ruta_imagen'], '/');
+                    // Comparamos con la imagen guardada para marcar el radio seleccionado
+                    $checked = ($ruta_completa === $oferta['imagen']) ? 'checked' : '';
+                    ?>
                     <div class="col-3 text-center">
                       <label>
-                        <input type="radio" name="imagen_existente" value="<?php echo htmlspecialchars($img['ruta_imagen']); ?>"
-                          style="margin-bottom: 5px;"
-                          <?php echo ($img['ruta_imagen'] === $oferta['imagen']) ? 'checked' : ''; ?>>
-                        <img src="/<?php echo htmlspecialchars($img['ruta_imagen']); ?>" style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #ccc;" />
+                        <input type="radio" name="imagen_existente" value="<?php echo htmlspecialchars($ruta_completa); ?>"
+                          style="margin-bottom: 5px;" <?php echo $checked; ?>>
+                        <img src="<?php echo htmlspecialchars($ruta_completa); ?>"
+                          style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #ccc;" />
                       </label>
                     </div>
                   <?php endforeach; ?>
                 </div>
               </div>
             <?php endif; ?>
+
+
             <label class="form-label" for="imagen_actual" style="color: rgb(0, 0, 0)">Imagen Actual:</label>
             <div>
               <?php
-              // Obtener la ruta relativa de la imagen desde la base de datos
               $imagen_relativa = isset($oferta['imagen']) ? ltrim($oferta['imagen'], '/') : '';
               $absolute_image_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $imagen_relativa;
               $web_image_path = '/' . $imagen_relativa;
 
-              // Si la imagen no existe o está vacía, usar la imagen por defecto
               if (!file_exists($absolute_image_path) || empty($oferta['imagen'])) {
                 $web_image_path = '/assets/img/default-product.jpg';
               }
@@ -215,6 +249,8 @@ if (!isset($_SESSION['user'])) {
               " href="../Ofertas/view_ofer_produc.php">Cancelar</a>
           </div>
         </form>
+        <!-- termina formulario -->
+
       </div>
     </div>
     <!-- inicia footer -->
@@ -223,6 +259,30 @@ if (!isset($_SESSION['user'])) {
   </div>
   <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
   </div>
+
+  <script>
+    const precioInput = document.getElementById('precioNew');
+    const errorPrecio = document.getElementById('errorPrecioNew');
+
+    precioInput.addEventListener('input', () => {
+      let valor = precioInput.value;
+
+      // Validar que no tenga más de dos decimales
+      if (valor.includes('.')) {
+        const partes = valor.split('.');
+        if (partes[1].length > 2) {
+          // Recorta a dos decimales
+          precioInput.value = partes[0] + '.' + partes[1].slice(0, 2);
+          errorPrecio.textContent = 'Solo se permiten hasta 2 decimales.';
+        } else {
+          errorPrecio.textContent = '';
+        }
+      } else {
+        errorPrecio.textContent = '';
+      }
+    });
+  </script>
+  
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
   <script
@@ -232,8 +292,7 @@ if (!isset($_SESSION['user'])) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <script src="../assets/js/TableZoomSorter.js"></script>
   <script src="../assets/js/Tema_Admin.js"></script>
-  <script src="../assets/js/WaveClickFX.js"></script>
-  <script src="../JS/validar_mod_offer.js"></script>
+
 </body>
 
 </html>

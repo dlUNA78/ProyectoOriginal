@@ -148,6 +148,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Nombre_b'])) {
   $stmt_producto->close();
 
   // Insertar oferta en BD
+
+  // Verificar si ya existe una oferta para este producto (puedes agregar condición para ofertas activas si quieres)
+  $stmt_check = $conn->prepare("SELECT COUNT(*) AS total FROM ofertas WHERE id_producto = ?");
+  $stmt_check->bind_param("i", $id_producto);
+  $stmt_check->execute();
+  $result_check = $stmt_check->get_result();
+  $row_check = $result_check->fetch_assoc();
+  $stmt_check->close();
+
+  if ($row_check['total'] > 0) {
+    $_SESSION['error'] = "Ya existe una oferta para este producto. No se puede agregar otra.";
+    header("Location: add_offer.php");
+    exit();
+  }
+
   $sql = "INSERT INTO ofertas (Nombre_oferta, precio, precio_oferta, Fecha_inicio, Fecha_expirada, imagen, id_producto, descripcion) 
           VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -281,7 +296,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Nombre_b'])) {
             </div>
           <?php endif; ?>
 
-          <form id="form_oferta" method="POST" action="add_offer.php" enctype="multipart/form-data" novalidate>
+          <form id="form_oferta" method="POST" action="add_offer.php" enctype="multipart/form-data" novalidate
+            class="container" style="max-width: 900px;">
             <!-- Campo oculto para el ID del producto -->
             <input type="hidden" id="id_producto" name="Nombre_b" value="">
 
@@ -327,10 +343,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Nombre_b'])) {
               <label style="color: rgb(0, 0, 0)">Imagen del Producto:</label>
               <div id="contenedor-imagenes" class="d-flex flex-wrap"></div>
               <input type="hidden" id="imagen_seleccionada" name="imagen_seleccionada" value="">
-              <img id="imagen-preview" src="" alt="Imagen seleccionada"
-                style="width: 100px; height: 100px; object-fit: contain; border-radius: 20px 20px 0 0;"
-                onerror="this.onerror=null;this.src='/assets/img/default-product.jpg'; this.alt='Imagen no disponible';">
-              <div id="errorImagen" class="text-danger"></div>
             </div>
 
             <!-- Descripción -->
@@ -364,74 +376,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Nombre_b'])) {
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script>
-$(document).ready(function () {
-  $('#search').on('input', function () {
-    let query = $(this).val();
+    $(document).ready(function () {
+      $('#search').on('input', function () {
+        let query = $(this).val();
 
-    if (query.length >= 2) {
-      $.ajax({
-        url: 'add_offer.php',
-        method: 'POST',
-        data: { query: query },
-        dataType: 'json',
-        success: function (data) {
-          $('#sugerencias').empty().show();
+        if (query.length >= 2) {
+          $.ajax({
+            url: 'add_offer.php',
+            method: 'POST',
+            data: { query: query },
+            dataType: 'json',
+            success: function (data) {
+              $('#sugerencias').empty().show();
 
-          data.forEach(producto => {
-            const sugerencia = $('<a href="#" class="list-group-item list-group-item-action"></a>').text(producto.nombre);
+              data.forEach(producto => {
+                const sugerencia = $('<a href="#" class="list-group-item list-group-item-action"></a>').text(producto.nombre);
 
-            sugerencia.on('click', function (e) {
-              e.preventDefault();
-              $('#search').val(producto.nombre);
-              $('#id_producto').val(producto.id_producto);
-              $('#precio').val(producto.precio);
-              $('#descripcion').val(producto.descripcion);
-              $('#sugerencias').hide();
+                sugerencia.on('click', function (e) {
+                  e.preventDefault();
+                  $('#search').val(producto.nombre);
+                  $('#id_producto').val(producto.id_producto);
+                  $('#precio').val(producto.precio);
+                  $('#descripcion').val(producto.descripcion);
+                  $('#sugerencias').hide();
 
-              // Mostrar imágenes
-              const contenedor = $('#contenedor-imagenes');
-              contenedor.empty().show();
+                  // Mostrar imágenes
+                  const contenedor = $('#contenedor-imagenes');
+                  contenedor.empty().show();
 
-              if (producto.imagenes && producto.imagenes.length > 0) {
-                producto.imagenes.forEach(imagen => {
-                  const img = $('<img>')
-                    .addClass('imagen-opcion')
-                    .attr('src', '/' + imagen.ruta_imagen)
-                    .attr('alt', 'Imagen producto')
-                    .data('ruta', imagen.ruta_imagen)
-                    .on('click', function () {
-                      $('.imagen-opcion').removeClass('imagen-seleccionada');
-                      $(this).addClass('imagen-seleccionada');
-                      $('#imagen_seleccionada').val(imagen.ruta_imagen);
-                      $('#imagen-preview').attr('src', '/' + imagen.ruta_imagen).show();
-                    });
+                  producto.imagenes.forEach(imagen => {
+                    // Construir ruta con '/Admin/' para mostrar en src
+                    let ruta = '/Admin/' + imagen.ruta_imagen.replace(/\\/g, '/').replace(/^.*?(assets\/img\/productos\/)/, '$1');
 
-                  contenedor.append(img);
+                    // Eliminar '/Admin/' para enviar y usar internamente sin problema
+                    let rutaSinAdmin = ruta.startsWith('/Admin/') ? ruta.substring('/Admin/'.length) : ruta;
+
+                    const img = $('<img>')
+                      .addClass('imagen-opcion')
+                      .attr('src', ruta) // Mostrar la imagen con /Admin/ en la URL para que cargue bien
+                      .attr('alt', 'Imagen producto')
+                      .data('ruta', rutaSinAdmin) // Guardar sin /Admin/ para enviar
+                      .on('click', function () {
+                        $('.imagen-opcion').removeClass('imagen-seleccionada');
+                        $(this).addClass('imagen-seleccionada');
+                        $('#imagen_seleccionada').val($(this).data('ruta')); // Aquí sin /Admin/
+                        $('#imagen-preview').attr('src', ruta).show(); // Mostrar preview con /Admin/
+                      });
+
+                    contenedor.append(img);
+                  });
+
+                  if (producto.imagenes.length > 0) {
+                    contenedor.show();
+                    $('#imagen-preview').hide();
+                    $('#imagen_seleccionada').val('');
+                  } else {
+                    contenedor.html('<p>No hay imágenes para este producto.</p>');
+                    $('#imagen-preview').hide();
+                    $('#imagen_seleccionada').val('');
+                  }
                 });
-              } else {
-                contenedor.html('<p>No hay imágenes para este producto.</p>');
-                $('#imagen-preview').hide();
-                $('#imagen_seleccionada').val('');
-              }
-            });
 
-            $('#sugerencias').append(sugerencia);
+                $('#sugerencias').append(sugerencia);
+              });
+            }
           });
+        } else {
+          $('#sugerencias').hide();
         }
       });
-    } else {
-      $('#sugerencias').hide();
-    }
-  });
 
-  // Ocultar sugerencias al hacer clic fuera
-  $(document).on('click', function (e) {
-    if (!$(e.target).closest('#search, #sugerencias').length) {
-      $('#sugerencias').hide();
-    }
-  });
-});
-
+      // Ocultar sugerencias al hacer clic fuera
+      $(document).on('click', function (e) {
+        if (!$(e.target).closest('#search, #sugerencias').length) {
+          $('#sugerencias').hide();
+        }
+      });
 
       // Seleccionar un producto de las sugerencias
       $(document).on("click", ".sugerencia-item", function () {
@@ -440,14 +460,12 @@ $(document).ready(function () {
         let precio = $(this).data("precio");
         let descripcion = $(this).data("descripcion");
 
-        // Actualizar campos del formulario
         $("#search").val(nombre);
         $("#id_producto").val(id);
         $("#precio").val(precio);
         $("#descripcion").val(descripcion);
         $("#sugerencias").hide();
 
-        // Obtener imágenes del producto seleccionado
         $.ajax({
           url: "add_offer.php",
           method: "POST",
@@ -462,12 +480,12 @@ $(document).ready(function () {
                 contenedorImagenes.empty();
 
                 productoSeleccionado.imagenes.forEach(function (imagen) {
-                  let rutaImagen = imagen.ruta_imagen;
+                  let rutaImagen = '/' + imagen.ruta_imagen.replace(/\\/g, '/');
                   contenedorImagenes.append(`
-                                    <img src="${rutaImagen}" class="imagen-opcion" 
-                                        data-ruta="${rutaImagen}" 
-                                        alt="Imagen del producto">
-                                `);
+              <img src="${rutaImagen}" class="imagen-opcion" 
+                   data-ruta="${rutaImagen}" 
+                   alt="Imagen del producto">
+            `);
                 });
 
                 contenedorImagenes.show();
@@ -501,7 +519,6 @@ $(document).ready(function () {
       $("#form_oferta").on("submit", function (e) {
         let isValid = true;
 
-        // Validar el campo de búsqueda (Nombre del Producto)
         const idProducto = $("#id_producto").val().trim();
         if (idProducto === "") {
           $("#errorNombre").text("Debe seleccionar un producto de la lista.");
@@ -510,7 +527,6 @@ $(document).ready(function () {
           $("#errorNombre").text("");
         }
 
-        // Validar el precio normal
         const precioNormal = $("#precio").val().trim();
         if (precioNormal === "" || isNaN(precioNormal)) {
           $("#errorsProduct").text("El precio normal no es válido.");
@@ -522,10 +538,7 @@ $(document).ready(function () {
           $("#errorsProduct").text("");
         }
 
-        // Validar el precio con descuento
-        // Validar el precio con descuento
         const precioDescuento = $("#descuento").val().trim();
-
         if (precioDescuento === "" || isNaN(precioDescuento)) {
           $("#errorDescuento").text("El precio con descuento no es válido.");
           isValid = false;
@@ -539,8 +552,6 @@ $(document).ready(function () {
           $("#errorDescuento").text("");
         }
 
-
-        // Validar la fecha de inicio
         const fechaInicio = $("input[name='Fecha_inicio']").val().trim();
         if (fechaInicio === "") {
           $("#errorFechaInicio").text("La fecha de inicio es obligatoria.");
@@ -549,7 +560,6 @@ $(document).ready(function () {
           $("#errorFechaInicio").text("");
         }
 
-        // Validar la fecha de expiración
         const fechaExpiracion = $("input[name='Fecha_expirada']").val().trim();
         if (fechaExpiracion === "") {
           $("#errorFechaExpiracion").text("La fecha de expiración es obligatoria.");
@@ -561,7 +571,6 @@ $(document).ready(function () {
           $("#errorFechaExpiracion").text("");
         }
 
-        // Validar la imagen
         const imagenSeleccionada = $("#imagen_seleccionada").val().trim();
         if (imagenSeleccionada === "") {
           $("#errorImagen").text("Debe seleccionar una imagen para la oferta.");
@@ -572,15 +581,12 @@ $(document).ready(function () {
 
         if (!isValid) {
           e.preventDefault();
-
-          // Desplazarse al primer error
           $('html, body').animate({
             scrollTop: $(".text-danger:visible:first").offset().top - 100
           }, 500);
         }
       });
 
-      // Validar en tiempo real el precio con descuento
       $("#descuento").on("input", function () {
         const precioDescuento = $(this).val().trim();
         const precioNormal = $("#precio").val().trim();
@@ -596,7 +602,6 @@ $(document).ready(function () {
         }
       });
 
-      // Restringir a 2 dígitos después del punto en los campos de precio
       $("#descuento").on("keypress", function (e) {
         const charCode = e.which ? e.which : e.keyCode;
         const inputValue = $(this).val();
@@ -610,7 +615,18 @@ $(document).ready(function () {
           e.preventDefault();
         }
       });
+    });
   </script>
+  
+<script>
+  const inputNombre = document.getElementById('search');
+
+  inputNombre.addEventListener('input', () => {
+    // Filtrar valor para que solo queden letras y espacios
+    inputNombre.value = inputNombre.value.replace(/[^a-zA-Z\s]/g, '');
+  });
+</script>
+
 </body>
 
 </html>
