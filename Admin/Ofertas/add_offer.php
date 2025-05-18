@@ -587,20 +587,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Nombre_b'])) {
         }
       });
 
+      let ultimoDescuentoValido = "";
+
       $("#descuento").on("input", function () {
         const precioDescuento = $(this).val().trim();
         const precioNormal = $("#precio").val().trim();
 
         if (precioDescuento === "" || isNaN(precioDescuento)) {
           $("#errorDescuento").text("El precio con descuento no es válido.");
+          $("#btnGuardar").prop("disabled", true);
+          ultimoDescuentoValido = "";
         } else if (parseFloat(precioDescuento) <= 0) {
           $("#errorDescuento").text("El precio con descuento debe ser mayor a 0.");
-        } else if (precioNormal !== "" && parseFloat(precioDescuento) >= parseFloat(precioNormal)) {
+          $("#btnGuardar").prop("disabled", true);
+          ultimoDescuentoValido = "";
+        } else if (
+          precioNormal !== "" &&
+          !isNaN(precioNormal) &&
+          parseFloat(precioDescuento) >= parseFloat(precioNormal)
+        ) {
           $("#errorDescuento").text("El precio con descuento debe ser menor que el precio normal.");
+          $(this).val(ultimoDescuentoValido); // Restaurar último valor válido
+          $("#btnGuardar").prop("disabled", true);
         } else {
           $("#errorDescuento").text("");
+          $("#btnGuardar").prop("disabled", false);
+          ultimoDescuentoValido = precioDescuento; // Guardar como último valor válido
         }
       });
+
+
 
       $("#descuento").on("keypress", function (e) {
         const charCode = e.which ? e.which : e.keyCode;
@@ -617,15 +633,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Nombre_b'])) {
       });
     });
   </script>
-  
-<script>
-  const inputNombre = document.getElementById('search');
 
-  inputNombre.addEventListener('input', () => {
-    // Filtrar valor para que solo queden letras y espacios
-    inputNombre.value = inputNombre.value.replace(/[^a-zA-Z\s]/g, '');
-  });
-</script>
+  <script>
+    const inputNombre = document.getElementById('search');
+
+    inputNombre.addEventListener('input', () => {
+      // Filtrar valor para que solo queden letras y espacios
+      inputNombre.value = inputNombre.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+  </script>
 
 </body>
 
