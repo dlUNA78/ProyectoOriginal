@@ -340,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Nombre_b'])) {
             </div>
             <!-- Selección de imagen -->
             <div class="mb-3">
-              <label style="color: rgb(0, 0, 0)">Imagen del Producto:</label>
+              <label style="color: rgb(0, 0, 0)">Imagen del Producto, selecciona alguna:</label>
               <div id="contenedor-imagenes" class="d-flex flex-wrap"></div>
               <input type="hidden" id="imagen_seleccionada" name="imagen_seleccionada" value="">
             </div>
