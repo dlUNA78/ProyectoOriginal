@@ -2,6 +2,8 @@
 <html data-bs-theme="light" lang="en">
 
 
+
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
@@ -240,13 +242,9 @@
           <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
               <?php
-              $conn = new mysqli("localhost:3308", "root", "1234", "proyecto1");
-              if ($conn->connect_error) {
-                die("Error de conexión: " . $conn->connect_error);
-              }
 
+                include $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
               $result = $conn->query("SELECT * FROM ofertas WHERE CURDATE() BETWEEN Fecha_inicio AND Fecha_expirada");
-
               if ($result && $result->num_rows > 0) {
                 $active = true;
                 while ($row = $result->fetch_assoc()) {
