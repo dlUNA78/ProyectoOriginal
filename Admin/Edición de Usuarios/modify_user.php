@@ -19,10 +19,10 @@ try {
 
     // Seleccionar el usuario a modificar
     if ($usuario) {
-        $stmt = $conn->prepare("SELECT usuario, nombre, contraseña, imagen FROM Usuarios WHERE usuario = ?");
+        $stmt = $conn->prepare("SELECT usuario, nombre, contraseña, imagen, rol FROM Usuarios WHERE usuario = ?");
         $stmt->execute([$usuario]);
         $datos = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         // Construir la ruta completa de la imagen si existe
         if ($datos && !empty($datos['imagen'])) {
             $datos['imagen_completa'] = "../assets/img/avatars/" . $datos['imagen'];
@@ -35,11 +35,14 @@ try {
         $nombre = $_POST['nombre'];
         $contraseñaActual = $_POST['contraseñaAct'];
         $nuevaContraseña = $_POST['contraseña'];
+        $rol = $_POST['rol'] ?? '';
 
         // Verificar contraseña actual
         $stmt = $conn->prepare("SELECT contraseña FROM Usuarios WHERE usuario = ?");
         $stmt->execute([$usuario]);
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $conn->prepare("UPDATE usuarios SET rol = ? WHERE usuario = ?");
+        $stmt->execute([$rol, $usuario]);
 
         // Verificar si la contraseña actual es correcta
         if (!$userData || !password_verify($contraseñaActual, $userData['contraseña'])) {
@@ -123,7 +126,7 @@ try {
 
 <body>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const datos = <?php echo json_encode($datos); ?>;
             if (datos) {
                 document.getElementById('usuario').value = datos.usuario;
@@ -183,9 +186,9 @@ try {
     </div>
 
     <div id="wrapper">
-    <!-- inicia menu -->
-    <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
-     <!-- termina menu -->
+        <!-- inicia menu -->
+        <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
+        <!-- termina menu -->
 
         <div id="content">
             <div class="container d-flex justify-content-center align-items-center"
@@ -208,6 +211,18 @@ try {
                                 value="<?php echo htmlspecialchars($datos['usuario'] ?? ''); ?>" readonly />
                             <div id="errorUsuario" class="text-danger"></div>
                         </div>
+                        <!-- Campo rol -->
+
+                        <div class="mb-3">
+                            <label class="form-label" for="rol" style="color: #000">Rol:</label>
+                            <select class="form-control" id="rol" name="rol" required>
+                                <option value="">Seleccione un rol</option>
+                                <option value="admin" <?php echo (isset($datos['rol']) && $datos['rol'] === 'admin') ? 'selected' : ''; ?>>Administrador</option>
+                                <option value="user" <?php echo (isset($datos['rol']) && $datos['rol'] === 'user') ? 'selected' : ''; ?>>Usuario</option>
+                            </select>
+                        </div>
+
+
                         <div class="mb-3">
                             <label class="form-label" for="contraseñaAct" style="color: rgb(0, 0, 0)">
                                 Contraseña Actual:</label>
@@ -233,8 +248,8 @@ try {
                             <label class="form-label" for="imagen" style="color: rgb(0, 0, 0)">
                                 Imagen de perfil:</label>
                             <!-- Elemento para mostrar la imagen precargada -->
-                            <img id="imagen-preview" src="#" alt="Previsualización de imagen" style="max-width: 100px; max-height: 100px; display: none; margin-bottom: 10px;" class="img-thumbnail"/>
-                            <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" onchange="previewImage(this)"/>
+                            <img id="imagen-preview" src="#" alt="Previsualización de imagen" style="max-width: 100px; max-height: 100px; display: none; margin-bottom: 10px;" class="img-thumbnail" />
+                            <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" onchange="previewImage(this)" />
                             <div id="errorImagen" class="text-danger"></div>
                             <small class="text-muted">Formatos permitidos: JPG, PNG, WEBP. Máximo 2MB.</small>
                         </div>
@@ -262,9 +277,9 @@ try {
             </div>
         </div>
 
-  <!-- inicia footer -->
-  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
-  <!-- termina footer -->
+        <!-- inicia footer -->
+        <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
+        <!-- termina footer -->
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 
@@ -280,4 +295,5 @@ try {
     <script src="../assets/js/WaveClickFX.js"></script>
     <script src="../JS/validar_mod_user.js"></script>
 </body>
+
 </html>
