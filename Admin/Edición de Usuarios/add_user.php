@@ -22,8 +22,8 @@ try {
     $nombre = $_POST['nombre'] ?? '';
     $usuario = strtolower($_POST['usuario']); // Convertir a minúsculas
     $contraseña = $_POST['contraseña'] ?? '';
-    $confirmacion = $_POST['contraseñaConf'] ?? ''; // Nota: Hay un error de tipeo aquí (contraseña vs contraseñaConf)
-
+    $confirmacion = $_POST['contraseñaConf'] ?? ''; 
+    $rol = $_POST['rol']?? '';
     // Verificar si el usuario ya existe
     $stmt = $conn->prepare("SELECT id FROM Usuarios WHERE usuario = ?");
     $stmt->execute([$usuario]);
@@ -44,6 +44,8 @@ try {
       $errores[] = "La contraseña es obligatoria";
     if ($contraseña !== $confirmacion)
       $errores[] = "Las contraseñas no coinciden";
+    if ($contraseña !== $rol)
+      $errores[] = "El rol es obligatorio";
     if (!empty($errores)) {
       header("Location: ?error=" . urlencode(implode(", ", $errores)));
       exit();
@@ -69,8 +71,8 @@ try {
     // Hash de la contraseña
     $hashed_password = password_hash($contraseña, PASSWORD_BCRYPT);
 
-    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$nombre, $usuario, $hashed_password, $imagen_nombre]);
+    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen, rol) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$nombre, $usuario, $hashed_password, $imagen_nombre,$rol]);
 
     if ($stmt && $stmt->rowCount() > 0) {
       // Redirigir a la página de usuario después de agregarlo
@@ -157,6 +159,22 @@ try {
                 ?>
               </div>
             </div>
+            
+                <!--Campo Rol  -->
+                <div class="mb-3">
+                <label class="form-label" for="rol" style="color: rgb(0, 0, 0);">Rol:</label>
+                <select class="form-select" id="rol" name="rol" required>
+                  <option value="">Seleccione un rol</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Vendedor">Vendedor</option>
+                  <?php if (isset($rol)) : ?>
+                    <option value="<?= $rol['id'] ?>" selected><?= htmlspecialchars($rol['rol']) ?></option>
+                  <?php endif; ?>
+                </select>
+                <small id="errorRol" class="text-danger"></small>
+              </div>
+
+
             <!-- Campo Contraseña -->
             <div class="mb-3 position-relative">
               <label class="form-label" for="contraseña" style="color: #000">Contraseña:</label>

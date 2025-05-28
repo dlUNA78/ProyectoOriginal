@@ -24,8 +24,7 @@ if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
     $pass = htmlspecialchars($_POST['contraseña'], ENT_QUOTES, 'UTF-8');
 
     // Credenciales predeterminadas del administrador
-    $admin_user = "admin";
-    $admin_pass = "admin";
+  
 
     // Verificar si son las credenciales del admin
     if ($usuario === $admin_user && $pass === $admin_pass) {
