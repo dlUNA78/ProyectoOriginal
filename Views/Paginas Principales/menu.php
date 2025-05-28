@@ -1,14 +1,14 @@
 <nav class="navbar navbar-expand-lg fixed-top d-flex clean-navbar"
   style="border-color: rgb(37, 113, 188); background: rgb(217, 220, 189)">
   <div class="container">
-    <a class="navbar-brand text-start d-flex logo" href="/Views/Paginas Principales/index_prin.php" style="
+    <a class="navbar-brand text-start d-flex logo" href="/index.php" style="
             color: #587a2e;
             text-align: left;
             padding-top: 0px;
-            padding-bottom: 0px;
+            padding-bottom: 0px;  
             margin-right: 0px;
           ">&nbsp;
-      <img src="../assets/img/Logo%20Yesid.svg" width="65" height="34" />&nbsp;<strong>S@télite
+      <img src="/Views/assets/img/Logo Yesid.svg" width="65" height="34" />&nbsp;<strong>S@télite
         Comunic@ciones</strong></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"
       id="menu">
       <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
@@ -22,7 +22,8 @@
 
           <?php
 
-          include '../../config/database.php';
+          include dirname(__DIR__,2).'/config/database.php';
+          
 
           if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);

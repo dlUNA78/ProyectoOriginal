@@ -1,42 +1,38 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
-
-
-
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
   <title>Home - Brand</title>
-  <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../Views/assets/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM+Display&amp;display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=AR+One+Sans&amp;display=swap" />
-  <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css" />
-  <link rel="stylesheet" href="../assets/fonts/ionicons.min.css" />
-  <link rel="stylesheet" href="../assets/fonts/simple-line-icons.min.css" />
-  <link rel="stylesheet" href="../assets/css/bs-theme-overrides.css" />
-  <link rel="stylesheet" href="../assets/css/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.css" />
-  <link rel="stylesheet" href="../assets/css/baguetteBox.min.css" />
-  <link rel="stylesheet" href="../assets/css/Banner-Heading-Image-images.css" />
-  <link rel="stylesheet" href="../assets/css/dark_navbar.css" />
-  <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Button.css" />
-  <link rel="stylesheet" href="../assets/css/Dark-NavBar-Navigation-with-Search.css" />
-  <link rel="stylesheet" href="../assets/css/Footer---4-Columns---No-Social-Networks.css" />
-  <link rel="stylesheet" href="../assets/css/Footer-Clean-icons.css" />
-  <link rel="stylesheet" href="../assets/css/multiple-item-carousel-slider.css" />
-  <link rel="stylesheet" href="../assets/css/vanilla-zoom.min.css" />
+  <link rel="stylesheet" href="../Views/assets/fonts/font-awesome.min.css" />
+  <link rel="stylesheet" href="../Views/assets/fonts/ionicons.min.css" />
+  <link rel="stylesheet" href="../Views/assets/fonts/simple-line-icons.min.css" />
+  <link rel="stylesheet" href="../Views/assets/css/bs-theme-overrides.css" />
+  <link rel="stylesheet" href="../Views/assets/css/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.css" />
+  <link rel="stylesheet" href="../Views/assets/css/baguetteBox.min.css" />
+  <link rel="stylesheet" href="../Views/assets/css/Banner-Heading-Image-images.css" />
+  <link rel="stylesheet" href="../Views/assets/css/dark_navbar.css" />
+  <link rel="stylesheet" href="../Views/assets/css/Dark-NavBar-Navigation-with-Button.css" />
+  <link rel="stylesheet" href="../Views/assets/css/Dark-NavBar-Navigation-with-Search.css" />
+  <link rel="stylesheet" href="../Views/assets/css/Footer---4-Columns---No-Social-Networks.css" />
+  <link rel="stylesheet" href="../Views/assets/css/Footer-Clean-icons.css" />
+  <link rel="stylesheet" href="../Views/assets/css/multiple-item-carousel-slider.css" />
+  <link rel="stylesheet" href="../Views/assets/css/vanilla-zoom.min.css" />
 </head>
-
 <body>
   <?php
-  include './menu_principal.php';
+  include (__DIR__).'/Views/Paginas Principales/menu.php';
+  
 
   ?>
   <main class="page" style="background: rgb(255, 242, 205)">
     <section class="clean-block clean-hero" style="
-          background-image: url('../assets/img/tech/imange4.webp');
+          background-image: url('./Views/assets/img/tech/imange4.webp');
           color: rgba(88, 122, 46, 0.55);
         ">
       <div class="text">
@@ -78,7 +74,7 @@
               <path d="M8 5.5v5"></path>
               <path d="M4 6v4"></path>
               <path d="M20 8h-16"></path>
-            </svg><a class="text-decoration-none" href="../Categorias/categoria_prod.html">
+            </svg><a class="text-decoration-none" href="./Views/Categorias/categoria_prod.php">
               <div>
                 <h4 class="text-decoration-none" style="
                       color: rgb(0, 0, 0);
@@ -100,7 +96,7 @@
           </div>
           <div class="col-md-5 feature-box">
             <i class="icon-microphone icon" style="color: rgb(88, 122, 46)"></i><a class="text-decoration-none"
-              href="../Categorias/categoria_prod.php">
+              href="./Views/Categorias/categoria_prod.php">
               <div>
                 <h4 class="text-decoration-none" style="
                       color: rgb(0, 0, 0);
@@ -123,7 +119,7 @@
           </div>
           <div class="col-md-5 feature-box">
             <i class="icon ion-ios-home icon" style="color: rgb(88, 122, 46)"></i><a class="text-decoration-none"
-              href="../Categorias/categoria_prod.php">
+              href="./Views/Categorias/categoria_prod.php">
               <div>
                 <h4 class="text-decoration-none" style="
                       color: rgb(0, 0, 0);
@@ -146,7 +142,7 @@
           </div>
           <div class="col-md-5 feature-box">
             <i class="icon ion-android-car icon" style="color: rgb(88, 122, 46)"></i><a class="text-decoration-none"
-              href="../Categorias/categoria_prod.php">
+              href="./Views/Categorias/categoria_prod.php">
               <div>
                 <h4 class="text-decoration-none" style="
                       color: rgb(0, 0, 0);
@@ -169,7 +165,7 @@
           </div>
           <div class="col-md-5 feature-box">
             <i class="icon ion-bug icon" style="color: rgb(88, 122, 46)"></i><a class="text-decoration-none"
-              href="../Categorias/categoria_prod.php">
+              href="./Views/Categorias/categoria_prod.php">
               <div>
                 <h4 class="text-decoration-none" style="
                       color: rgb(0, 0, 0);
@@ -191,7 +187,7 @@
             </a>
           </div>
           <div class="col-md-5 feature-box">
-            <a class="text-decoration-none" href="../Categorias/categoria_prod.php">
+            <a class="text-decoration-none" href="./Views/Categorias/categoria_prod.php">
               <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2"
                   stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"
@@ -263,7 +259,7 @@
                   ?>
                   <div class="carousel-item <?= $active ? 'active' : '' ?>">
                     <div class="card mx-auto" style="width: 350px; border-radius: 20px; cursor: pointer;"
-                      onclick="window.location.href='detalle_oferta.php?id=<?= (int) $row['id_oferta'] ?>'">
+                      onclick="window.location.href='./Views/Paginas Principales/detalle_oferta.php?id=<?= (int) $row['id_oferta'] ?>'">
                       <div class="position-absolute bg-danger text-white px-3 py-1"
                         style="border-bottom-right-radius: 15px; font-weight: bold; z-index: 1; top: 0; left: 0;">
                         -<?= $descuento ?>%
@@ -305,7 +301,6 @@
               $conn->close();
               ?>
             </div>
-
             <!-- Controles del carrusel -->
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
               data-bs-slide="prev">
@@ -320,17 +315,13 @@
           </div>
         </div>
       </div>
-
       <!-- termina tabla de ofertas -->
     </section>
-
     <br>
     <br>
-
     <!-- inicia footer -->
-    <?php include './footer_principal.php'; ?>
+    <?php include (__DIR__).'/Views/Paginas Principales/footer_principal.php'; ?>
     <!-- termina footer -->
-
   </main>
   <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -342,5 +333,4 @@
   <script src="../assets/js/Theme_Prin.js"></script>
   <script src="../assets/js/Animated-Pretty-Product-List-v12-Animated-Pretty-Product-List.js"></script>
 </body>
-
 </html>

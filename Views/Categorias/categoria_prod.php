@@ -5,7 +5,7 @@
 
   <?php
   // Incluir el menú principal después de abrir el body
-  include '../../Views/Paginas Principales/menu_principal.php';
+  include '../../Views/Paginas Principales/menu.php';
   include '../../config/database.php';
 
   // Configuración de rutas - MODIFICADO para apuntar a Admin

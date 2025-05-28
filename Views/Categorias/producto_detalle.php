@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="es" style="background: #abba87">
 <?php
-include '../../Views/Paginas Principales/menu_principal.php';
+include '../../Views/Paginas Principales/menu.php';
 include '../../config/database.php';
 
 // Obtener el ID del producto desde la URL
