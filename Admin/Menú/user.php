@@ -8,7 +8,6 @@ if (!isset($_SESSION['user'])) {
   die();
 }
 
-
 ?>
 
 <head>
@@ -83,136 +82,111 @@ if (!isset($_SESSION['user'])) {
       <table class="table table-hover">
         <thead>
           <tr style="background: var(--bs-info)" width="100%">
-            <th style="background: var(--bs-table-accent-bg)" width="30%">
-              Usuario
-            </th>
-            <th style="background: var(--bs-table-accent-bg)" width="30%">
-              Nombre
-            </th>
-            <th style="background: var(--bs-table-accent-bg)" width="10%">
-              Imagen
-            </th>
-            <th style="background: var(--bs-table-accent-bg)" width="20%">
-              Rol
-            </th>
-            <th style="background: var(--bs-table-accent-bg)" width="10%">
-              Acciones
-            </th>
+            <th style="background: var(--bs-table-accent-bg)" width="20%">Usuario</th>
+            <th style="background: var(--bs-table-accent-bg)" width="20%">Nombre</th>
+            <th style="background: var(--bs-table-accent-bg)" width="20%">Rol</th>
+            <th style="background: var(--bs-table-accent-bg)" width="20%">Imagen</th>
+            <th style="background: var(--bs-table-accent-bg)" width="20%">Acciones</th>
           </tr>
         </thead>
 
-        <!-- Se conecta a la base de datos y se obtienen los datos de la tabla Usuarios -->
         <?php
-        include '..\..\config\database.php';
-
+        include '../../config/database.php';
         $resultado = $conn->query("SELECT * FROM Usuarios");
-
         ?>
+
         <tbody id="userTable">
-  <!-- Inicia datos ingresados a la tabla de usuarios -->
-  <?php if ($resultado->num_rows > 0): ?>
-    <?php while ($fila = $resultado->fetch_assoc()): ?>
-      <tr>
-        <td><?php echo htmlspecialchars($fila['usuario']); ?></td>
-        <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
-        <td style="text-align: center">
-          <?php
-            $imagenArchivo = !empty($fila['imagen']) ? $fila['imagen'] : 'default.jpg';
-            $imagenPath = "/Admin/assets/img/avatars/" . htmlspecialchars($imagenArchivo);
-          ?>
-          <img src="<?php echo $imagenPath; ?>" alt="Imagen de <?php echo htmlspecialchars($fila['usuario']); ?>"
-            style="width: 50px; height: 50px;"
-            onerror="this.onerror=null; this.src='/Admin/assets/img/avatars/default.jpg';">
-        </td>
+          <?php if ($resultado->num_rows > 0): ?>
+            <?php while ($fila = $resultado->fetch_assoc()): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($fila['usuario']); ?></td>
+                <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
+                <td><?php echo htmlspecialchars($fila['rol']); ?></td>
+                <td style="text-align: center">
+                  <?php
+                  $imagenArchivo = !empty($fila['imagen']) ? $fila['imagen'] : 'default.jpg';
+                  $imagenPath = "/Admin/assets/img/avatars/" . htmlspecialchars($imagenArchivo);
+                  ?>
+                  <img src="<?php echo $imagenPath; ?>" alt="Imagen de <?php echo htmlspecialchars($fila['usuario']); ?>"
+                    style="width: 50px; height: 50px;"
+                    onerror="this.onerror=null; this.src='/Admin/assets/img/avatars/default.jpg';">
+                </td>
+                <td style="text-align: center">
+                  <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
+                    href="../Edición%20de%20Usuarios/modify_user.php?usuario=<?php echo urlencode($fila['usuario']); ?>">
+                    <i class="fa fa-edit" style="color: var(--bs-black)"></i>
+                  </a>
 
-        <!-- Nueva columna de rol -->
-        <td><?php echo htmlspecialchars($fila['Rol']); ?></td>
+                  <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+                    <form method="POST" action="../Edición%20de%20Usuarios/delete_user.php" style="display:inline;"
+                      onsubmit="return confirmarEliminacion(event)">
+                      <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($fila['usuario']); ?>">
+                      <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
+                        <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
+                      </button>
+                    </form>
 
-        <td style="text-align: center">
-          <a class="btn btn-primary" role="button" style="background: var(--bs-warning); margin-right: 5px"
-            href="../Edición%20de%20Usuarios/modify_user.php?usuario=<?php echo urlencode($fila['rol']); ?>">
-            <i class="fa fa-edit" style="color: var(--bs-black)"></i>
-          </a>
+                    <script>
+                      function confirmarEliminacion(event) {
+                        event.preventDefault();
 
-          <!-- inicia boton eliminar -->
-          <?php
-            $esAdmin = (isset($_SESSION['user']) && $_SESSION['user'] === "Administrador");
-            if ($esAdmin):
-          ?>
-            <form method="POST" action="../Edición%20de%20Usuarios/delete_user.php" style="display:inline;"
-              onsubmit="return confirmarEliminacion(event)">
-              <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($fila['usuario']); ?>">
-              <button class="btn btn-primary" type="submit" style="background: var(--bs-form-invalid-color)">
-                <i class="icon ion-android-delete" style="color: var(--bs-light)"></i>
-              </button>
-            </form>
+                        const modal = document.createElement('div');
+                        modal.style.position = 'fixed';
+                        modal.style.top = '0';
+                        modal.style.left = '0';
+                        modal.style.width = '100%';
+                        modal.style.height = '100%';
+                        modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                        modal.style.display = 'flex';
+                        modal.style.justifyContent = 'center';
+                        modal.style.alignItems = 'center';
+                        modal.style.zIndex = '1000';
 
-            <script>
-              function confirmarEliminacion(event) {
-                event.preventDefault();
-                const modal = document.createElement('div');
-                modal.style.position = 'fixed';
-                modal.style.top = '0';
-                modal.style.left = '0';
-                modal.style.width = '100%';
-                modal.style.height = '100%';
-                modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-                modal.style.display = 'flex';
-                modal.style.justifyContent = 'center';
-                modal.style.alignItems = 'center';
-                modal.style.zIndex = '1000';
+                        const modalContent = document.createElement('div');
+                        modalContent.style.backgroundColor = 'white';
+                        modalContent.style.padding = '20px';
+                        modalContent.style.borderRadius = '8px';
+                        modalContent.style.textAlign = 'center';
+                        modalContent.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
 
-                const modalContent = document.createElement('div');
-                modalContent.style.backgroundColor = 'white';
-                modalContent.style.padding = '20px';
-                modalContent.style.borderRadius = '8px';
-                modalContent.style.textAlign = 'center';
-                modalContent.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                        modalContent.innerHTML = `
+        <h3 style="margin-bottom: 20px;">¿Estás seguro de eliminar este usuario?</h3>
+        <div style="display: flex; justify-content: center; gap: 20px;">
+          <button id="confirmarBtn" style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Eliminar</button>
+          <button id="cancelarBtn" style="padding: 8px 16px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancelar</button>
+        </div>
+      `;
 
-                modalContent.innerHTML = `
-                  <h3 style="margin-bottom: 20px;">¿Estás seguro de eliminar este usuario?</h3>
-                  <div style="display: flex; justify-content: center; gap: 20px;">
-                    <button id="confirmarBtn" style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Eliminar</button>
-                    <button id="cancelarBtn" style="padding: 8px 16px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancelar</button>
-                  </div>
-                `;
+                        modal.appendChild(modalContent);
+                        document.body.appendChild(modal);
 
-                modal.appendChild(modalContent);
-                document.body.appendChild(modal);
+                        document.getElementById('confirmarBtn').addEventListener('click', () => {
+                          document.body.removeChild(modal);
+                          event.target.submit();
+                        });
 
-                return new Promise((resolve) => {
-                  document.getElementById('confirmarBtn').addEventListener('click', () => {
-                    document.body.removeChild(modal);
-                    event.target.submit();
-                    resolve(true);
-                  });
+                        document.getElementById('cancelarBtn').addEventListener('click', () => {
+                          document.body.removeChild(modal);
+                        });
+                      }
+                    </script>
+                  <?php endif; ?>
 
-                  document.getElementById('cancelarBtn').addEventListener('click', () => {
-                    document.body.removeChild(modal);
-                    resolve(false);
-                  });
-                });
-              }
-            </script>
+                </td>
+              </tr>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="5" style="text-align: center; font-weight: bold;">
+                <p>No hay usuarios registrados actualmente</p>
+              </td>
+            </tr>
           <?php endif; ?>
-          <!-- termina boton eliminar -->
-        </td>
-      </tr>
-    <?php endwhile; ?>
-  <?php else: ?>
-    <tr>
-      <td colspan="5" style="text-align: center; font-weight: bold;">
-        <p>No hay usuarios registrados actualmente</p>
-      </td>
-    </tr>
-  <?php endif; ?>
-  <!-- Termina los datos ingresados a la tabla de usuarios -->
-</tbody>
+        </tbody>
 
         <?php $conn->close(); ?>
-
       </table>
-      <!-- Termina la tabla de usuarios -->
+
     </div>
     <div class="d-grid float-end">
       <a class="btn btn-primary" role="button" style="
