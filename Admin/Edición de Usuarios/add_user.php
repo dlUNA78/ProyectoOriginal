@@ -1,16 +1,13 @@
 <?php
 // Configuración de la conexión PDO
-include '..\..\config\database.php';
+include '../../config/database.php';
 
 session_start();
 
 if (!isset($_SESSION['user'])) {
-  header("Location:/Admin/Menú/login.php");
-  die();
+    header("Location:/Admin/Menú/login.php");
+    die();
 }
-
-
-
 
 try {
   // Crear conexión PDO
@@ -19,66 +16,73 @@ try {
 
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar y limpiar datos
-    $nombre = $_POST['nombre'] ?? '';
-    $usuario = strtolower($_POST['usuario']); // Convertir a minúsculas
+    $nombre = trim($_POST['nombre'] ?? '');
+    $usuario = strtolower(trim($_POST['usuario'] ?? ''));
+    $rol = $_POST['rol'] ?? '';
     $contraseña = $_POST['contraseña'] ?? '';
-    $confirmacion = $_POST['contraseñaConf'] ?? ''; // Nota: Hay un error de tipeo aquí (contraseña vs contraseñaConf)
+    $confirmacion = $_POST['contraseñaConf'] ?? '';
 
     // Verificar si el usuario ya existe
-    $stmt = $conn->prepare("SELECT id FROM Usuarios WHERE usuario = ?");
+    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ?");
     $stmt->execute([$usuario]);
 
     if ($stmt->rowCount() > 0) {
-      header("Location: add_user.php?usuario=$usuario&error=El usuario ya existe");
+      header("Location: add_user.php?usuario=$usuario&error=" . urlencode("El usuario ya existe"));
       exit();
     }
-
 
     // Validaciones
     $errores = [];
-    if (empty($nombre))
-      $errores[] = "El nombre es obligatorio";
-    if (empty($usuario))
-      $errores[] = "El usuario es obligatorio";
-    if (empty($contraseña))
-      $errores[] = "La contraseña es obligatoria";
-    if ($contraseña !== $confirmacion)
-      $errores[] = "Las contraseñas no coinciden";
+    if (empty($nombre)) $errores[] = "El nombre es obligatorio";
+    if (empty($usuario)) $errores[] = "El usuario es obligatorio";
+    if (empty($rol)) $errores[] = "Debe seleccionar un rol";
+    if (empty($contraseña)) $errores[] = "La contraseña es obligatoria";
+    if ($contraseña !== $confirmacion) $errores[] = "Las contraseñas no coinciden";
+
+    // Validación de imagen
+    $imagen_nombre = '';
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+      $permitidos = ['jpg', 'jpeg', 'png', 'webp'];
+      $tamaño_max = 2 * 1024 * 1024; // 2 MB
+
+      $extension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+      $tamaño_archivo = $_FILES['imagen']['size'];
+
+      if (!in_array($extension, $permitidos)) {
+        $errores[] = "Formato de imagen no permitido.";
+      } elseif ($tamaño_archivo > $tamaño_max) {
+        $errores[] = "La imagen excede el tamaño máximo permitido (2MB).";
+      }
+    }
+
     if (!empty($errores)) {
-      header("Location: ?error=" . urlencode(implode(", ", $errores)));
+      header("Location: add_user.php?error=" . urlencode(implode(", ", $errores)));
       exit();
     }
 
-    // Procesar imagen
-    $imagen_nombre = '';
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+    // Procesar y mover imagen
+    if (!empty($_FILES['imagen']['tmp_name'])) {
       $directorio = '../assets/img/avatars/';
       if (!file_exists($directorio)) {
         mkdir($directorio, 0777, true);
       }
-      $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-      $imagen_nombre = uniqid() . '.' . $extension;
-
-      if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $directorio . $imagen_nombre)) {
-        header("Location: ?error=Error al subir la imagen");
-        exit();
-      }
+      $imagen_nombre = uniqid('img_') . '.' . $extension;
+      move_uploaded_file($_FILES['imagen']['tmp_name'], $directorio . $imagen_nombre);
     }
 
-    // Insertar en BD usando PDO
-    // Hash de la contraseña
+    // Hash de contraseña
     $hashed_password = password_hash($contraseña, PASSWORD_BCRYPT);
 
-    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, imagen) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$nombre, $usuario, $hashed_password, $imagen_nombre]);
+    // Insertar en la base de datos
+    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, usuario, contraseña, rol, imagen) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$nombre, $usuario, $hashed_password, $rol, $imagen_nombre]);
 
     if ($stmt && $stmt->rowCount() > 0) {
-      // Redirigir a la página de usuario después de agregarlo
       header("Location: ../Menú/user.php?success=Usuario agregado correctamente");
       exit();
     } else {
       $error = $stmt ? $stmt->errorInfo()[2] : "Error al ejecutar la consulta";
-      header("Location: ?error=" . urlencode($error));
+      header("Location: add_user.php?error=" . urlencode($error));
       exit();
     }
   }
@@ -86,6 +90,7 @@ try {
   die("Error en la conexión o consulta: " . $e->getMessage());
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -122,7 +127,7 @@ try {
 
     <!-- inicia menu -->
     <?php include dirname(__DIR__, 2) . '/Admin/Menú/menu.php'; ?>
-     <!-- termina menu -->
+    <!-- termina menu -->
 
     <div id="content">
       <div class="container d-flex justify-content-center align-items-center"
@@ -145,8 +150,7 @@ try {
             <!-- Campo Usuario/Email -->
             <div class="mb-3">
               <label class="form-label" for="usuario" style="color: #000">Usuario:</label>
-              <input class="form-control" type="text" required id="usuario" name="usuario"
-                placeholder="usuario123"
+              <input class="form-control" type="text" required id="usuario" name="usuario" placeholder="usuario123"
                 value="<?php echo isset($_GET['usuario']) ? htmlspecialchars($_GET['usuario']) : ''; ?>">
 
               <div id="errorUsuario" class="text-danger small mt-1">
@@ -157,6 +161,17 @@ try {
                 ?>
               </div>
             </div>
+            <!-- Campo rol -->
+            <div class="mb-3">
+              <label class="form-label" for="rol" style="color: #000">Rol:</label>
+              <select class="form-control" id="rol" name="rol" required>
+                <option value="">Seleccione un rol</option>
+                <option value="admin">Administrador</option>
+                <option value="user">Usuario</option>
+              </select>
+              <div id="errorRol" class="text-danger small mt-1"></div>
+            </div>
+
             <!-- Campo Contraseña -->
             <div class="mb-3 position-relative">
               <label class="form-label" for="contraseña" style="color: #000">Contraseña:</label>
@@ -206,9 +221,9 @@ try {
       <script src="..\JS\validar_user.js" defer></script>
     </div>
 
-  <!-- inicia footer -->
-  <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
-  <!-- termina footer -->
+    <!-- inicia footer -->
+    <?php include dirname(__DIR__, 2) . '/Admin/Menú/footer.php'; ?>
+    <!-- termina footer -->
 
   </div>
   <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>

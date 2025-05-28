@@ -1,73 +1,59 @@
 <?php
 session_start();
-include_once '../../config/database.php'; // Asegúrate de que crea una conexión MySQLi ($conn)
+include_once '../../config/database.php'; // Asegúrate de que $conn está definido correctamente
 
 // Limitar intentos de inicio de sesión
 if (!isset($_SESSION['login_attempts'])) {
-    $_SESSION['login_attempts'] = 0;
+  $_SESSION['login_attempts'] = 0;
 }
 
 if ($_SESSION['login_attempts'] >= 5) {
-    echo '<div class="alert alert-danger">Demasiados intentos fallidos. Intenta nuevamente más tarde.</div>';
-    exit();
+  echo '<div class="alert alert-danger">Demasiados intentos fallidos. Intenta nuevamente más tarde.</div>';
+  exit();
 }
 
 if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
-    // Validar que los campos no estén vacíos
-    if (empty($_POST['usuario']) || empty($_POST['contraseña'])) {
-        echo '<div class="alert alert-danger">Por favor, completa todos los campos.</div>';
-        exit();
-    }
+  // Validar campos vacíos
+  if (empty($_POST['usuario']) || empty($_POST['contraseña'])) {
+    echo '<div class="alert alert-danger">Por favor, completa todos los campos.</div>';
+    exit();
+  }
 
-    // Sanitizar entrada
-    $usuario = htmlspecialchars($_POST['usuario'], ENT_QUOTES, 'UTF-8');
-    $pass = htmlspecialchars($_POST['contraseña'], ENT_QUOTES, 'UTF-8');
+  $usuario = $_POST['usuario'];
+  $pass = $_POST['contraseña'];
 
-    // Credenciales predeterminadas del administrador
-    $admin_user = "admin";
-    $admin_pass = "admin";
+  try {
+    $sql = "SELECT * FROM usuarios WHERE usuario = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
 
-    // Verificar si son las credenciales del admin
-    if ($usuario === $admin_user && $pass === $admin_pass) {
-        $_SESSION['user'] = "Administrador";
+    $resultado = $stmt->get_result();
+    $usuarioData = $resultado->fetch_assoc();
+
+    if ($usuarioData) {
+      if (password_verify($pass, $usuarioData['contraseña'])) {
+        $_SESSION['user'] = $usuarioData['nombre'];          // Nombre visible
+        $_SESSION['rol'] = $usuarioData['rol'];              // ✅ Guardamos el rol ("admin" o "user")
+        $_SESSION['login_attempts'] = 0;
         header("Location: index.php");
         exit();
+      } else {
+        $_SESSION['login_attempts']++;
+        echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
+      }
+    } else {
+      $_SESSION['login_attempts']++;
+      echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
     }
-
-    try {
-        // Preparar la consulta con MySQLi
-        $sql = "SELECT * FROM usuarios WHERE usuario = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $usuario); // Vincular el parámetro
-        $stmt->execute();
-
-        // Obtener el resultado
-        $resultado = $stmt->get_result();
-        $usuarioData = $resultado->fetch_assoc();
-
-        if ($usuarioData) {
-            // Verificar la contraseña
-            if (password_verify($pass, $usuarioData['contraseña'])) {
-                $_SESSION['user'] = $usuarioData['nombre'];
-                $_SESSION['login_attempts'] = 0; // Reiniciar intentos fallidos
-                header("Location: index.php");
-                exit();
-            } else {
-                $_SESSION['login_attempts']++;
-                echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
-            }
-        } else {
-            $_SESSION['login_attempts']++;
-            echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
-        }
-    } catch (Exception $e) {
-        error_log("Error de login: " . $e->getMessage());
-        echo '<div class="alert alert-danger">Error en el sistema. Intenta nuevamente más tarde.</div>';
-    }
+  } catch (Exception $e) {
+    error_log("Error de login: " . $e->getMessage());
+    echo '<div class="alert alert-danger">Error en el sistema. Intenta nuevamente más tarde.</div>';
+  }
 }
 ?>
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="es">
+<html lang="es" data-bs-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
@@ -100,11 +86,13 @@ if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
           <input type="checkbox" class="form-check-input" id="showPasswords" onclick="togglePasswords()" />
           <label class="form-check-label" for="showPasswords">Mostrar Contraseña</label>
         </div>
-        <button class="btn btn-primary w-100" type="submit" id="loginButton" style="background: var(--bs-info); font-weight: bold;">
+        <button class="btn btn-primary w-100" type="submit" id="loginButton"
+          style="background: var(--bs-info); font-weight: bold;">
           Ingresar
         </button>
-        <div class="d-flex justify-content-start mt-2" style="height: auto;" >
-          <a class="btn btn-primary" style="background: var(--bs-info); font-weight: bold" href="../../Views/Paginas Principales/index_prin.php">
+        <div class="d-flex justify-content-start mt-2" style="height: auto;">
+          <a class="btn btn-primary" style="background: var(--bs-info); font-weight: bold"
+            href="../../Views/Paginas Principales/index_prin.php">
             <i class="icon ion-android-arrow-back" style="color: white;"></i>
           </a>
         </div>
